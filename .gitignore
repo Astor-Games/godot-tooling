@@ -19,6 +19,8 @@ mono_crash.*.json
 # Project structure
 [Bb]uilds/
 [Pp]roject/addons/debug_draw_3d/csharp/log.txt
+/DotNetTooling/obj/
+/DotNetTooling/bin/
 
 # Rider
 
@@ -38,3 +40,4 @@ mono_crash.*.json
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+
