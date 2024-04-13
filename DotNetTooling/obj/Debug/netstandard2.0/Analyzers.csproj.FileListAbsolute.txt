@@ -1,0 +1,11 @@
+C:\working-projects\godot\turbo-garbanzo\Analyzers\Analyzers\bin\Debug\netstandard2.0\Analyzers.deps.json
+C:\working-projects\godot\turbo-garbanzo\Analyzers\Analyzers\bin\Debug\netstandard2.0\Analyzers.dll
+C:\working-projects\godot\turbo-garbanzo\Analyzers\Analyzers\bin\Debug\netstandard2.0\Analyzers.pdb
+C:\working-projects\godot\turbo-garbanzo\Analyzers\Analyzers\obj\Debug\netstandard2.0\Analyzers.csproj.AssemblyReference.cache
+C:\working-projects\godot\turbo-garbanzo\Analyzers\Analyzers\obj\Debug\netstandard2.0\Analyzers.GeneratedMSBuildEditorConfig.editorconfig
+C:\working-projects\godot\turbo-garbanzo\Analyzers\Analyzers\obj\Debug\netstandard2.0\Analyzers.AssemblyInfoInputs.cache
+C:\working-projects\godot\turbo-garbanzo\Analyzers\Analyzers\obj\Debug\netstandard2.0\Analyzers.AssemblyInfo.cs
+C:\working-projects\godot\turbo-garbanzo\Analyzers\Analyzers\obj\Debug\netstandard2.0\Analyzers.csproj.CoreCompileInputs.cache
+C:\working-projects\godot\turbo-garbanzo\Analyzers\Analyzers\obj\Debug\netstandard2.0\Analyzers.sourcelink.json
+C:\working-projects\godot\turbo-garbanzo\Analyzers\Analyzers\obj\Debug\netstandard2.0\Analyzers.dll
+C:\working-projects\godot\turbo-garbanzo\Analyzers\Analyzers\obj\Debug\netstandard2.0\Analyzers.pdb
