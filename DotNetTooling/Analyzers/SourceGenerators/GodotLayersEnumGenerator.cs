@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace DotNetTooling.SourceGenerators;
@@ -45,7 +46,6 @@ public class GodotLayerEnumGenerator : IIncrementalGenerator
         foreach (var pattern in patterns)
         {
             GenerateLayersFile(context, pattern.Value, pattern.Key, namespaceName, layersData);
-            
         }
     }
 
@@ -59,6 +59,8 @@ public class GodotLayerEnumGenerator : IIncrementalGenerator
             .AddBaseListTypes(SimpleBaseType(ParseTypeName("uint")))
             .AddAttributeLists(AttributeList(SingletonSeparatedList(Attribute(ParseName("Flags")))));
 
+        EnumMemberDeclarationSyntax enumMemberSyntax;
+        
         for (var i = 1; i <= 32; i++)
         {
             var hasName = layerData.TryGetValue($"{groupKey}/layer_{i}", out var layerName);
@@ -68,12 +70,16 @@ public class GodotLayerEnumGenerator : IIncrementalGenerator
                 layerName ??= $"Layer{i}";
                 var layerValue = 1u << i - 1;
 
-                var enumMemberSyntax = EnumMemberDeclaration(layerName)
+                enumMemberSyntax = EnumMemberDeclaration(layerName)
                     .WithEqualsValue(EqualsValueClause(ParseExpression(layerValue.ToString())));
 
                 enumSyntax = enumSyntax.AddMembers(enumMemberSyntax);
             }
         }
+        
+        enumMemberSyntax = EnumMemberDeclaration("All")
+            .WithEqualsValue(EqualsValueClause(ParseExpression(uint.MaxValue.ToString())));
+        enumSyntax = enumSyntax.AddMembers(enumMemberSyntax);
         
         // Create a compilation unit and namespace
         var namespaceSyntax = NamespaceDeclaration(ParseName(namespaceName))

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -59,13 +60,12 @@ public class RequiredBaseMethodCallAnalyzer : DiagnosticAnalyzer
 
         var overridenMethod = symbol.OverriddenMethod;
         var attrs = overridenMethod.GetAttributes();
-        if (!attrs.Any(ad => ad.AttributeClass.MetadataName.ToUpperInvariant() 
-                            == typeof(RequireBaseMethodCallAttribute).Name.ToUpperInvariant()))
+        if (!attrs.Any(ad => string.Equals(ad.AttributeClass.MetadataName, nameof(RequireBaseMethodCallAttribute), StringComparison.InvariantCultureIgnoreCase)))
         {
             return;
         }
 
-        var overridenMethodName = overridenMethod.Name.ToString();
+        var overridenMethodName = overridenMethod.Name;
         var methodName = overridenMethodName;
 
         var invocations = mds.DescendantNodes().OfType<MemberAccessExpressionSyntax>().ToList();
