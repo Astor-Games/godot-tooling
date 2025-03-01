@@ -3,15 +3,18 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <IsPackable>false</IsPackable>
-        <Nullable>enable</Nullable>
-        <LangVersion>10</LangVersion>
-        
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <Nullable>disable</Nullable>
+        <LangVersion>12</LangVersion>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-        <IsRoslynComponent>true</IsRoslynComponent>
-
-        <RootNamespace>DotNetTooling</RootNamespace>
-        <AssemblyName>DotNetTooling</AssemblyName>
+        <RootNamespace>GodotLib.Analyzers</RootNamespace>
+        
+        <!--
+            These two lines will stop errors like this one:
+            error CS0579: Duplicate 'global::System.Runtime.Versioning.TargetFrameworkAttribute' attribute
+            -->
+<!--        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>-->
+<!--        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>-->
+        
     </PropertyGroup>
 
     <ItemGroup>
@@ -29,7 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Analyzers\" /> 
+        <Folder Include=".\" /> 
     </ItemGroup>
 
 </Project>

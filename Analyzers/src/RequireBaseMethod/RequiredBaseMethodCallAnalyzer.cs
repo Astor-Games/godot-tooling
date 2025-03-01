@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace DotNetTooling.Analyzers.RequireBaseMethod;
+namespace GodotLib.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
+[SuppressMessage("MicrosoftCodeAnalysisReleaseTracking", "RS2000:Add analyzer diagnostic IDs to analyzer release")]
 public class RequiredBaseMethodCallAnalyzer : DiagnosticAnalyzer
 {
     public const string DiagnosticId = "RequireBaseMethodCall";
@@ -17,7 +19,7 @@ public class RequiredBaseMethodCallAnalyzer : DiagnosticAnalyzer
     // See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/Localizing%20Analyzers.md for more on localization
     private static readonly string title = "Base method call required";
     private static readonly string messageFormat = "Overriden method '{0}' must call it's base class method";
-    private static readonly string description = "Overriden method must call it's base class method";
+    private static readonly string description = "Overriden method must call it's base class method.";
     private const string Category = "Usage";
 
     private static DiagnosticDescriptor rule = new(DiagnosticId, title, messageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: description);
@@ -60,7 +62,7 @@ public class RequiredBaseMethodCallAnalyzer : DiagnosticAnalyzer
 
         var overridenMethod = symbol.OverriddenMethod;
         var attrs = overridenMethod.GetAttributes();
-        if (!attrs.Any(ad => string.Equals(ad.AttributeClass.MetadataName, nameof(RequireBaseMethodCallAttribute), StringComparison.InvariantCultureIgnoreCase)))
+        if (!attrs.Any(ad => string.Equals(ad.AttributeClass?.MetadataName, nameof(RequireBaseMethodCallAttribute), StringComparison.InvariantCultureIgnoreCase)))
         {
             return;
         }

@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Simplification;
 using Microsoft.CodeAnalysis.Text;
 
-namespace DotNetTooling.Analyzers.RequireBaseMethod;
+namespace GodotLib.Analyzers;
 
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(BaseMethodCallCodeFixProvider)), Shared]
 public class BaseMethodCallCodeFixProvider : CodeFixProvider

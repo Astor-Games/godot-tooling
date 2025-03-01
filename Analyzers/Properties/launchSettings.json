@@ -1,9 +1,9 @@
-﻿{
+{
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
     "DebugRoslynAnalyzers": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "../../godot/HeistGame.csproj"
+      "targetProject": "../Lib/GodotLib.csproj"
     }
   }
 }

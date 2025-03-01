@@ -21,6 +21,8 @@ mono_crash.*.json
 [Pp]roject/addons/debug_draw_3d/csharp/log.txt
 /DotNetTooling/obj/
 /DotNetTooling/bin/
+/**/bin
+/**/obj
 
 # Rider
 

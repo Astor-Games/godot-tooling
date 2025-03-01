@@ -1,6 +1,6 @@
 using System;
 
-namespace DotNetTooling.Analyzers.RequireBaseMethod;
+namespace GodotLib.Analyzers;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
 public sealed class RequireBaseMethodCallAttribute : Attribute
