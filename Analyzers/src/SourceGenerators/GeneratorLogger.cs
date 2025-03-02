@@ -57,16 +57,16 @@ public static class GeneratorLogger
 
     public static void DumpLogsToFile(this GeneratorExecutionContext context, [CallerFilePath] string filePath = "")
     {
-        var sb = new StringBuilder();
-        sb.AppendLine("/*");
-        foreach (var log in localLog)
-        {
-            sb.AppendLine(log);
-            sb.AppendLine();
-        }
-        sb.AppendLine("*/");
-        context.AddSource($"Log.log", sb.ToString());
-        localLog.Clear();
+        // var sb = new StringBuilder();
+        // sb.AppendLine("/*");
+        // foreach (var log in localLog)
+        // {
+        //     sb.AppendLine(log);
+        //     sb.AppendLine();
+        // }
+        // sb.AppendLine("*/");
+        // context.AddSource($"Log.log", sb.ToString());
+        // localLog.Clear();
     }
 
     private static void Log(GeneratorExecutionContext context, string message, string filePath, int lineNumber, DiagnosticDescriptor descriptor)
@@ -74,7 +74,8 @@ public static class GeneratorLogger
         var linePosition = new LinePositionSpan(new LinePosition(lineNumber-1, 0), new LinePosition(lineNumber-1, 0) );
         context.ReportDiagnostic(Diagnostic.Create(descriptor, Location.Create(filePath, new TextSpan(), linePosition), message));
 
-        localLog.Add($"[{filePath}:{lineNumber}] [{descriptor.DefaultSeverity}]: {message}");
+        
+        //localLog.Add($"[{filePath}:{lineNumber}] [{descriptor.DefaultSeverity}]: {message}");
     }
 
 

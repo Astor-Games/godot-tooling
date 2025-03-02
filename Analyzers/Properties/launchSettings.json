@@ -3,7 +3,7 @@
   "profiles": {
     "DebugRoslynAnalyzers": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "../Lib/GodotLib.csproj"
+      "targetProject": "../../Turtles.csproj"
     }
   }
 }

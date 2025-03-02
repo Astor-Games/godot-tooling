@@ -1,0 +1,36 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.8.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="$(MSBuildProjectDirectory)\tools\Analyzers\Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" TargetFramework="netstandard2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="$(MSBuildProjectDirectory)\project.godot" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <!-- Ensure .uid and .import files are visible in the solution --> 
+        <!-- <None> is used for non-compilable, non-copyable files that are not part of the build output --> 
+        <None Include="**/*.import" />
+        <None Include="**/*.uid" />
+
+        <!-- This is just an example, all files that we want visible should be included like this. -->
+        <None Include="**/*.tscn" />
+        <None Include="**/*.png" />
+        
+        <!-- Set nesting behavior -->
+        <None Update="**/*.import">
+            <DependentUpon>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.import$', ''))</DependentUpon>
+        </None>
+        <None Update="**/*.uid">
+            <DependentUpon>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.uid$', ''))</DependentUpon>
+        </None>
+    </ItemGroup>
+</Project>
