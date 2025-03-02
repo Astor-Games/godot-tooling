@@ -42,7 +42,7 @@ public static class GeneratorLogger
 
     public static void Log(this GeneratorExecutionContext context, string message, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
     {
-        Log(context, message, filePath, lineNumber, logDescriptor);
+        Log(context, message, filePath, lineNumber, warnDescriptor);
     }
     
     public static void LogWarning(this GeneratorExecutionContext context, string message, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)

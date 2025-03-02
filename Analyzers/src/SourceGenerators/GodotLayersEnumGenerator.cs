@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GodotLib.Analyzers.SourceGenerators.Utils;
 using Microsoft.CodeAnalysis;
 
 namespace GodotLib.Analyzers.SourceGenerators;
@@ -31,33 +32,12 @@ public class GodotLayerEnumGenerator : ISourceGenerator
 
     public void Execute(GeneratorExecutionContext context)
     {
-        var layersData = new Dictionary<string, string>();
-        try
+        var projectText = GodotProjectHelper.ReadGodotProject(context);
+        var layersData = ExtractLayerNames(projectText);
+       
+        foreach (var pattern in patterns)
         {
-            var additionalFiles = string.Join(", ", context.AdditionalFiles.Select(file => file.Path));
-            context.Log($"Adding files: {additionalFiles}");
-            
-            var projectFile = context.AdditionalFiles
-                .First(file => file.Path.EndsWith("project.godot"));
-            
-            context.Log($"project file path: {projectFile.Path}");
-
-            var projectText = projectFile.GetText()?.ToString();
-            context.Log($"project file content: \n\n{projectText} \n\n");
-            layersData = ParseProjectFile(projectText);
-        }
-        catch (Exception e)
-        {
-            context.Log($"Failed to read the layers data from project.godot. Error: {e.Message}");
-        }
-        finally
-        {
-            foreach (var pattern in patterns)
-            {
-                GenerateLayersFile(context, pattern.Value, pattern.Key, layersData);
-            }
-            
-            context.DumpLogsToFile();
+            GenerateLayersFile(context, pattern.Value, pattern.Key, layersData);
         }
     }
 
@@ -105,7 +85,7 @@ public class GodotLayerEnumGenerator : ISourceGenerator
         return text;
     }
 
-    private Dictionary<string, string> ParseProjectFile(string content)
+    private Dictionary<string, string> ExtractLayerNames(string content)
     {
         var layerNames = new Dictionary<string, string>();
         
