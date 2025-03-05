@@ -65,7 +65,9 @@ public class GodotLayerEnumGenerator : ISourceGenerator
               public enum {{cSharpName}} : uint
               {
                   {{layers}}
-                  All = {{1 << maxValue}}
+                  
+                  ///Max allowed value
+                  All = {{1u << (maxValue -1) }}
               }
               """;
 
