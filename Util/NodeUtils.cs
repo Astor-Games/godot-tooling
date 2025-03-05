@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using GodotLib.ProjectConstants;
 
 namespace GodotLib.Util;
 
@@ -18,5 +19,20 @@ public static class NodeUtils
         // return node.FindChildren("", nameof(T), recursive).Cast<T>();
         
         return node.FindChildren("", nameof(Node), recursive).OfType<T>();
+    }
+    
+    public static void SetCullMaskValue(this Camera3D camera, RenderLayers3D layer, bool value)
+    {
+        camera.CullMask = SetMaskValue(camera.CullMask, (uint)layer, value);
+    }
+
+    private static uint SetMaskValue(uint mask, uint layer, bool value)
+    {
+        if (value)
+            mask |= layer; // Set the bit
+        else
+            mask &= ~layer; // Clear the bit
+
+        return mask;
     }
 }

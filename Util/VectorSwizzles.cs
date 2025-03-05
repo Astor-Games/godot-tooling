@@ -11,7 +11,7 @@ using Godot;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 
-namespace GodotLib.Utils;
+namespace GodotLib.Util;
 
 static class Vector2Swizzles {
     //swizzles of size 2

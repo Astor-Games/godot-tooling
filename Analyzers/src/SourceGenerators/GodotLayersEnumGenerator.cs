@@ -1,8 +1,6 @@
 #define DEBUG
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GodotLib.Analyzers.SourceGenerators.Utils;
@@ -15,14 +13,14 @@ public class GodotLayerEnumGenerator : ISourceGenerator
 {
     private const bool GenerateUnnamedValues = false;
 
-    private readonly Dictionary<string, string> patterns = new()
+    private readonly Dictionary<string, (string name, int maxValue)> layerTypes = new()
     {
-        { "2d_physics", "PhysicsLayers2D" },
-        { "3d_physics", "PhysicsLayers3D" },
-        { "2d_navigation", "NavigationLayers2D" },
-        { "3d_navigation", "NavigationLayers3D" },
-        { "2d_render", "RenderLayers2D" },
-        { "3d_render", "RenderLayers3D" }
+        { "2d_physics", ("PhysicsLayers2D", 32) },
+        { "3d_physics", ("PhysicsLayers3D", 32) },
+        { "2d_navigation", ("NavigationLayers2D", 32) },
+        { "3d_navigation", ("NavigationLayers3D", 32) },
+        { "2d_render", ("RenderLayers2D", 20) },
+        { "3d_render", ("RenderLayers3D", 20) }
     };
 
     public void Initialize(GeneratorInitializationContext context)
@@ -35,19 +33,19 @@ public class GodotLayerEnumGenerator : ISourceGenerator
         var projectText = GodotProjectHelper.ReadGodotProject(context);
         var layersData = ExtractLayerNames(projectText);
        
-        foreach (var pattern in patterns)
+        foreach (var (godotName, className, maxValue) in layerTypes)
         {
-            GenerateLayersFile(context, pattern.Value, pattern.Key, layersData);
+            GenerateLayersFile(context, godotName, className, maxValue, layersData);
         }
     }
 
-    private void GenerateLayersFile(GeneratorExecutionContext context, string groupName, string groupKey, Dictionary<string, string> layerData)
+    private void GenerateLayersFile(GeneratorExecutionContext context, string godotName, string cSharpName, int maxValue, Dictionary<string, string> layerData)
     {
         var enumMembers = new List<(string name, int value)>();
 
-        for (var i = 0; i < 32; i++)
+        for (var i = 0; i < maxValue; i++)
         {
-            var hasName = layerData.TryGetValue($"{groupKey}/layer_{i+1}", out var layerName);
+            var hasName = layerData.TryGetValue($"{godotName}/layer_{i+1}", out var layerName);
 
             if (hasName || GenerateUnnamedValues)
             {
@@ -64,14 +62,14 @@ public class GodotLayerEnumGenerator : ISourceGenerator
               namespace GodotLib.ProjectConstants;
 
               [Flags]
-              public enum {{groupName}} : uint
+              public enum {{cSharpName}} : uint
               {
                   {{layers}}
-                  All = uint.MaxValue
+                  All = {{1 << maxValue}}
               }
               """;
 
-        context.AddSource($"{groupName}.generated.cs", text);
+        context.AddSource($"{cSharpName}.generated.cs", text);
     }
 
     private static string FormatEnumEntry((string name, int value) layer)

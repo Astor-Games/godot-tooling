@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GodotLib.Utils;
+namespace GodotLib.Util;
 
 public static class CollectionUtils
 {

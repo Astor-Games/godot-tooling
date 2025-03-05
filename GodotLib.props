@@ -18,6 +18,10 @@
     <ItemGroup>
         <!-- Ensure .uid and .import files are visible in the solution --> 
         <!-- <None> is used for non-compilable, non-copyable files that are not part of the build output --> 
+        <None Include="**/*.tscn" />
+        <None Include="**/*.gd" />
+        <None Include="**/*.godot" />
+        <None Include="**/*.cfg" />
         <None Include="**/*.import" />
         <None Include="**/*.uid" />
 
