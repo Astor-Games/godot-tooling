@@ -5,7 +5,10 @@ namespace GodotLib.Input;
 
 public partial class InputButton : Node
 {
-    public event Action<ButtonState> StateChanged;
+    [Signal] public delegate void PressedEventHandler();
+        
+    [Signal] public delegate void ReleasedEventHandler();
+
     public ButtonState State { get; private set; }
     
     private readonly StringName name;
@@ -17,21 +20,18 @@ public partial class InputButton : Node
     
     public override void _Process(double delta)
     {
-        var previousState = State;
+        if (Godot.Input.IsActionJustPressed(name))
+        {
+            State = ButtonState.Pressed;
+            EmitSignalPressed();
+            return;
+        }
         
         if (Godot.Input.IsActionJustReleased(name))
         {
             State = ButtonState.Released;
-        }
-
-        if (Godot.Input.IsActionPressed(name))
-        {
-            State = ButtonState.Pressed;
-        }
-
-        if (State != previousState)
-        {
-            StateChanged?.Invoke(State);
+            EmitSignalReleased();
+            return;
         }
     }
 }
