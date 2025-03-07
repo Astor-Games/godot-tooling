@@ -15,13 +15,22 @@ public partial class DebugTools : Node
         config.Load(DebugCfgPath);
     }
 
-    public override void _ExitTree()
+    public override void _Notification(int notification)
+    {
+        if (notification == NotificationWMCloseRequest || notification == NotificationExitTree )
+        {
+            SaveConfig();
+        }
+    }
+
+    private void SaveConfig()
     {
         config.Save(DebugCfgPath);
     }
 
-    public void AddDebugShortcut(Action action, Key keycode, KeyModifierMask keyModifiers = 0)
+    protected void AddDebugShortcut(Action action, Key keycode, KeyModifierMask keyModifiers = 0)
     {
+        // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
         var keycodeWithModifiers = keycode | (Key)keyModifiers;
         actions.Add(keycodeWithModifiers, action);
     }
@@ -45,5 +54,6 @@ public partial class DebugTools : Node
     protected void SaveConfig<[MustBeVariant]T>(string key, T value)
     {
         config.SetValue("Debug", key, Variant.From(value));   
+        SaveConfig();
     }
 }

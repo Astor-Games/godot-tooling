@@ -4,6 +4,8 @@ namespace GodotLib.Input;
 
 public partial class InputToggleButton : Node
 {
+    [Signal] public delegate void StateChangedEventHandler(bool active);
+    
     public bool Active { get; private set; }
     
     private readonly StringName name;
@@ -18,6 +20,7 @@ public partial class InputToggleButton : Node
         if (Godot.Input.IsActionJustPressed(name))
         {
             Active = !Active;
+            EmitSignalStateChanged(Active);
         }
     }
 }
