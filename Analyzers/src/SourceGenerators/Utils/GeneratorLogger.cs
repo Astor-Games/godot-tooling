@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -40,16 +41,19 @@ public static class GeneratorLogger
         isEnabledByDefault: true
     );
 
+    [Conditional("GENERATOR_DEBUG")]
     public static void Log(this GeneratorExecutionContext context, string message, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
     {
         Log(context, message, filePath, lineNumber, warnDescriptor);
     }
     
+    [Conditional("GENERATOR_DEBUG")]
     public static void LogWarning(this GeneratorExecutionContext context, string message, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
     {
         Log(context, message, filePath, lineNumber, warnDescriptor);
     }
     
+    [Conditional("GENERATOR_DEBUG")]
     public static void LogError(this GeneratorExecutionContext context, string message, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
     {
         Log(context, message, filePath, lineNumber, errorDescriptor);
