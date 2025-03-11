@@ -4,7 +4,7 @@ using GodotLib.ProjectConstants;
 
 namespace GodotLib.Util;
 
-public static class PhysicsUtils
+public static class PhysicsUtils3D
 {
     public static PhysicsDirectSpaceState3D DefaultSpaceState => spaceState ??= ((SceneTree)Engine.GetMainLoop()).Root.GetWorld3D().DirectSpaceState;
     private static PhysicsDirectSpaceState3D spaceState;
@@ -27,7 +27,9 @@ public static class PhysicsUtils
     {
         var query = PhysicsRayQueryParameters3D.Create(from, to, mask);
         query.CollideWithAreas = collideWithAreas;
-        return new RaycastResult(DefaultSpaceState.IntersectRay(query));
+        var result = new RaycastResult(DefaultSpaceState.IntersectRay(query));
+        DebugDraw3D.DrawLine(from, to, result.IsHit ? Colors.Green : Colors.Red);
+        return result;
     }
 }
 

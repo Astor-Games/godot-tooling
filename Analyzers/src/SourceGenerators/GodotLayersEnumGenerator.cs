@@ -55,7 +55,8 @@ public class GodotLayerEnumGenerator : ISourceGenerator
         }
         
         var layers = string.Join("\n\t", enumMembers.Select(FormatEnumEntry));
-
+        var maxValueBits = maxValue == 32 ? uint.MaxValue : (1u << maxValue) - 1;
+        
         var text =
             $$"""
               using System;
@@ -66,8 +67,8 @@ public class GodotLayerEnumGenerator : ISourceGenerator
               {
                   {{layers}}
                   
-                  ///Max allowed value
-                  All = {{1u << (maxValue -1) }}
+                  ///Max value
+                  All = {{maxValueBits}}
               }
               """;
 
