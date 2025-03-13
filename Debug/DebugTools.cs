@@ -12,6 +12,7 @@ public partial class DebugTools : Node
 
     public override void _Ready()
     {
+        ProcessMode = ProcessModeEnum.Always;
         config.Load(DebugCfgPath);
     }
 
