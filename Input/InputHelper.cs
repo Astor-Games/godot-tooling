@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using Godot;
 using GodotLib.Util;
 
 namespace GodotLib.Input;
