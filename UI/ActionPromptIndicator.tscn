@@ -5,12 +5,12 @@
 [ext_resource type="Script" uid="uid://bucw334qijodu" path="res://addons/input_prompts/action_prompt/action_prompt.gd" id="2_47lvu"]
 [ext_resource type="Script" uid="uid://dxldn5hhxo7mp" path="res://tools/UI/ActionPromptIndicator.cs" id="2_qemqy"]
 
-[sub_resource type="InputEventKey" id="InputEventKey_qemqy"]
+[sub_resource type="InputEventKey" id="InputEventKey_vxgi8"]
 device = -1
 physical_keycode = 69
 unicode = 101
 
-[sub_resource type="InputEventJoypadButton" id="InputEventJoypadButton_ou6mo"]
+[sub_resource type="InputEventJoypadButton" id="InputEventJoypadButton_lvr04"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_11koe"]
 font_size = 30
@@ -26,7 +26,7 @@ stretch_mode = 5
 script = ExtResource("2_47lvu")
 action = "interact"
 icon = 0
-events = Array[InputEvent]([SubResource("InputEventKey_qemqy"), SubResource("InputEventJoypadButton_ou6mo")])
+events = Array[InputEvent]([SubResource("InputEventKey_vxgi8"), SubResource("InputEventJoypadButton_lvr04")])
 
 [node name="OnlyOnScreen" parent="Content" index="1"]
 BeVisible = true

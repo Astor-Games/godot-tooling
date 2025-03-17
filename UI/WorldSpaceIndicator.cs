@@ -5,7 +5,7 @@ using static GodotLib.UI.WorldSpaceIndicator.OffScreenBehavior;
 
 namespace GodotLib.UI;
 
-[GlobalClass, Icon("res://assets/editor/icons/indicator.svg")]
+[GlobalClass, Icon("res://tools/Editor/Icons/indicator.svg")]
 public partial class WorldSpaceIndicator : Control, Resettable
 {
     private const float ArrowOffset = Tau / 4; // 90 degreess;
@@ -21,6 +21,7 @@ public partial class WorldSpaceIndicator : Control, Resettable
     [Export] protected bool StartEnabled = true;
     [Export] private float arrowRadius = 65.0f;
     
+    public bool IsOnScreen { get; private set; }
     public bool Enabled;
     
     private CollisionShape2D debugShape;
@@ -59,12 +60,15 @@ public partial class WorldSpaceIndicator : Control, Resettable
         // Case 1: The object is within bounds, show normally
         if (dot < 0 && viewportRect.DistanceTo(screenPos) < -arrowRadius) 
         {
+            IsOnScreen = true;
             content.BeVisible = true;
             onlyOnScreenContent.BeVisible = true;
             arrow.BeVisible = false;
             Position = screenPos - PivotOffset;
             return;   
         }
+        
+        IsOnScreen = false;
         
         // Case 2: Camera is facing away from object, show directional arrow
         if (WhenOffScreen == ShowDirectionalArrow && dot <= 0.98)
