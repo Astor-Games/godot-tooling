@@ -11,21 +11,22 @@ public static class PhysicsUtils3D
 
 
      /// Use global coordinates, not local to node
-     public static RaycastResult Raycast(Vector3 origin, Vector3 direction, PhysicsLayers3D mask = PhysicsLayers3D.All, bool collideWithAreas = false)
+     public static RaycastResult Raycast(Vector3 origin, Vector3 direction, PhysicsLayers3D mask = PhysicsLayers3D.All, bool collideWithAreas = false, bool hitFromInside = false)
      {
-         return RaycastTo(origin, origin + direction, (uint)mask, collideWithAreas);
+         return RaycastTo(origin, origin + direction, (uint)mask, collideWithAreas, hitFromInside);
      }
     
     /// Use global coordinates, not local to node
-    public static RaycastResult RaycastTo(Vector3 from, Vector3 to, PhysicsLayers3D mask = PhysicsLayers3D.All, bool collideWithAreas = false)
+    public static RaycastResult RaycastTo(Vector3 from, Vector3 to, PhysicsLayers3D mask = PhysicsLayers3D.All, bool collideWithAreas = false, bool hitFromInside = false)
     {
-        return RaycastTo(from, to, (uint)mask, collideWithAreas);
+        return RaycastTo(from, to, (uint)mask, collideWithAreas, hitFromInside);
     }
 
     /// Use global coordinates, not local to node
-    private static RaycastResult RaycastTo(Vector3 from, Vector3 to, uint mask, bool collideWithAreas)
+    private static RaycastResult RaycastTo(Vector3 from, Vector3 to, uint mask, bool collideWithAreas, bool hitFromInside)
     {
         var query = PhysicsRayQueryParameters3D.Create(from, to, mask);
+        query.HitFromInside = hitFromInside;
         query.CollideWithAreas = collideWithAreas;
         var result = new RaycastResult(DefaultSpaceState.IntersectRay(query));
         DebugDraw3D.DrawLine(from, to, result.IsHit ? Colors.Green : Colors.Red);
