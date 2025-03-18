@@ -3,7 +3,7 @@
   "profiles": {
     "DebugRoslynAnalyzers": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "../../Turtles.csproj"
+      "targetProject": "../../../Turtles.csproj"
     }
   }
 }

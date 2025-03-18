@@ -1,9 +1,9 @@
 [gd_scene load_steps=8 format=3 uid="uid://cm4osuubqcieo"]
 
-[ext_resource type="PackedScene" uid="uid://ckneaeyhqjlnm" path="res://tools/UI/WorldSpaceIndicator.tscn" id="1_woivn"]
+[ext_resource type="PackedScene" uid="uid://ckneaeyhqjlnm" path="res://addons/godot_lib/UI/WorldSpaceIndicator.tscn" id="1_woivn"]
 [ext_resource type="Texture2D" uid="uid://ii56ok10ulew" path="res://addons/input_prompts/icons/default/xbox/xbox_button_color_a.png" id="2_11koe"]
 [ext_resource type="Script" uid="uid://bucw334qijodu" path="res://addons/input_prompts/action_prompt/action_prompt.gd" id="2_47lvu"]
-[ext_resource type="Script" uid="uid://dxldn5hhxo7mp" path="res://tools/UI/ActionPromptIndicator.cs" id="2_qemqy"]
+[ext_resource type="Script" uid="uid://dxldn5hhxo7mp" path="res://addons/godot_lib/UI/ActionPromptIndicator.cs" id="2_qemqy"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_vxgi8"]
 device = -1

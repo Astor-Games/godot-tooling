@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://ckneaeyhqjlnm"]
 
-[ext_resource type="Script" uid="uid://dqcgpu6dq1bxo" path="res://tools/UI/WorldSpaceIndicator.cs" id="1_nwo8p"]
-[ext_resource type="Script" uid="uid://b1lu4ffykux5o" path="res://tools/UI/Fader.cs" id="3_ccf5h"]
-[ext_resource type="Texture2D" uid="uid://cr341rb65nq83" path="res://tools/UI/icons/indicator.svg" id="3_nwo8p"]
-[ext_resource type="Texture2D" uid="uid://ky0se75lybq5" path="res://tools/UI/icons/arrow.png" id="5_gu02v"]
+[ext_resource type="Script" uid="uid://dqcgpu6dq1bxo" path="res://addons/godot_lib/UI/WorldSpaceIndicator.cs" id="1_nwo8p"]
+[ext_resource type="Script" uid="uid://b1lu4ffykux5o" path="res://addons/godot_lib/UI/Fader.cs" id="3_ccf5h"]
+[ext_resource type="Texture2D" uid="uid://cr341rb65nq83" path="res://addons/godot_lib/UI/icons/indicator.svg" id="3_nwo8p"]
+[ext_resource type="Texture2D" uid="uid://ky0se75lybq5" path="res://addons/godot_lib/UI/icons/arrow.png" id="5_gu02v"]
 
 [node name="WorldSpaceIndicator" type="Control"]
 layout_mode = 3

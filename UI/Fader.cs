@@ -1,6 +1,6 @@
 namespace GodotLib.UI;
 
-[GlobalClass, Icon("res://tools/Editor/Icons/circle_dashed.svg")]
+[GlobalClass, Icon("res://addons/godot_lib/Editor/Icons/circle_dashed.svg")]
 public partial class Fader : Control
 {
     [Signal]

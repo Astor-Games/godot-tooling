@@ -1,19 +1,36 @@
-using System;
-using System.Collections.Generic;
-using Godot;
+using Godot.Collections;
 
 namespace GodotLib.Debug;
 
 public partial class DebugTools : Node
 {
+    public const string QuickLoadScenesKey = "godot_lib/quick_load/scene_paths";
+    
     private const string DebugCfgPath = "user://debug.cfg";
-    private readonly Dictionary<Key, Action> actions = new();
+    private readonly System.Collections.Generic.Dictionary<Key, Action> actions = new();
     private ConfigFile config = new();
-
+    private KeyModifierMask quickLoadModifiers = KeyModifierMask.MaskAlt;
+    
     public override void _Ready()
     {
         ProcessMode = ProcessModeEnum.Always;
         config.Load(DebugCfgPath);
+
+        var scenePaths = ProjectSettings.GetSetting(QuickLoadScenesKey).As<Array<string>>();
+        if (scenePaths == null) return;
+        
+        for (var i = 0; i < Mathf.Min(scenePaths.Count, 9); i++)
+        {
+            var scene = scenePaths[i];
+            AddDebugShortcut(() => QuickLoad(scene), Key.Key1 + i, quickLoadModifiers);
+        }
+    }
+
+    private void QuickLoad(string scenePath)
+    {
+        GetTree().UnloadCurrentScene();
+        var result = GetTree().ChangeSceneToFile(scenePath);
+        Print($"Loading scene {scenePath}...{result}");
     }
 
     public override void _Notification(int notification)
@@ -41,6 +58,7 @@ public partial class DebugTools : Node
         if (evt is not InputEventKey eventKey || eventKey.Pressed) return;
 
         var keycodeWithModifiers = eventKey.GetKeycodeWithModifiers();
+        
         if (!actions.TryGetValue(keycodeWithModifiers, out var action)) return;
         
         action?.Invoke();

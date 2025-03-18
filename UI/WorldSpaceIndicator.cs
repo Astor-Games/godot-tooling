@@ -5,7 +5,7 @@ using static GodotLib.UI.WorldSpaceIndicator.OffScreenBehavior;
 
 namespace GodotLib.UI;
 
-[GlobalClass, Icon("res://tools/Editor/Icons/indicator.svg")]
+[GlobalClass, Icon("res://addons/godot_lib/Editor/Icons/indicator.svg")]
 public partial class WorldSpaceIndicator : Control, Resettable
 {
     private const float ArrowOffset = Tau / 4; // 90 degreess;
