@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using static GodotLib.Debug.Assertions;
 
 namespace GodotLib.Pooling;
 
@@ -10,6 +11,7 @@ public class NodePool<T> where T : Node, Resettable
 
     public NodePool(PackedScene scene, Node parent, int preloadCount = 0)
     {
+        AssertNotNull(scene);
         this.scene = scene;
         this.parent = parent;
         Preload(preloadCount);

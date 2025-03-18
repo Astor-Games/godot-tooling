@@ -1,6 +1,6 @@
-using Godot;
 using Godot.Collections;
 using GodotLib.ProjectConstants;
+using static GodotLib.Debug.Assertions;
 
 namespace GodotLib.Util;
 
@@ -25,6 +25,8 @@ public static class PhysicsUtils3D
     /// Use global coordinates, not local to node
     private static RaycastResult RaycastTo(Vector3 from, Vector3 to, uint mask, bool collideWithAreas, bool hitFromInside)
     {
+        Assert(!from.IsEqualApprox(to), "Raycast distance is too small");
+        
         var query = PhysicsRayQueryParameters3D.Create(from, to, mask);
         query.HitFromInside = hitFromInside;
         query.CollideWithAreas = collideWithAreas;
@@ -34,7 +36,7 @@ public static class PhysicsUtils3D
     }
 }
 
-public struct RaycastResult
+public record struct RaycastResult
 {
     private readonly Dictionary dictionary;
 

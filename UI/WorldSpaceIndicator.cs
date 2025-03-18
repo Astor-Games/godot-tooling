@@ -8,29 +8,68 @@ namespace GodotLib.UI;
 [GlobalClass, Icon("res://addons/godot_lib/Editor/Icons/indicator.svg")]
 public partial class WorldSpaceIndicator : Control, Resettable
 {
-    private const float ArrowOffset = Tau / 4; // 90 degreess;
+    private const float ArrowOffset = Tau / 4; // 90 degrees;
 
     public enum OffScreenBehavior
     {
         Hide,
         ShowDirectionalArrow
     }
+    
+    [Export] public string Text
+    {
+        get => __text;
+        set
+        {
+            __text = value;
+            if (label != null) label.Text = value;
+        }
+    }
 
     [Export] public Node3D Target;
     [Export] public OffScreenBehavior WhenOffScreen = OffScreenBehavior.Hide;
     [Export] protected bool StartEnabled = true;
     [Export] private float arrowRadius = 65.0f;
+   
     
+    private float minimumDistance, minDistSquared;
+    private float maximumDistance, maxDistSquared;
+
     public bool IsOnScreen { get; private set; }
+
+    [Export] public float MinimumDistance
+    {
+        get => minimumDistance;
+        set
+        {
+            minimumDistance = value;
+            minDistSquared = MinimumDistance * MinimumDistance;
+        }
+    }
+
+    [Export] public float MaximumDistance
+    {
+        get => maximumDistance;
+        set
+        {
+            maximumDistance = value;
+            maxDistSquared = MaximumDistance > MinimumDistance ? MaximumDistance * MaximumDistance : float.MaxValue;
+        }
+    }
+
     public bool Enabled;
     
     private CollisionShape2D debugShape;
     private Fader arrow, content, onlyOnScreenContent;
+    
+    private Label label;
+    private string __text;
 
     public override void _Ready()
     {
         content = GetNode<Fader>("%Content");
         onlyOnScreenContent = GetNode<Fader>("%Content/OnlyOnScreen");
+        label = GetNode<Label>("%Content/OnlyOnScreen/Label");
         arrow = GetNode<Fader>("%DirectionArrow");
         Reset();
         
@@ -47,17 +86,28 @@ public partial class WorldSpaceIndicator : Control, Resettable
             return;
         }
         
-        var viewportRect = GetViewportRect();
         var currentCamera = GetViewport().GetCamera3D();
+        var cameraPos = currentCamera.GlobalPosition;
+        var targetPos = Target.GlobalPosition;
+        var distance = targetPos.DistanceSquaredTo(cameraPos);
         
-        var cameraPos = currentCamera.GlobalTransform.Origin;
-        var camToObj = cameraPos - Target.GlobalPosition;
+        // Case 1: The object is out of the visible range, hide it
+        
+        if (distance < minDistSquared || distance > maxDistSquared)
+        {
+            content.BeVisible = false;
+            arrow.BeVisible = false;
+            return;
+        }
+        
+        var viewportRect = GetViewportRect();
+        var camToObj = cameraPos - targetPos;
         var camForward = currentCamera.GlobalTransform.Forward(); 
         var dot = camToObj.Normalized().Dot(camForward);
 
-        var screenPos = currentCamera.UnprojectPosition(Target.GlobalPosition);
+        var screenPos = currentCamera.UnprojectPosition(targetPos);
         
-        // Case 1: The object is within bounds, show normally
+        // Case 2: The object is in range and within screen bounds, show normally
         if (dot < 0 && viewportRect.DistanceTo(screenPos) < -arrowRadius) 
         {
             IsOnScreen = true;
@@ -70,10 +120,10 @@ public partial class WorldSpaceIndicator : Control, Resettable
         
         IsOnScreen = false;
         
-        // Case 2: Camera is facing away from object, show directional arrow
+        // Case 3: Camera is facing away from object, show directional arrow
         if (WhenOffScreen == ShowDirectionalArrow && dot <= 0.98)
         {
-            var localPos = currentCamera.ToLocal(Target.GlobalPosition);
+            var localPos = currentCamera.ToLocal(targetPos);
             localPos.Z = currentCamera.Near + 0.05f;
             localPos.X *= 100;
             localPos.Y *= 100;
@@ -88,7 +138,7 @@ public partial class WorldSpaceIndicator : Control, Resettable
             return;
         }
         
-        //Case 3: The indicator is set to Hide or the angle is so extreme that math breaks
+        //Case 4: The indicator is set to Hide or the angle is so extreme that math breaks
         content.BeVisible = false;
         arrow.BeVisible = false;
     }
@@ -145,5 +195,10 @@ public partial class WorldSpaceIndicator : Control, Resettable
         arrow.Visible = false;
         
         Enabled = false;
+    }
+
+    public override void _EnterTree()
+    {
+        Text = __text; // In case it was set before _ready
     }
 }

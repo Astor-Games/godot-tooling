@@ -20,6 +20,17 @@ public static class NodeUtils
         
         return node.FindChildren("", nameof(Node), recursive).OfType<T>();
     }
+
+    public static T GetAncestor<T>(this Node node)
+    {
+        var parent = node.GetParent();
+        while (parent != null)
+        {
+            if (parent is T pt) return pt;
+            parent = parent.GetParent();
+        }
+        return default;
+    }
     
     public static void SetCullMaskValue(this Camera3D camera, RenderLayers3D layer, bool value)
     {

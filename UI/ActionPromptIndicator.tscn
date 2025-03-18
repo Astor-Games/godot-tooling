@@ -1,24 +1,20 @@
-[gd_scene load_steps=8 format=3 uid="uid://cm4osuubqcieo"]
+[gd_scene load_steps=7 format=3 uid="uid://cm4osuubqcieo"]
 
 [ext_resource type="PackedScene" uid="uid://ckneaeyhqjlnm" path="res://addons/godot_lib/UI/WorldSpaceIndicator.tscn" id="1_woivn"]
 [ext_resource type="Texture2D" uid="uid://ii56ok10ulew" path="res://addons/input_prompts/icons/default/xbox/xbox_button_color_a.png" id="2_11koe"]
 [ext_resource type="Script" uid="uid://bucw334qijodu" path="res://addons/input_prompts/action_prompt/action_prompt.gd" id="2_47lvu"]
 [ext_resource type="Script" uid="uid://dxldn5hhxo7mp" path="res://addons/godot_lib/UI/ActionPromptIndicator.cs" id="2_qemqy"]
 
-[sub_resource type="InputEventKey" id="InputEventKey_vxgi8"]
+[sub_resource type="InputEventKey" id="InputEventKey_mrtcy"]
 device = -1
 physical_keycode = 69
 unicode = 101
 
-[sub_resource type="InputEventJoypadButton" id="InputEventJoypadButton_lvr04"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_11koe"]
-font_size = 30
+[sub_resource type="InputEventJoypadButton" id="InputEventJoypadButton_bfphu"]
 
 [node name="WorldSpaceIndicator" instance=ExtResource("1_woivn")]
 script = ExtResource("2_qemqy")
 InputAction = &"interact"
-Prompt = "Interact"
 
 [node name="Texture" parent="Content" index="0"]
 texture = ExtResource("2_11koe")
@@ -26,25 +22,7 @@ stretch_mode = 5
 script = ExtResource("2_47lvu")
 action = "interact"
 icon = 0
-events = Array[InputEvent]([SubResource("InputEventKey_vxgi8"), SubResource("InputEventJoypadButton_lvr04")])
+events = Array[InputEvent]([SubResource("InputEventKey_mrtcy"), SubResource("InputEventJoypadButton_bfphu")])
 
 [node name="OnlyOnScreen" parent="Content" index="1"]
 BeVisible = true
-
-[node name="Label" type="Label" parent="Content/OnlyOnScreen" index="0"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -37.0
-offset_top = 13.0
-offset_right = 77.0
-offset_bottom = 55.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "Interact"
-label_settings = SubResource("LabelSettings_11koe")
-horizontal_alignment = 1
-vertical_alignment = 1

@@ -2,7 +2,7 @@ namespace GodotLib.Util;
 
 public static class LogUtils
 {
-    public static LoggingCategories EnabledCategories = LoggingCategories.CharacterInteraction;
+    public static LoggingCategories EnabledCategories = LoggingCategories.CharacterInteraction | LoggingCategories.CharacterState;
     
     public static void PrintCategory(string text, LoggingCategories category)
     {

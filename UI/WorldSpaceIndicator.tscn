@@ -1,9 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://ckneaeyhqjlnm"]
+[gd_scene load_steps=6 format=3 uid="uid://ckneaeyhqjlnm"]
 
 [ext_resource type="Script" uid="uid://dqcgpu6dq1bxo" path="res://addons/godot_lib/UI/WorldSpaceIndicator.cs" id="1_nwo8p"]
 [ext_resource type="Script" uid="uid://b1lu4ffykux5o" path="res://addons/godot_lib/UI/Fader.cs" id="3_ccf5h"]
 [ext_resource type="Texture2D" uid="uid://cr341rb65nq83" path="res://addons/godot_lib/UI/icons/indicator.svg" id="3_nwo8p"]
 [ext_resource type="Texture2D" uid="uid://ky0se75lybq5" path="res://addons/godot_lib/UI/icons/arrow.png" id="5_gu02v"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_3xasn"]
+font_size = 30
 
 [node name="WorldSpaceIndicator" type="Control"]
 layout_mode = 3
@@ -48,6 +51,24 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("3_ccf5h")
 metadata/_custom_type_script = "uid://b1lu4ffykux5o"
+
+[node name="Label" type="Label" parent="Content/OnlyOnScreen"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -37.0
+offset_top = 13.0
+offset_right = 77.0
+offset_bottom = 55.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Interact"
+label_settings = SubResource("LabelSettings_3xasn")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="DirectionArrow" type="Control" parent="."]
 unique_name_in_owner = true
