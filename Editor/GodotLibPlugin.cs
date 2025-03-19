@@ -1,4 +1,7 @@
-namespace GodotLib.Debug;
+using GodotLib.Debug;
+using GodotLib.Util;
+
+namespace GodotLib;
 using Godot;
 
 #if TOOLS
@@ -6,22 +9,36 @@ using Godot;
 [Tool]
 public partial class GodotLibPlugin : EditorPlugin
 {
-    
     public override void _EnterTree()
     {
+        RegisterLoggingCategories();
         RegisterQuickLoadScenes();
+    }
+
+    private void RegisterLoggingCategories()
+    {
+        if (!ProjectSettings.HasSetting(LogUtils.QuickLoadScenesKey))
+        {
+            ProjectSettings.SetSetting(LogUtils.QuickLoadScenesKey, 0);
+        }
+
+        var categories = string.Join(',', Enum.GetNames<LoggingCategories>());
+        ProjectSettings.AddPropertyInfo(new Godot.Collections.Dictionary
+        {
+            { "name", LogUtils.QuickLoadScenesKey },
+            { "type", (int)Variant.Type.Int },
+            { "hint", (int)PropertyHint.Flags },  // Allows selecting files in the editor
+            { "hint_string", categories }   // Restricts to scene files
+        });
     }
 
     private static void RegisterQuickLoadScenes()
     {
-        // Check if the setting already exists
         if (!ProjectSettings.HasSetting(DebugTools.QuickLoadScenesKey))
         {
-            // Default value: an empty array
             ProjectSettings.SetSetting(DebugTools.QuickLoadScenesKey, new Godot.Collections.Array<string>());
         }
 
-        // Make it visible in the editor (optional)
         ProjectSettings.AddPropertyInfo(new Godot.Collections.Dictionary
         {
             { "name", DebugTools.QuickLoadScenesKey },
