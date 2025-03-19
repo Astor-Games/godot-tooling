@@ -1,3 +1,5 @@
+using Turtles;
+
 namespace GodotLib.UI;
 
 [GlobalClass]
@@ -11,6 +13,11 @@ public partial class ActionPromptIndicator : WorldSpaceIndicator
             inputAction = value;
             promptInput?.Set("action", value);
         }
+    }
+
+    public InteractionKind Interaction
+    {
+        set => Text = Enum.GetName(value);
     }
 
     private StringName inputAction;

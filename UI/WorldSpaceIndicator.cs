@@ -79,7 +79,7 @@ public partial class WorldSpaceIndicator : Control, Resettable
 
     public override void _Process(double delta)
     {
-        if(!Enabled)
+        if(!Enabled || !IsInstanceValid(Target))
         {
             content.BeVisible = false;
             arrow.BeVisible = false;
@@ -88,7 +88,7 @@ public partial class WorldSpaceIndicator : Control, Resettable
         
         var currentCamera = GetViewport().GetCamera3D();
         var cameraPos = currentCamera.GlobalPosition;
-        var targetPos = Target.GlobalPosition;
+        var targetPos = Target.IsPhysicsInterpolated() ? Target.GetGlobalTransformInterpolated().Origin : Target.GlobalPosition;
         var distance = targetPos.DistanceSquaredTo(cameraPos);
         
         // Case 1: The object is out of the visible range, hide it

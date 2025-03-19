@@ -8,11 +8,29 @@ public partial class Fader : Control
     
     private Tween fadeInTween, fadeOutTween;
     
-    [Export] public bool BeVisible;
+    
     [Export] private double fadeDuration = 0.1f;
 
-    public override void _Process(double delta)
+    [Export] public bool BeVisible
     {
+        get => __beVisible;
+        set
+        {
+            __beVisible = value;
+            UpdateVis();
+        }
+    }
+    private bool __beVisible;
+
+    public override void _EnterTree()
+    {
+       UpdateVis();
+    }
+    
+    private void UpdateVis()
+    {
+        if (!IsInsideTree()) return;
+
         if (!Visible && BeVisible)
             FadeIn();
 
