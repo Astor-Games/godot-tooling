@@ -42,7 +42,12 @@ public static class MathExtensions
     {
         value = Mathf.Clamp(value, min, max);
     }
-
+    
+    public static void Clamp(this ref int value, int min, int max) 
+    {
+        value = Mathf.Clamp(value, min, max);
+    }
+    
     public static void MoveToward(this ref float value, float to, float delta)
     {
         value = Mathf.MoveToward(value, to, delta);

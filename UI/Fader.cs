@@ -9,7 +9,7 @@ public partial class Fader : Control
     private Tween fadeInTween, fadeOutTween;
     
     
-    [Export] private double fadeDuration = 0.1f;
+    [Export] public float FadeDuration = 0.1f;
 
     [Export] public bool BeVisible
     {
@@ -46,7 +46,7 @@ public partial class Fader : Control
         if (fadeInTween?.IsRunning() == true) return;
 
         fadeInTween = CreateTween();
-        fadeInTween.TweenProperty(this, "modulate:a", 1, fadeDuration).From(0);
+        fadeInTween.TweenProperty(this, "modulate:a", 1, FadeDuration).From(0);
         fadeInTween.Finished += () => EmitSignalFadeCompleted(true);
     }
 
@@ -56,7 +56,7 @@ public partial class Fader : Control
         if (!Visible || fadeOutTween?.IsRunning() == true) return;
         
         fadeOutTween = CreateTween();
-        fadeOutTween.TweenProperty(this, "modulate:a", 0, fadeDuration).From(1);
+        fadeOutTween.TweenProperty(this, "modulate:a", 0, FadeDuration).From(1);
         fadeOutTween.Finished += () =>
         {
             Visible = false;
