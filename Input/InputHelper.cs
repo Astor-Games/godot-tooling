@@ -26,7 +26,7 @@ public partial class InputHelper : Node
         MouseMotion = Vector2.Zero;
     }
 
-    public override void _Input(InputEvent evt)
+    public override void _UnhandledInput(InputEvent evt)
     {
         switch (evt)
         {
