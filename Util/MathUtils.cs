@@ -29,6 +29,11 @@ public static class MathUtils
     {
         return source.Slerp(target, GetDampWeight(smoothing, dt));
     }
+    
+    public static Basis Sdamp(this Basis source, Basis target, float smoothing, double dt)
+    {
+        return source.Slerp(target, GetDampWeight(smoothing, dt));
+    }
 
     private static float GetDampWeight(float smoothing, double dt)
     {
