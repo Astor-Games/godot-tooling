@@ -31,7 +31,7 @@ public static class PhysicsUtils3D
         query.HitFromInside = hitFromInside;
         query.CollideWithAreas = collideWithAreas;
         var result = new RaycastResult(DefaultSpaceState.IntersectRay(query));
-        DebugDraw3D.DrawLine(from, to, result.IsHit ? Colors.Green : Colors.Red);
+        DebugDraw3D.DrawArrow(from, to, result.IsHit ? Colors.Green : Colors.Red, 0.2f, true);
         return result;
     }
 }
