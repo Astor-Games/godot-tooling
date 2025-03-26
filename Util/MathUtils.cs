@@ -59,10 +59,7 @@ public static class MathUtils
     {
         return radians * 57.29578f;
     }
-}
 
-public static class MathExtensions
-{
     public static void Clamp(this ref float value, float min, float max) 
     {
         value = Mathf.Clamp(value, min, max);
