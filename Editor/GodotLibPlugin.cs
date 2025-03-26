@@ -17,15 +17,16 @@ public partial class GodotLibPlugin : EditorPlugin
 
     private void RegisterLoggingCategories()
     {
-        if (!ProjectSettings.HasSetting(LogUtils.QuickLoadScenesKey))
+        if (!ProjectSettings.HasSetting(QuickLoadScenesKey))
         {
-            ProjectSettings.SetSetting(LogUtils.QuickLoadScenesKey, 0);
+            ProjectSettings.SetSetting(QuickLoadScenesKey, 0);
         }
+        ProjectSettings.SetInitialValue(QuickLoadScenesKey, 0);
 
         var categories = string.Join(',', Enum.GetNames<LoggingCategories>());
         ProjectSettings.AddPropertyInfo(new Godot.Collections.Dictionary
         {
-            { "name", LogUtils.QuickLoadScenesKey },
+            { "name", QuickLoadScenesKey },
             { "type", (int)Variant.Type.Int },
             { "hint", (int)PropertyHint.Flags },  // Allows selecting files in the editor
             { "hint_string", categories }   // Restricts to scene files
@@ -34,18 +35,19 @@ public partial class GodotLibPlugin : EditorPlugin
 
     private static void RegisterQuickLoadScenes()
     {
-        if (!ProjectSettings.HasSetting(DebugTools.QuickLoadScenesKey))
-        {
-            ProjectSettings.SetSetting(DebugTools.QuickLoadScenesKey, new Godot.Collections.Array<string>());
-        }
+       if (!ProjectSettings.HasSetting(DebugTools.QuickLoadScenesKey))
+       {
+           ProjectSettings.SetSetting(DebugTools.QuickLoadScenesKey, new string[1]);
+       }
+       ProjectSettings.SetInitialValue(DebugTools.QuickLoadScenesKey, new string[1]);
 
-        ProjectSettings.AddPropertyInfo(new Godot.Collections.Dictionary
-        {
-            { "name", DebugTools.QuickLoadScenesKey },
-            { "type", (int)Variant.Type.Array },
-            { "hint", (int)PropertyHint.File },  // Allows selecting files in the editor
-            { "hint_string", "*.tscn,*.scn" }   // Restricts to scene files
-        });
+       ProjectSettings.AddPropertyInfo(new Godot.Collections.Dictionary
+       {
+           { "name", DebugTools.QuickLoadScenesKey },
+           { "type", (int)Variant.Type.PackedStringArray },
+           { "hint", (int)PropertyHint.TypeString },
+           { "hint_string", $"{Variant.Type.String:D}/{PropertyHint.File:D}:*.tscn,*.scn" } // Array of strings (file paths). }
+       });
     }
 
     public override void _ExitTree()

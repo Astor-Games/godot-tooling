@@ -39,6 +39,26 @@ public static class MathUtils
     {
         return 1 - Mathf.Pow(smoothing, (float)dt);
     }
+
+    public static Vector3 DegToRad(Vector3 degrees)
+    {
+        return degrees * 0.017453292f;
+    }
+    
+    public static Vector2 DegToRad(Vector2 degrees)
+    {
+        return degrees * 0.017453292f;
+    }
+    
+    public static Vector3 RadToDeg(Vector3 radians)
+    {
+        return radians * 57.29578f;
+    }
+    
+    public static Vector2 RadToDeg(Vector2 radians)
+    {
+        return radians * 57.29578f;
+    }
 }
 
 public static class MathExtensions
