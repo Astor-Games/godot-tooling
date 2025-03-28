@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://c6onjm3wu6yo8"]
+
+[ext_resource type="Script" uid="uid://com38pn25ijk" path="res://addons/godot_lib/UI/Settings/SettingsScreen.cs" id="1_umdj4"]
+[ext_resource type="PackedScene" uid="uid://c8qmo0uq83072" path="res://addons/godot_lib/UI/Settings/SettingsPanel.tscn" id="2_6vcoj"]
+
+[node name="SettingsScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_umdj4")
+settingsPanel = ExtResource("2_6vcoj")
+metadata/_custom_type_script = "uid://com38pn25ijk"
+
+[node name="CategoriesContainer" type="TabContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

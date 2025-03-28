@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8qmo0uq83072"]
+
+[ext_resource type="Script" uid="uid://dc8gfm6hou2ls" path="res://addons/godot_lib/UI/Settings/SettingsPanel.cs" id="1_cn17e"]
+
+[node name="SettingsPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cn17e")
+metadata/_custom_type_script = "uid://dc8gfm6hou2ls"
+
+[node name="Container" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
