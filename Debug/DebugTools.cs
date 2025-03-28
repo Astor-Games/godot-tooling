@@ -28,7 +28,6 @@ public partial class DebugTools : Node
 
     private void QuickLoad(string scenePath)
     {
-        GetTree().UnloadCurrentScene();
         var result = GetTree().ChangeSceneToFile(scenePath);
         Print($"Loading scene {scenePath}...{result}");
     }
