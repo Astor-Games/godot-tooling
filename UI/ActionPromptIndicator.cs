@@ -5,22 +5,17 @@ namespace GodotLib.UI;
 [GlobalClass]
 public partial class ActionPromptIndicator : WorldSpaceIndicator
 {
-    [Export] public StringName InputAction
+    [Export] public StringName Input
     {
-        get => inputAction;
+        get => input;
         set
         {
-            inputAction = value;
+            input = value;
             promptInput?.Set("action", value);
         }
     }
 
-    public InteractionKind Interaction
-    {
-        set => Text = Enum.GetName(value);
-    }
-
-    private StringName inputAction;
+    private StringName input;
     private Control promptInput;
 
     public override void _Ready()
@@ -31,6 +26,6 @@ public partial class ActionPromptIndicator : WorldSpaceIndicator
     
     public override void _EnterTree(){
         base._EnterTree();
-        InputAction = inputAction; // In case it was set before _ready
+        Input = input; // In case it was set before _ready
     }
 }
