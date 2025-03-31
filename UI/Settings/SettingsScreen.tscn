@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c8qmo0uq83072" path="res://addons/godot_lib/UI/Settings/SettingsPanel.tscn" id="2_6vcoj"]
 
 [node name="SettingsScreen" type="Control"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,10 +15,18 @@ script = ExtResource("1_umdj4")
 settingsPanel = ExtResource("2_6vcoj")
 metadata/_custom_type_script = "uid://com38pn25ijk"
 
-[node name="CategoriesContainer" type="TabContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="CategoriesContainer" type="TabContainer" parent="MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2

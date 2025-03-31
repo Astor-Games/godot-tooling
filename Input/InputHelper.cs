@@ -6,6 +6,9 @@ namespace GodotLib.Input;
 [Icon("editor/icons/gamepad.svg")]
 public partial class InputHelper : Node
 {
+    // See https://forum.godotengine.org/t/godot-mouse-sensitivity-calculations/66717
+    public const float MouseToRadiansFactor = 0.000384f;
+    
     public static InputHelper Instance => autoload ??= NodeUtils.GetAutoload<InputHelper>();
     private static InputHelper autoload;
 	

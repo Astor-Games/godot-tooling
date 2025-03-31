@@ -24,7 +24,8 @@ public abstract class Settings
             {
                 if (settings.TryGetValue(key, out var setting))
                 {
-                    setting.Value = settingsFile.GetValue(category, key, setting.DefaultValue);
+                    var value = settingsFile.GetValue(category, key, setting.DefaultValue);
+                    setting.SetValue(value);
                 }
                 else
                 {
@@ -36,9 +37,10 @@ public abstract class Settings
 
     public void Save()
     {
-        foreach (var category in GetCategories())
-        foreach (var setting in GetSettings(category))
+        foreach (var (category, settings) in settingsByCategory)
+        foreach (var setting in settings.Values)
         {
+            setting.NotifyChanges();
             settingsFile.SetValue(category, setting.Key, setting.Value);
         }
 
