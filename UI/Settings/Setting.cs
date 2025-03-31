@@ -41,11 +41,16 @@ public abstract class Setting(StringName key, Variant defaultValue, SettingFlags
         displayOption = default;    
         return false;
     }
+
+    public override string ToString()
+    {
+        return Value.ToString();
+    }
 }
 
 public class Setting<[MustBeVariant]T>(StringName key, T defaultValue, SettingFlags flags = SettingFlags.None, params DisplayOption[] displayOptions) : Setting(key, Variant.From(defaultValue), flags, displayOptions)
 {
-    public event Action<T> OnValueChanged;
+    public event Action<T> ValueChanged;
     
     public new T Value => ValueInternal.As<T>();
 
@@ -57,14 +62,14 @@ public class Setting<[MustBeVariant]T>(StringName key, T defaultValue, SettingFl
         if (Flags.HasFlag(SettingFlags.Delayed))
             changed = true;
         else
-            OnValueChanged?.Invoke(ValueInternal.As<T>());
+            ValueChanged?.Invoke(ValueInternal.As<T>());
     }
 
     public override void NotifyChanges()
     {
         if (changed && Flags.HasFlag(SettingFlags.Delayed))
         {
-            OnValueChanged?.Invoke(ValueInternal.As<T>());
+            ValueChanged?.Invoke(ValueInternal.As<T>());
             changed = false;
         }
     }

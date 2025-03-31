@@ -1,5 +1,4 @@
 using GodotLib.ProjectConstants;
-using Turtles;
 
 namespace GodotLib.UI.Settings;
 
@@ -16,7 +15,19 @@ public partial class SettingsScreen : Control
     public override void _Ready()
     {
         categoriesContainer = GetNode<TabContainer>("%CategoriesContainer");
-        Load(new TurtlesSettings());
+
+        var settings = Settings.Instance;
+        
+        foreach (var category in settings.GetCategories())
+        {
+            var panel = settingsPanel.Instantiate<SettingsPanel>();
+            categoriesContainer.AddChild(panel);
+            panel.Name = category;
+            panel.Load(settings.GetSettings(category));
+        }
+        
+        //categoriesContainer.TabChanged += _ => settings.Save();
+        TreeExiting += settings.Save;
     }
 
     public override void _Input(InputEvent evt)
@@ -41,22 +52,5 @@ public partial class SettingsScreen : Control
         instance.Hide();
         instance.QueueFree();
         instance = null;
-    }
-
-    private void Load(Settings settings)
-    {
-        settings.Load();
-        
-        foreach (var category in settings.GetCategories())
-        {
-            Log($"Loading {category} settings");
-            var panel = settingsPanel.Instantiate<SettingsPanel>();
-            categoriesContainer.AddChild(panel);
-            panel.Name = category;
-            panel.Load(settings.GetSettings(category));
-        }
-        
-        //categoriesContainer.TabChanged += _ => settings.Save();
-        TreeExiting += settings.Save;
     }
 }

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using GodotLib.Util;
 
 namespace GodotLib.UI.Settings;
 
-public abstract class Settings
+public partial class Settings : Node
 {
     private readonly string settingsPath = "user://settings.cfg";
     
@@ -10,11 +11,13 @@ public abstract class Settings
     
     private readonly Dictionary<StringName, Dictionary<StringName, Setting>> settingsByCategory = new();
 
-    protected abstract void Init();
-    
-    public void Load()
+    public static Settings Instance => instance ??= NodeUtils.GetAutoload<Settings>();
+    private static Settings instance;
+
+    public override void _EnterTree()
     {
-        Init();
+        instance = this;
+        RegisterSettings();
         settingsFile.Load(settingsPath);
         
         foreach (var category in settingsFile.GetSections())
@@ -34,6 +37,7 @@ public abstract class Settings
             }
         }
     }
+    partial void RegisterSettings();
 
     public void Save()
     {
@@ -57,7 +61,7 @@ public abstract class Settings
         return settingsByCategory[category].Values;
     }
 
-    protected void Register(StringName category, IEnumerable<Setting> settingList)
+    private void Register(StringName category, IEnumerable<Setting> settingList)
     {
         if (!settingsByCategory.TryGetValue(category, out var settings))
         {
