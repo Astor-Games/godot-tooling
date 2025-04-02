@@ -65,7 +65,8 @@ public static class LogUtils
 public enum LoggingCategories
 {
     General = 1 << 0,
-    CharacterState = 1 << 1,
-    CharacterForces = 1 << 2,
-    CharacterInteraction = 1 << 3,
+    Multiplayer = 1 << 1,
+    CharacterState = 1 << 2,
+    CharacterForces = 1 << 3,
+    CharacterInteraction = 1 << 4,
 }

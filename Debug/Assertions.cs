@@ -17,6 +17,14 @@ public static class Assertions
     
     [Conditional("DEBUG")]
     [DebuggerHidden, StackTraceHidden]
+    [AssertionMethod, ContractAnnotation("obj:notnull => halt")]
+    public static void AssertNull(object obj, string message = null, [CallerArgumentExpression(nameof(obj))]string objName = null)
+    {
+        AssertInternal(obj == null, message ?? $"{objName} was not null.");
+    }
+    
+    [Conditional("DEBUG")]
+    [DebuggerHidden, StackTraceHidden]
     [AssertionMethod]
     public static void AssertEqual(object obj1, object obj2, string message = null, [CallerArgumentExpression(nameof(obj1))]string obj1Name = null, [CallerArgumentExpression(nameof(obj2))]string obj2Name = null)
     {

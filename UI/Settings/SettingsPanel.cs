@@ -12,7 +12,7 @@ public partial class SettingsPanel : Control
         container = GetNode<Container>("%Container");
     }
 
-    public void Load(IEnumerable<Setting> settings)
+    public void Load(IEnumerable<Property> settings)
     {
         foreach (var setting in settings)
         {
@@ -33,20 +33,20 @@ public partial class SettingsPanel : Control
         }
     }
 
-    private Control[] GetControlsFor(Setting setting)
+    private Control[] GetControlsFor(Property property)
     {
-        Log(setting.DefaultValue, setting.Value);
-        switch (setting.Value.VariantType)
+        Log(property.DefaultValue, property.Value);
+        switch (property.Value.VariantType)
         {
             case Variant.Type.Bool:
                 var checkBox = new CheckBox();
-                checkBox.SetPressedNoSignal(setting.Value.As<bool>());
-                checkBox.Toggled += val => setting.SetValue(val);
+                checkBox.SetPressedNoSignal(property.Value.As<bool>());
+                checkBox.Toggled += val => property.SetValue(val);
                 return [checkBox];
             
-            case Variant.Type.Float when setting.DisplayAs(out Range range):
+            case Variant.Type.Float when property.DisplayAs(out Range range):
 
-                var value = setting.Value.As<float>();
+                var value = property.Value.As<float>();
                 var label = new Label();
                 var decimals = range.StepDecimalPlaces;
                 label.Text = value.ToString($"F{decimals}");
@@ -59,20 +59,20 @@ public partial class SettingsPanel : Control
                 slider.ValueChanged += val =>
                 {
                     label.Text = val.ToString($"F{decimals}");
-                    setting.SetValue(val);
+                    property.SetValue(val);
                 };
                 
                 return [slider, label];
             
             case Variant.Type.Float:
                 var spinbox = new SpinBox();
-                spinbox.SetValueNoSignal(setting.Value.As<float>());
-                spinbox.ValueChanged += val => setting.SetValue(val);
+                spinbox.SetValueNoSignal(property.Value.As<float>());
+                spinbox.ValueChanged += val => property.SetValue(val);
                 return [spinbox];
             
             default:
                 label = new Label();
-                label.Text = setting.Value.ToString();
+                label.Text = property.Value.ToString();
                 return [label];
         }
     }

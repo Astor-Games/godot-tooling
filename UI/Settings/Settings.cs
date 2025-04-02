@@ -9,7 +9,7 @@ public partial class Settings : Node
     
     private readonly ConfigFile settingsFile = new();
     
-    private readonly Dictionary<StringName, Dictionary<StringName, Setting>> settingsByCategory = new();
+    private readonly Dictionary<StringName, Dictionary<StringName, Property>> settingsByCategory = new();
 
     public static Settings Instance => instance ??= NodeUtils.GetAutoload<Settings>();
     private static Settings instance;
@@ -56,16 +56,16 @@ public partial class Settings : Node
         return settingsByCategory.Keys;
     }
 
-    public IEnumerable<Setting> GetSettings(StringName category)
+    public IEnumerable<Property> GetSettings(StringName category)
     {
         return settingsByCategory[category].Values;
     }
 
-    private void Register(StringName category, IEnumerable<Setting> settingList)
+    private void Register(StringName category, IEnumerable<Property> settingList)
     {
         if (!settingsByCategory.TryGetValue(category, out var settings))
         {
-            settings = new Dictionary<StringName, Setting>();
+            settings = new Dictionary<StringName, Property>();
             settingsByCategory.Add(category, settings);
         }
 

@@ -1,20 +1,20 @@
 namespace GodotLib.UI.Settings;
 
 [Flags]
-public enum SettingFlags
+public enum PropertyFlags
 {
     None = 1 << 0,
     Delayed = 1 << 1,
 }
 
-public abstract class Setting(StringName key, Variant defaultValue, SettingFlags flags, params DisplayOption[] displayOptions)
+public abstract class Property(StringName key, Variant defaultValue, PropertyFlags flags, params DisplayOption[] displayOptions)
 {
     public readonly StringName Key = key;
 
     public Variant Value => ValueInternal;
 
     public readonly Variant DefaultValue = defaultValue;
-    public readonly SettingFlags Flags = flags;
+    public readonly PropertyFlags Flags = flags;
     public readonly DisplayOption[] DisplayDisplayOptions = displayOptions;
 
     protected Variant ValueInternal = defaultValue;
@@ -48,7 +48,7 @@ public abstract class Setting(StringName key, Variant defaultValue, SettingFlags
     }
 }
 
-public class Setting<[MustBeVariant]T>(StringName key, T defaultValue, SettingFlags flags = SettingFlags.None, params DisplayOption[] displayOptions) : Setting(key, Variant.From(defaultValue), flags, displayOptions)
+public class Property<[MustBeVariant]T>(StringName key, T defaultValue, PropertyFlags flags = PropertyFlags.None, params DisplayOption[] displayOptions) : Property(key, Variant.From(defaultValue), flags, displayOptions)
 {
     public event Action<T> ValueChanged;
     
@@ -59,7 +59,7 @@ public class Setting<[MustBeVariant]T>(StringName key, T defaultValue, SettingFl
     public override void SetValue(Variant newValue)
     {
         base.SetValue(newValue);
-        if (Flags.HasFlag(SettingFlags.Delayed))
+        if (Flags.HasFlag(PropertyFlags.Delayed))
             changed = true;
         else
             ValueChanged?.Invoke(ValueInternal.As<T>());
@@ -67,12 +67,12 @@ public class Setting<[MustBeVariant]T>(StringName key, T defaultValue, SettingFl
 
     public override void NotifyChanges()
     {
-        if (changed && Flags.HasFlag(SettingFlags.Delayed))
+        if (changed && Flags.HasFlag(PropertyFlags.Delayed))
         {
             ValueChanged?.Invoke(ValueInternal.As<T>());
             changed = false;
         }
     }
 
-    public static implicit operator T(Setting<T> setting) => setting.Value;
+    public static implicit operator T(Property<T> property) => property.Value;
 }
