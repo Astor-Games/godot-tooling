@@ -19,16 +19,13 @@
         <!-- Ensure .uid and .import files are visible in the solution --> 
         <!-- <None> is used for non-compilable, non-copyable files that are not part of the build output --> 
         <None Include="**/*.tscn" />
+        <None Include="**/*.tres" />
         <None Include="**/*.gd" />
         <None Include="**/*.godot" />
         <None Include="**/*.cfg" />
         <None Include="**/*.import" />
         <None Include="**/*.uid" />
 
-        <!-- This is just an example, all files that we want visible should be included like this. -->
-        <None Include="**/*.tscn" />
-        <None Include="**/*.png" />
-        
         <!-- Set nesting behavior -->
         <None Update="**/*.import">
             <DependentUpon>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.import$', ''))</DependentUpon>
@@ -36,5 +33,85 @@
         <None Update="**/*.uid">
             <DependentUpon>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.uid$', ''))</DependentUpon>
         </None>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <!-- 3D models -->
+        <None Include="**/*.3dm" />
+        <None Include="**/*.3ds" />
+        <None Include="**/*.blend" />
+        <None Include="**/*.c4d" />
+        <None Include="**/*.collada" />
+        <None Include="**/*.dae" />
+        <None Include="**/*.dxf" />
+        <None Include="**/*.FBX" />
+        <None Include="**/*.fbx" />
+        <None Include="**/*.jas" />
+        <None Include="**/*.lws" />
+        <None Include="**/*.lxo" />
+        <None Include="**/*.ma" />
+        <None Include="**/*.max" />
+        <None Include="**/*.mb" />
+        <None Include="**/*.obj" />
+        <None Include="**/*.ply" />
+        <None Include="**/*.skp" />
+        <None Include="**/*.stl" />
+        <None Include="**/*.ztl" />
+        <None Include="**/*.gltf" />
+        <None Include="**/*.glb" />
+
+        <!-- Audio -->
+        <None Include="**/*.aif" />
+        <None Include="**/*.aiff" />
+        <None Include="**/*.it" />
+        <None Include="**/*.mod" />
+        <None Include="**/*.mp3" />
+        <None Include="**/*.ogg" />
+        <None Include="**/*.s3m" />
+        <None Include="**/*.wav" />
+        <None Include="**/*.xm" />
+
+        <!-- Video -->
+        <None Include="**/*.asf" />
+        <None Include="**/*.avi" />
+        <None Include="**/*.flv" />
+        <None Include="**/*.mov" />
+        <None Include="**/*.mp4" />
+        <None Include="**/*.mpeg" />
+        <None Include="**/*.mpg" />
+        <None Include="**/*.ogv" />
+        <None Include="**/*.wmv" />
+
+        <!-- Images -->
+        <None Include="**/*.bmp" />
+        <None Include="**/*.exr" />
+        <None Include="**/*.gif" />
+        <None Include="**/*.hdr" />
+        <None Include="**/*.iff" />
+        <None Include="**/*.jpeg" />
+        <None Include="**/*.jpg" />
+        <None Include="**/*.pict" />
+        <None Include="**/*.png" />
+        <None Include="**/*.psd" />
+        <None Include="**/*.tga" />
+        <None Include="**/*.tif" />
+        <None Include="**/*.tiff" />
+        <None Include="**/*.webp" />
+
+        <!-- Compressed Archive -->
+        <None Include="**/*.7z" />
+        <None Include="**/*.bz2" />
+        <None Include="**/*.gz" />
+        <None Include="**/*.rar" />
+        <None Include="**/*.tar" />
+        <None Include="**/*.zip" />
+
+        <!-- Fonts -->
+        <None Include="**/*.otf" />
+        <None Include="**/*.ttf" />
+
+        <!-- Documents -->
+        <None Include="**/*.md" />
+        <None Include="**/*.pdf" />
     </ItemGroup>
 </Project>
