@@ -8,7 +8,7 @@ public partial class DebugTools : Node
     
     private const string DebugCfgPath = "user://debug.cfg";
     private readonly System.Collections.Generic.Dictionary<Key, Action> actions = new();
-    private ConfigFile config = new();
+    private static readonly ConfigFile config = new();
     private KeyModifierMask quickLoadModifiers = KeyModifierMask.MaskAlt;
     
     public override void _Ready()
@@ -40,7 +40,7 @@ public partial class DebugTools : Node
         }
     }
 
-    private void SaveConfig()
+    private static void SaveConfig()
     {
         config.Save(DebugCfgPath);
     }
@@ -64,12 +64,12 @@ public partial class DebugTools : Node
         GetViewport().SetInputAsHandled();
     }
 
-    protected T GetSavedConfig<[MustBeVariant] T>(string key, T defaultValue = default)
+    public static T GetSavedConfig<[MustBeVariant] T>(string key, T defaultValue = default)
     {
         return config.GetValue("Debug", key, Variant.From(defaultValue)).As<T>();
     }
 
-    protected void SaveConfig<[MustBeVariant]T>(string key, T value)
+    public static void SaveConfig<[MustBeVariant]T>(string key, T value)
     {
         config.SetValue("Debug", key, Variant.From(value));   
         SaveConfig();

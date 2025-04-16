@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 
 using Arg = System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
@@ -11,6 +12,15 @@ public static class LogUtils
     public static LoggingCategories EnabledCategories;
     private static bool loaded;
     private static readonly StringBuilder sb = new();
+
+    private static readonly List<string> metadata = [];
+    private static string metadataStr = string.Empty;
+
+    public static void AddMetadata(string value)
+    {
+        metadata.Add(value);
+        metadataStr = string.Join(",", metadata);
+    }
     
     public static void Log(string message, LoggingCategories category = General)
     {
@@ -20,10 +30,16 @@ public static class LogUtils
             //Print($"Loading categories: {EnabledCategories}");
             loaded = true;
         }
-        
-        if (EnabledCategories.HasFlag(category))
+
+        if (!EnabledCategories.HasFlag(category)) return;
+
+        if (metadataStr.IsNullOrEmpty())
         {
             Print($"[{category}] {message}");
+        }
+        else
+        {
+            Print($"[{metadataStr}] [{category}] {message}");
         }
     }
 
