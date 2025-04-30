@@ -7,6 +7,8 @@ namespace GodotLib.Debug;
 
 public static class Assertions
 {
+    private static bool initialized, haltRequested;
+    
     [Conditional("DEBUG")]
     [DebuggerHidden, StackTraceHidden]
     [AssertionMethod, ContractAnnotation("obj:null => halt")]
@@ -51,8 +53,31 @@ public static class Assertions
     private static void AssertInternal(bool condition, string message)
     {
         if (condition) return;
-        EngineDebugger.Debug();
-        throw new AssertionException("Assert failed: " + message);
+        
+        // message = "Assertion failed: " + message;
+        //PushError(message);
+        Halt();
+        throw new AssertionException(message);
+    }
+
+    private static void Halt()
+    {
+        if (!initialized)
+        {
+            var sceneTree = (SceneTree)Engine.GetMainLoop();
+            sceneTree.ProcessFrame += HaltDeferred;
+            sceneTree.PhysicsFrame += HaltDeferred;
+            initialized = true;
+        }
+        haltRequested = true;
+        return;
+
+        static void HaltDeferred()
+        {
+            if (!haltRequested) return;
+            EngineDebugger.Debug();
+            haltRequested = false;
+        }
     }
 }
 
