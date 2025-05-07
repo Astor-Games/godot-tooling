@@ -4,7 +4,7 @@ namespace GodotLib.UI;
 public partial class Fader : Control
 {
     [Signal]
-    delegate void FadeCompletedEventHandler(bool visible);
+    public delegate void FadeCompletedEventHandler(bool visible);
     
     private Tween fadeInTween, fadeOutTween;
     

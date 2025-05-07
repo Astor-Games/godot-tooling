@@ -65,6 +65,8 @@ public partial class WorldSpaceIndicator : Control, Resettable
     private Label label;
     private string __text;
 
+    public Fader Content => content;
+
     public override void _Ready()
     {
         content = GetNode<Fader>("%Content");

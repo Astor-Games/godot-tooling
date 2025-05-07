@@ -74,4 +74,26 @@ public static class MathUtils
     {
         value = Mathf.MoveToward(value, to, delta);
     }
+    
+    public static float Remap(float value, float inputMin, float inputMax, float outputMin, float outputMax)
+    {
+        return outputMin + (value - inputMin) * (outputMax - outputMin) / (inputMax - inputMin);
+    }
+    
+    public static Vector2 Remap(Vector2 value, Vector2 inputMin, Vector2 inputMax, Vector2 outputMin, Vector2 outputMax)
+    {
+        return new Vector2(
+            Remap(value.X, inputMin.X, inputMax.X, outputMin.X, outputMax.X),
+            Remap(value.Y, inputMin.Y, inputMax.Y, outputMin.Y, outputMax.Y)
+        );
+    }
+    
+    public static Vector3 Remap(Vector3 value, Vector3 inputMin, Vector3 inputMax, Vector3 outputMin, Vector3 outputMax)
+    {
+        return new Vector3(
+            Remap(value.X, inputMin.X, inputMax.X, outputMin.X, outputMax.X),
+            Remap(value.Y, inputMin.Y, inputMax.Y, outputMin.Y, outputMax.Y),
+            Remap(value.Z, inputMin.Z, inputMax.Z, outputMin.Z, outputMax.Z)
+        );
+    }
 }
