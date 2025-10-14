@@ -1,5 +1,7 @@
+using System.Runtime.CompilerServices;
 using Godot.Collections;
 using GodotLib.ProjectConstants;
+using static System.Runtime.CompilerServices.MethodImplOptions;
 using static GodotLib.Debug.Assertions;
 
 namespace GodotLib.Util;
@@ -33,6 +35,18 @@ public static class PhysicsUtils3D
         var result = new RaycastResult(DefaultSpaceState.IntersectRay(query));
         DebugDraw3D.DrawArrow(from, to, result.IsHit ? Colors.Green : Colors.Red, 0.2f, true);
         return result;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Transform3D BodyGetTransform(Rid body)
+    {
+        return PhysicsServer3D.BodyGetState(body, PhysicsServer3D.BodyState.Transform).AsTransform3D();
+    }
+    
+    [MethodImpl(AggressiveInlining)]
+    public static void BodySetTransform(Rid body, Transform3D transform)
+    {
+        PhysicsServer3D.BodySetState(body, PhysicsServer3D.BodyState.Transform, transform);
     }
 }
 

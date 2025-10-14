@@ -4,6 +4,11 @@ namespace GodotLib.Util;
 
 public static class TypeUtils
 {
+    public static bool IsGenericOf(this Type type, Type openGenericType)
+    {
+        return type.IsGenericType && type.GetGenericTypeDefinition() == openGenericType;
+    }
+    
     public static string GetHumanReadableName(this Type type)
     {
         if (type.IsGenericType)
@@ -46,5 +51,4 @@ public static class TypeUtils
             _ => type.Name
         };
     }
-    
 }
