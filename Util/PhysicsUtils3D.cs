@@ -3,12 +3,13 @@ using Godot.Collections;
 using GodotLib.ProjectConstants;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 using static GodotLib.Debug.Assertions;
+using static GodotLib.Util.EngineUtils;
 
 namespace GodotLib.Util;
 
 public static class PhysicsUtils3D
 {
-    public static PhysicsDirectSpaceState3D DefaultSpaceState => spaceState ??= ((SceneTree)Engine.GetMainLoop()).Root.GetWorld3D().DirectSpaceState;
+    public static PhysicsDirectSpaceState3D DefaultSpaceState => spaceState ??= EngineUtils.SceneTree.Root.GetWorld3D().DirectSpaceState;
     private static PhysicsDirectSpaceState3D spaceState;
 
 
