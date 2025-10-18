@@ -85,4 +85,6 @@ public enum LoggingCategories
     CharacterState = 1 << 2,
     CharacterForces = 1 << 3,
     CharacterInteraction = 1 << 4,
+    EcsCommands = 1 << 5,
+    // After adding a new category here, reload the godot editor to see it in the settings window.
 }
