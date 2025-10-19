@@ -11,6 +11,7 @@ namespace GodotLib;
 /// When writing to a full buffer:
 /// PushBack -> removes this[0] / Front()
 /// PushFront -> removes this[Size-1] / Back()
+/// </summary>
 /// <remarks>Copied from https://github.com/joaoportela/CircularBuffer-CSharp/</remarks>
 public class CircularBuffer<T> : IEnumerable<T>
 {

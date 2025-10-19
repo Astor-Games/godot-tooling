@@ -43,10 +43,19 @@ public static class Assertions
     [Conditional("DEBUG")]
     [DebuggerHidden, StackTraceHidden]
     [AssertionMethod, ContractAnnotation("condition: false => halt")]
-    public static void Assert(bool condition, [CallerArgumentExpression(nameof(condition))] string message = null)
+    public static void AssertTrue(bool condition, [CallerArgumentExpression(nameof(condition))] string message = null)
     {
         AssertInternal(condition, message);
     }
+    
+    [Conditional("DEBUG")]
+    [DebuggerHidden, StackTraceHidden]
+    [AssertionMethod, ContractAnnotation("condition: true => halt")]
+    public static void AssertFalse(bool condition, [CallerArgumentExpression(nameof(condition))] string message = null)
+    {
+        AssertInternal(!condition, message);
+    }
+
 
     [Conditional("DEBUG")]
     [DebuggerHidden, StackTraceHidden]
