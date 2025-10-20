@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using Godot.Collections;
 using GodotLib.ProjectConstants;
 using static System.Runtime.CompilerServices.MethodImplOptions;
+using static Godot.PhysicsServer3D.AreaParameter;
 using static GodotLib.Debug.Assertions;
 using static GodotLib.Util.EngineUtils;
 
@@ -129,6 +130,19 @@ public static class PhysicsUtils3D
 
         PhysicsServer3D.ShapeSetData(shapeRid, data);
         return shapeRid;
+    }
+
+    public static Rid CreateSpace(bool active = false, float? defaultGravity = null, Vector3? defaultGravityVector = null, float? defaultLinearDamp = null, float? defaultAngularDamp = null)
+    {
+        var space  = PhysicsServer3D.SpaceCreate();
+        PhysicsServer3D.SpaceSetActive(space, active);
+        
+        PhysicsServer3D.AreaSetParam(space, Gravity, defaultGravity ?? ProjectSettings.GetSettingWithOverride("physics/3d/default_gravity"));
+        PhysicsServer3D.AreaSetParam(space, GravityVector, defaultGravityVector ?? ProjectSettings.GetSettingWithOverride("physics/3d/default_gravity_vector"));
+        PhysicsServer3D.AreaSetParam(space, LinearDamp, defaultLinearDamp ?? ProjectSettings.GetSettingWithOverride("physics/3d/default_linear_damp"));
+        PhysicsServer3D.AreaSetParam(space, AngularDamp, defaultAngularDamp ?? ProjectSettings.GetSettingWithOverride("physics/3d/default_angular_damp"));
+
+        return space;
     }
 }
 
