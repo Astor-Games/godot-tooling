@@ -60,21 +60,16 @@ public static class MathUtils
         return radians * 57.29578f;
     }
 
-    public static void Clamp(this ref float value, float min, float max) 
+    public static float Clamped(this float value, float min, float max) 
     {
-        value = Mathf.Clamp(value, min, max);
+        return Mathf.Clamp(value, min, max);
     }
     
-    public static void Clamp(this ref int value, int min, int max) 
+    public static int Clamped(this int value, int min, int max) 
     {
-        value = Mathf.Clamp(value, min, max);
+        return Mathf.Clamp(value, min, max);
     }
-    
-    public static void MoveToward(this ref float value, float to, float delta)
-    {
-        value = Mathf.MoveToward(value, to, delta);
-    }
-    
+
     public static float Remap(float value, float inputMin, float inputMax, float outputMin, float outputMax)
     {
         return outputMin + (value - inputMin) * (outputMax - outputMin) / (inputMax - inputMin);

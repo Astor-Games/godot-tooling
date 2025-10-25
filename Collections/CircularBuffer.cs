@@ -39,7 +39,7 @@ public class CircularBuffer<T> : IEnumerable<T>
     /// <param name='capacity'>
     /// Buffer capacity. Must be positive.
     /// </param>
-    public CircularBuffer(int capacity) : this(capacity, Array.Empty<T>())
+    public CircularBuffer(int capacity) : this(capacity, [])
     {
     }
 
