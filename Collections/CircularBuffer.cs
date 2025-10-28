@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Turtles;
 
 namespace GodotLib;
 
@@ -144,7 +145,7 @@ public class CircularBuffer<T> : IEnumerable<T>
             {
                 throw new IndexOutOfRangeException($"Cannot access index {index}. Buffer size is {_size}");
             }
-            int actualIndex = InternalIndex(index);
+            var actualIndex = InternalIndex(index);
             return _buffer[actualIndex];
         }
         set
@@ -157,7 +158,7 @@ public class CircularBuffer<T> : IEnumerable<T>
             {
                 throw new IndexOutOfRangeException($"Cannot access index {index}. Buffer size is {_size}");
             }
-            int actualIndex = InternalIndex(index);
+            var actualIndex = InternalIndex(index);
             _buffer[actualIndex] = value;
         }
     }
@@ -209,6 +210,45 @@ public class CircularBuffer<T> : IEnumerable<T>
             ++_size;
         }
     }
+    
+     /// <summary>
+     /// Shifts all the elements of the buffer forward, without adding any new elements.
+     /// When the buffer is full, the element at Front()/this[0] will now be at the back of the buffer.
+     /// If the buffer is not full, the new Front() will have the default value of <typeparamref name="T"/>
+     /// </summary>
+     public void ShiftForward()
+     {
+         if (IsFull)
+         {
+             Increment(ref _end);
+             _start = _end;
+         }
+         else
+         {
+             Increment(ref _end);
+             ++_size;
+         }
+     }
+     
+     /// <summary>
+     /// Shifts all the elements of the buffer backward, without adding any new elements.
+     /// When the buffer is full, the element at Back()/this[Size-1] will now be at the front of the buffer.
+     /// If the buffer is not full, the new Back() will have the default value of <typeparamref name="T"/>
+     /// </summary>
+     public void ShiftBackward()
+     {
+         if (IsFull)
+        {
+            Decrement(ref _start);
+            _end = _start;
+        }
+        else
+        {
+            Decrement(ref _start);
+            ++_size;
+        }
+     }
+
 
     /// <summary>
     /// Removes the element at the back of the buffer. Decreasing the 
@@ -233,11 +273,24 @@ public class CircularBuffer<T> : IEnumerable<T>
         Increment(ref _start);
         --_size;
     }
+    
+    /// <summary>
+    /// Fills the buffer using the provided factory. Overwrites all existing items, and does not change any indices.
+    /// <param name="elementFactory"></param>
+    /// </summary>
+
+    public void Fill(Func<T> elementFactory)
+    {
+        for (var i = 0; i < _buffer.Length; i++)
+        {
+            _buffer[i] = elementFactory();
+        }
+        _size = _buffer.Length;
+    }
 
     /// <summary>
     /// Clears the contents of the array. Size = 0, Capacity is unchanged.
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
     public void Clear()
     {
         // to clear we just reset everything.
@@ -255,10 +308,12 @@ public class CircularBuffer<T> : IEnumerable<T>
     /// <returns>A new array with a copy of the buffer contents.</returns>
     public T[] ToArray()
     {
-        T[] newArray = new T[Size];
-        int newArrayOffset = 0;
+        if (IsEmpty) return Array.Empty<T>();
+        
+        var newArray = new T[Size];
+        var newArrayOffset = 0;
         var segments = ToArraySegments();
-        foreach (ArraySegment<T> segment in segments)
+        foreach (var segment in segments)
         {
             Array.Copy(segment.Array, segment.Offset, newArray, newArrayOffset, segment.Count);
             newArrayOffset += segment.Count;
@@ -278,7 +333,7 @@ public class CircularBuffer<T> : IEnumerable<T>
     /// <remarks>Segments may be empty.</remarks>
     /// </summary>
     /// <returns>An IList with 2 segments corresponding to the buffer content.</returns>
-    public IList<ArraySegment<T>> ToArraySegments()
+    private IList<ArraySegment<T>> ToArraySegments()
     {
         return new [] { ArrayOne(), ArrayTwo() };
     }
@@ -291,9 +346,9 @@ public class CircularBuffer<T> : IEnumerable<T>
     public IEnumerator<T> GetEnumerator()
     {
         var segments = ToArraySegments();
-        foreach (ArraySegment<T> segment in segments)
+        foreach (var segment in segments)
         {
-            for (int i = 0; i < segment.Count; i++)
+            for (var i = 0; i < segment.Count; i++)
             {
                 yield return segment.Array[segment.Offset + i];
             }
