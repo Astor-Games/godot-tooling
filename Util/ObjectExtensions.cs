@@ -11,4 +11,19 @@ public static class ObjectExtensions
     {
         return obj.GetMeta(name, Variant.From(defaultValue)).As<T>();
     }
+
+    public static StringName GetClassOrScript(this GodotObject obj)
+    {
+        if (obj == null) return null;
+        
+        if (obj.GetScript().AsGodotObject() is Script script)
+        {
+            var globalName = script.GetGlobalName();
+            if (!globalName.IsEmpty)
+            {
+                return globalName;
+            }
+        }
+        return obj.GetClass();
+    }
 }
