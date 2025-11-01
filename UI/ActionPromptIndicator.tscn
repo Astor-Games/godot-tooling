@@ -14,7 +14,7 @@ unicode = 101
 
 [node name="WorldSpaceIndicator" instance=ExtResource("1_woivn")]
 script = ExtResource("2_qemqy")
-InputAction = &"interact"
+Input = null
 
 [node name="Texture" parent="Content" index="0"]
 texture = ExtResource("2_11koe")
