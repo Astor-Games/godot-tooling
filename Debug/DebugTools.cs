@@ -1,4 +1,5 @@
 using Godot.Collections;
+using GodotLib.UI.Settings;
 
 namespace GodotLib.Debug;
 
@@ -10,7 +11,8 @@ public partial class DebugTools : Node
     private readonly System.Collections.Generic.Dictionary<Key, Action> actions = new();
     private static readonly ConfigFile config = new();
     private KeyModifierMask quickLoadModifiers = KeyModifierMask.MaskAlt;
-    
+    private Console console;
+
     public override void _Ready()
     {
         ProcessMode = ProcessModeEnum.Always;
@@ -24,12 +26,22 @@ public partial class DebugTools : Node
             var scene = scenePaths[i];
             AddDebugShortcut(() => QuickLoad(scene), Key.Key1 + i, quickLoadModifiers);
         }
+
+        console = Load<PackedScene>("uid://s8wks02elbo6").Instantiate<Console>();
+        console.Visible = false;
+        AddChild(console);
+        AddDebugShortcut(ToggleConsole, Key.Quoteleft);
     }
 
     private void QuickLoad(string scenePath)
     {
         var result = GetTree().ChangeSceneToFile(scenePath);
         Print($"Loading scene {scenePath}...{result}");
+    }
+
+    private void ToggleConsole()
+    {
+        console.Toggle();
     }
 
     public override void _Notification(int notification)
@@ -50,6 +62,11 @@ public partial class DebugTools : Node
         // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
         var keycodeWithModifiers = keycode | (Key)keyModifiers;
         actions.Add(keycodeWithModifiers, action);
+    }
+
+    protected void AddConsoleCommand(Delegate action, string name, string description = "")
+    {
+        console.AddCommand(name, action, description);
     }
 
     public override void _ShortcutInput(InputEvent evt)

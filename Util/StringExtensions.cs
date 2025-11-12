@@ -4,6 +4,7 @@ namespace GodotLib.Util;
 
 public static class StringExtensions
 {
+    [ContractAnnotation("value:null => true")]
     public static bool IsNullOrEmpty([CanBeNull] this string value)
     {
         return string.IsNullOrEmpty(value);

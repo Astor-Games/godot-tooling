@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://s8wks02elbo6"]
+
+[ext_resource type="Script" uid="uid://b3vaar2rr60k" path="res://addons/godot_lib/Debug/Console.cs" id="1_w2f1x"]
+
+[node name="Console" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_w2f1x")
+metadata/_custom_type_script = "uid://b3vaar2rr60k"
+
+[node name="SplitContainer" type="SplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offset = 1000
+vertical = true
+drag_area_highlight_in_editor = true
+
+[node name="Control" type="Control" parent="SplitContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="SplitContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SplitContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Output" type="RichTextLabel" parent="SplitContainer/Panel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Input" type="LineEdit" parent="SplitContainer/Panel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
