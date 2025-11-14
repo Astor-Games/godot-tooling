@@ -1,13 +1,23 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Arch.LowLevel;
 using static System.Runtime.CompilerServices.MethodImplOptions;
+using Array = System.Array;
 
 namespace GodotLib.Util;
 
 public static class CollectionExtensions
 {
     [MethodImpl(AggressiveInlining)]
-    public static void RemoveUnorderedAt<T>(this IList<T> list, int index)
+    public static void RemoveUnorderedAt<T>(this List<T> list, int index)
+    {
+        var lastIndex = list.Count - 1;
+        list[index] = list[lastIndex];
+        list.RemoveAt(lastIndex);
+    }
+    
+    [MethodImpl(AggressiveInlining)]
+    public static void RemoveUnorderedAt<T>(ref this UnsafeList<T> list, int index) where T : unmanaged
     {
         var lastIndex = list.Count - 1;
         list[index] = list[lastIndex];
