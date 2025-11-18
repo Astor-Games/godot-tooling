@@ -1,12 +1,14 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using GodotLib.Debug;
+using Turtles;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 
 namespace GodotLib;
 
 // TODO template this to deduplicate code
 
-public struct InlineList4<T>() where T : struct
+public struct InlineList4<T>() where T : unmanaged
 {
     private const int Length = 4;
     private InnerBuffer buffer = new();
@@ -73,7 +75,7 @@ public struct InlineList4<T>() where T : struct
     }
 }
 
-public struct InlineList8<T>() where T : struct
+public struct InlineList8<T>() where T : unmanaged
 {
     private const int Length = 8;
     private InnerBuffer buffer = new();
@@ -103,6 +105,14 @@ public struct InlineList8<T>() where T : struct
         
         buffer[count++] = element;
     }
+    
+    public void Fill(ReadOnlySpan<T> source)
+    {
+        var n = source.Length;
+        Assertions.AssertTrue(n <= Length);
+        source[..n].CopyTo(buffer);
+        count = (byte)n;
+    }
 
     public void Clear()
     {
@@ -121,7 +131,7 @@ public struct InlineList8<T>() where T : struct
     }
     
     [MethodImpl(AggressiveInlining)]
-    public Span<T> ToSpan()
+    private Span<T> ToSpan()
     {
         return MemoryMarshal.CreateSpan(ref buffer[0], count);
     }
@@ -140,7 +150,7 @@ public struct InlineList8<T>() where T : struct
     }
 }
 
-public struct InlineList16<T>() where T : struct
+public struct InlineList16<T>() where T : unmanaged
 {
     private const int Length = 16;
     private InnerBuffer buffer = new();
@@ -170,6 +180,14 @@ public struct InlineList16<T>() where T : struct
         
         buffer[count++] = element;
     }
+    
+    public void Fill(ReadOnlySpan<T> source)
+    {
+        var n = source.Length;
+        Assertions.AssertTrue(n <= Length);
+        source[..n].CopyTo(buffer);
+        count = (byte)n;
+    }
 
     public void Clear()
     {
@@ -188,7 +206,7 @@ public struct InlineList16<T>() where T : struct
     }
     
     [MethodImpl(AggressiveInlining)]
-    public Span<T> ToSpan()
+    private Span<T> ToSpan()
     {
         return MemoryMarshal.CreateSpan(ref buffer[0], count);
     }
@@ -207,7 +225,7 @@ public struct InlineList16<T>() where T : struct
     }
 }
 
-public struct InlineList32<T>() where T : struct
+public struct InlineList32<T>() where T : unmanaged
 {
     private const int Length = 32;
     private InnerBuffer buffer = new();
@@ -237,6 +255,14 @@ public struct InlineList32<T>() where T : struct
         
         buffer[count++] = element;
     }
+    
+    public void Fill(ReadOnlySpan<T> source)
+    {
+        var n = source.Length;
+        Assertions.AssertTrue(n <= Length);
+        source[..n].CopyTo(buffer);
+        count = (byte)n;
+    }
 
     public void Clear()
     {
@@ -255,7 +281,7 @@ public struct InlineList32<T>() where T : struct
     }
     
     [MethodImpl(AggressiveInlining)]
-    public Span<T> ToSpan()
+    private Span<T> ToSpan()
     {
         return MemoryMarshal.CreateSpan(ref buffer[0], count);
     }

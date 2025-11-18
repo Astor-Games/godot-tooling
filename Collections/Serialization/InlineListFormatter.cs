@@ -4,7 +4,7 @@ using System;
 using MessagePack;
 using MessagePack.Formatters;
 
-public sealed class InlineList4Formatter<T> : IMessagePackFormatter<InlineList4<T>> where T : struct
+public sealed class InlineList4Formatter<T> : IMessagePackFormatter<InlineList4<T>> where T : unmanaged
 {
     private const int MaxLength = 4;
     
@@ -50,7 +50,7 @@ public sealed class InlineList4Formatter<T> : IMessagePackFormatter<InlineList4<
     }
 }
 
-public sealed class InlineList8Formatter<T> : IMessagePackFormatter<InlineList8<T>> where T : struct
+public sealed class InlineList8Formatter<T> : IMessagePackFormatter<InlineList8<T>> where T : unmanaged
 {
     private const int MaxLength = 8;
     
@@ -96,7 +96,7 @@ public sealed class InlineList8Formatter<T> : IMessagePackFormatter<InlineList8<
     }
 }
 
-public sealed class InlineList16Formatter<T> : IMessagePackFormatter<InlineList16<T>> where T : struct
+public sealed class InlineList16Formatter<T> : IMessagePackFormatter<InlineList16<T>> where T : unmanaged
 {
     private const int MaxLength = 16;
     
@@ -142,7 +142,7 @@ public sealed class InlineList16Formatter<T> : IMessagePackFormatter<InlineList1
     }
 }
 
-public sealed class InlineList32Formatter<T> : IMessagePackFormatter<InlineList32<T>> where T : struct
+public sealed class InlineList32Formatter<T> : IMessagePackFormatter<InlineList32<T>> where T : unmanaged
 {
     private const int MaxLength = 32;
     
