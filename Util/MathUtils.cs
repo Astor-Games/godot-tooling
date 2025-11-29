@@ -1,9 +1,22 @@
 using Godot;
+using JetBrains.Annotations;
 
 namespace GodotLib.Util;
 
 public static class MathUtils
 {
+    [Pure]
+    public static bool IsZeroApprox(this float value)
+    {
+        return Mathf.IsZeroApprox(value);
+    }
+    
+    [Pure]
+    public static bool IsEqualApprox(this float value, float other)
+    {
+        return Mathf.IsEqualApprox(value, other);
+    }
+    
     //https://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/
     public static float Damp(float source, float target, float smoothing, double dt)
     {
