@@ -5,13 +5,11 @@ namespace GodotLib.Util;
 
 public static class MathUtils
 {
-    [Pure]
     public static bool IsZeroApprox(this float value)
     {
         return Mathf.IsZeroApprox(value);
     }
     
-    [Pure]
     public static bool IsEqualApprox(this float value, float other)
     {
         return Mathf.IsEqualApprox(value, other);
@@ -103,5 +101,22 @@ public static class MathUtils
             Remap(value.Y, inputMin.Y, inputMax.Y, outputMin.Y, outputMax.Y),
             Remap(value.Z, inputMin.Z, inputMax.Z, outputMin.Z, outputMax.Z)
         );
+    }
+
+    public static int NextPowerOfTwo(int x)
+    {
+        if (x <= 1)
+        {
+            return 1;
+        }
+
+        x--;
+        x |= x >> 1;
+        x |= x >> 2;
+        x |= x >> 4;
+        x |= x >> 8;
+        x |= x >> 16;
+        x++;
+        return x;
     }
 }
