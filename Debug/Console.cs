@@ -111,7 +111,7 @@ public partial class Console : Control
         }
         catch (Exception e)
         {
-            PrintError(e.ToString());
+            PrintError(e.Message);
         }
     }
     
@@ -282,27 +282,11 @@ public partial class Console : Control
         output.Newline();
         output.AddText($"Usage: {commandName} ");
         output.PushItalics();
-
-        var isOptionals = false;
-        foreach (var parameter in command.Parameters)
-        {
-            if (parameter.HasDefaultValue && !isOptionals)
-            {
-                output.AddText("[");
-                isOptionals = true;
-            } else if (!parameter.HasDefaultValue && isOptionals)
-            {
-                output.AddText("]");
-                isOptionals = false;
-            }
-            
-            output.AddText($"{parameter.Name?.ToSnakeCase()}");
-        }
-
-        if (isOptionals)
-        {
-            output.AddText("]");
-        }
+        
+        var requiredParams = string.Join(" ", command.Parameters.Where(p => !p.HasDefaultValue).Select(p => p.Name!.ToSnakeCase()));
+        var optionalParams = string.Join(" ", command.Parameters.Where(p => p.HasDefaultValue).Select(p => p.Name!.ToSnakeCase()));
+        var paramLine = optionalParams.IsNullOrEmpty() ? requiredParams : $"{requiredParams} [{optionalParams}]";
+        output.AddText(paramLine);
         output.PopAll();
     }
 
