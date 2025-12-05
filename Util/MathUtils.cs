@@ -5,16 +5,93 @@ namespace GodotLib.Util;
 
 public static class MathUtils
 {
-    public static bool IsZeroApprox(this float value)
+    extension(float value)
     {
-        return Mathf.IsZeroApprox(value);
+        public bool IsZeroApprox()
+        {
+            return Mathf.IsZeroApprox(value);
+        }
+
+        public bool IsEqualApprox(float other)
+        {
+            return Mathf.IsEqualApprox(value, other);
+        }
+
+        public float Clamped(float min, float max) 
+        {
+            return Mathf.Clamp(value, min, max);
+        }
     }
     
-    public static bool IsEqualApprox(this float value, float other)
+    extension(int value)
     {
-        return Mathf.IsEqualApprox(value, other);
+        public int Clamped(int min, int max) 
+        {
+            return Mathf.Clamp(value, min, max);
+        }
     }
     
+    extension(Vector2 value)
+    {
+        public Vector2 Damp(Vector2 target, float smoothing, double dt)
+        {
+            return value.Lerp(target, GetDampWeight(smoothing, dt));
+        }
+    }
+    
+    extension(Vector3 value)
+    {
+        public Vector3 Damp(Vector3 target, float smoothing, double dt)
+        {
+            return value.Lerp(target, GetDampWeight(smoothing, dt));
+        }
+
+        public Vector3 Sdamp(Vector3 target, float smoothing, double dt)
+        {
+            return value.Slerp(target, GetDampWeight(smoothing, dt));
+        }
+
+        public Vector3 SlerpSafe(Vector3 b, float t)
+        {
+            const float epsilon = Mathf.Epsilon;
+
+            var lenA = value.Length();
+            var lenB = b.Length();
+
+            if (lenA < epsilon && lenB < epsilon)
+                return Vector3.Zero; // no direction at all
+
+            if (lenA < epsilon)
+                return b.Normalized();
+
+            if (lenB < epsilon)
+                return value.Normalized();
+
+            // Normalize for angle test
+            value /= lenA;
+            b /= lenB;
+
+            var dot = value.Dot(b);
+
+            // Near-colinear or opposite — slerp becomes unstable
+            if (Mathf.Abs(dot) > 0.9995f)
+            {
+                // Fall back to normalized linear interpolation
+                return (value + (b - value) * t).Normalized();
+            }
+
+            return value.Slerp(b, t);
+        }
+    }
+    
+    extension(Basis value)
+    {
+        public Basis Sdamp(Basis target, float smoothing, double dt)
+        {
+            return value.Slerp(target, GetDampWeight(smoothing, dt));
+        }
+    }
+
     //https://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/
     public static float Damp(float source, float target, float smoothing, double dt)
     {
@@ -24,26 +101,6 @@ public static class MathUtils
     public static float DampAngle(float source, float target, float smoothing, double dt)
     {
         return Mathf.LerpAngle(source, target, GetDampWeight(smoothing, dt));
-    }
-
-    public static Vector2 Damp(this Vector2 source, Vector2 target, float smoothing, double dt)
-    {
-        return source.Lerp(target, GetDampWeight(smoothing, dt));
-    }
-
-    public static Vector3 Damp(this Vector3 source, Vector3 target, float smoothing, double dt)
-    {
-        return source.Lerp(target, GetDampWeight(smoothing, dt));
-    }
-    
-    public static Vector3 Sdamp(this Vector3 source, Vector3 target, float smoothing, double dt)
-    {
-        return source.Slerp(target, GetDampWeight(smoothing, dt));
-    }
-    
-    public static Basis Sdamp(this Basis source, Basis target, float smoothing, double dt)
-    {
-        return source.Slerp(target, GetDampWeight(smoothing, dt));
     }
 
     private static float GetDampWeight(float smoothing, double dt)
@@ -70,17 +127,7 @@ public static class MathUtils
     {
         return radians * 57.29578f;
     }
-
-    public static float Clamped(this float value, float min, float max) 
-    {
-        return Mathf.Clamp(value, min, max);
-    }
     
-    public static int Clamped(this int value, int min, int max) 
-    {
-        return Mathf.Clamp(value, min, max);
-    }
-
     public static float Remap(float value, float inputMin, float inputMax, float outputMin, float outputMax)
     {
         return outputMin + (value - inputMin) * (outputMax - outputMin) / (inputMax - inputMin);
