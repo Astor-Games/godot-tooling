@@ -1,10 +1,8 @@
 using System.Runtime.CompilerServices;
-using Godot.Collections;
 using GodotLib.ProjectConstants;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 using static Godot.PhysicsServer3D.AreaParameter;
 using static GodotLib.Debug.Assertions;
-using static GodotLib.Util.EngineUtils;
 
 namespace GodotLib.Util;
 
@@ -17,25 +15,37 @@ public static class PhysicsUtils3D
      /// Use global coordinates, not local to node
      public static RaycastResult Raycast(Vector3 origin, Vector3 direction, PhysicsLayers3D mask = PhysicsLayers3D.All, bool collideWithAreas = false, bool hitFromInside = false)
      {
-         return RaycastTo(origin, origin + direction, (uint)mask, collideWithAreas, hitFromInside);
+         return RaycastTo(DefaultSpaceState, origin, origin + direction, (uint)mask, collideWithAreas, hitFromInside);
      }
     
     /// Use global coordinates, not local to node
     public static RaycastResult RaycastTo(Vector3 from, Vector3 to, PhysicsLayers3D mask = PhysicsLayers3D.All, bool collideWithAreas = false, bool hitFromInside = false)
     {
-        return RaycastTo(from, to, (uint)mask, collideWithAreas, hitFromInside);
+        return RaycastTo(DefaultSpaceState, from, to, (uint)mask, collideWithAreas, hitFromInside);
+    }
+    
+    /// Use global coordinates, not local to node
+    public static RaycastResult Raycast(PhysicsDirectSpaceState3D space, Vector3 origin, Vector3 direction, PhysicsLayers3D mask = PhysicsLayers3D.All, bool collideWithAreas = false, bool hitFromInside = false)
+    {
+        return RaycastTo(space, origin, origin + direction, (uint)mask, collideWithAreas, hitFromInside);
+    }
+    
+    /// Use global coordinates, not local to node
+    public static RaycastResult RaycastTo(PhysicsDirectSpaceState3D space,Vector3 from, Vector3 to, PhysicsLayers3D mask = PhysicsLayers3D.All, bool collideWithAreas = false, bool hitFromInside = false)
+    {
+        return RaycastTo(space, from, to, (uint)mask, collideWithAreas, hitFromInside);
     }
 
     /// Use global coordinates, not local to node
-    private static RaycastResult RaycastTo(Vector3 from, Vector3 to, uint mask, bool collideWithAreas, bool hitFromInside)
+    private static RaycastResult RaycastTo(PhysicsDirectSpaceState3D space, Vector3 from, Vector3 to, uint mask, bool collideWithAreas, bool hitFromInside)
     {
         AssertTrue(!from.IsEqualApprox(to), "Raycast distance is too small");
 
         var query = PhysicsRayQueryParameters3D.Create(from, to, mask);
         query.HitFromInside = hitFromInside;
         query.CollideWithAreas = collideWithAreas;
-        var result = new RaycastResult(DefaultSpaceState.IntersectRay(query));
-        DebugDraw3D.DrawArrow(from, to, result.IsHit ? Colors.Green : Colors.Red, 0.2f, true);
+        var result = new RaycastResult(space.IntersectRay(query));
+        DebugDraw3D.DrawArrow(from, to, result.IsHit ? Colors.LimeGreen : Colors.Red, 0.2f, true);
         return result;
     }
 
@@ -143,31 +153,5 @@ public static class PhysicsUtils3D
         PhysicsServer3D.AreaSetParam(space, AngularDamp, defaultAngularDamp ?? ProjectSettings.GetSettingWithOverride("physics/3d/default_angular_damp"));
 
         return space;
-    }
-}
-
-public record struct RaycastResult
-{
-    private readonly Dictionary dictionary;
-
-    public static implicit operator bool(RaycastResult result)
-    {
-        return result.IsHit;
-    }
-    
-    public bool IsHit => isHit ??= dictionary.Count > 0;
-    public Vector3 Position => IsHit ? position ??= (Vector3) dictionary["position"] : Vector3.Zero;
-    public Vector3 Normal => IsHit ? normal ??= (Vector3) dictionary["normal"] : Vector3.Zero;
-    public Node3D Collider => IsHit ? collider ??= (Node3D) dictionary["collider"] : null;
-
-    private bool? isHit = null;
-    private Vector3? position = null;
-    private Vector3? normal = null;
-    private Node3D collider = null;
-
-    // Constructor to initialize the class with data
-    public RaycastResult(Dictionary dictionary)
-    {
-        this.dictionary = dictionary;
     }
 }

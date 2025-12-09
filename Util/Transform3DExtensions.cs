@@ -4,67 +4,37 @@ using Godot;
 
 public static class Transform3DExtensions
 {
-    public static Vector3 Forward(this Transform3D transform)
+    extension(Transform3D transform)
     {
-        return -transform.Basis.Z;
-    }
-    
-    public static Vector3 Back(this Transform3D transform)
-    {
-        return transform.Basis.Z;
-    }
-    
-    public static Vector3 Right(this Transform3D transform)
-    {
-        return transform.Basis.X;
-    }
-    
-    public static Vector3 Left(this Transform3D transform)
-    {
-        return -transform.Basis.X;
-    }
-    
-    public static Vector3 Up(this Transform3D transform)
-    {
-        return transform.Basis.Y;
-    }
-    
-    public static Vector3 Down(this Transform3D transform)
-    {
-        return -transform.Basis.Y;
+        public Vector3 Forward => -transform.Basis.Z;
+
+        public Vector3 Back => transform.Basis.Z;
+
+        public Vector3 Right => transform.Basis.X;
+
+        public Vector3 Left => -transform.Basis.X;
+
+        public Vector3 Up => transform.Basis.Y;
+
+        public Vector3 Down => -transform.Basis.Y;
     }
 }
 
 public static class BasisExtensions
 {
-    public static Vector3 Forward(this Basis basis)
+    extension(Basis basis)
     {
-        return -basis.Z;
-    }
-    
-    public static Vector3 Back(this Basis basis)
-    {
-        return basis.Z;
-    }
-    
-    public static Vector3 Right(this Basis basis)
-    {
-        return basis.X;
-    }
-    
-    public static Vector3 Left(this Basis basis)
-    {
-        return -basis.X;
-    }
-    
-    public static Vector3 Up(this Basis basis)
-    {
-        return basis.Y;
-    }
-    
-    public static Vector3 Down(this Basis basis)
-    {
-        return -basis.Y;
+        public Vector3 Forward => -basis.Z;
+
+        public Vector3 Back => basis.Z;
+
+        public Vector3 Right => basis.X;
+
+        public Vector3 Left => -basis.X;
+
+        public Vector3 Up => basis.Y;
+
+        public Vector3 Down => -basis.Y;
     }
 
     public static Basis FromTangent(Vector3 tangent)

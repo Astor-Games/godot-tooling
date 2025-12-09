@@ -104,7 +104,7 @@ public partial class WorldSpaceIndicator : Control, Resettable
         
         var viewportRect = GetViewportRect();
         var camToObj = cameraPos - targetPos;
-        var camForward = currentCamera.GlobalTransform.Forward(); 
+        var camForward = currentCamera.GlobalTransform.Forward; 
         var dot = camToObj.Normalized().Dot(camForward);
 
         var screenPos = currentCamera.UnprojectPosition(targetPos);
