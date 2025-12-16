@@ -5,11 +5,11 @@ namespace GodotLib.Util;
 
 public static class MemoryUtils
 {
+    
     public static unsafe Span<T> ReadBytesAs<T>(this ReadOnlySequence<byte> seq) where T : unmanaged
     {
-        var count = (int)seq.Length;
-        var ptr = (T*) NativeMemory.Alloc((UIntPtr)count);
-        var dst = new Span<T>(ptr, count / sizeof(T));
+        var count = (int)seq.Length / sizeof(T);
+        var dst = new T[count].AsSpan();
         
         // Single segment (fast path)
         if (seq.IsSingleSegment)

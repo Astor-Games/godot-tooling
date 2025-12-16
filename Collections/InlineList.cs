@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using GodotLib.Debug;
@@ -42,6 +43,23 @@ public struct InlineList4<T>() where T : unmanaged
     public void Clear()
     {
         count = 0;
+    }
+    
+    public bool Remove(in T element)
+    {
+        var removeIdx = -1;
+        for (var i = 0; i < Count; i++)
+        {
+            if (!Equals(buffer[i], element)) continue;
+            removeIdx = i;
+            break;
+        }
+
+        if (removeIdx == -1) return false;
+        
+        buffer[count] = buffer[removeIdx];
+        count--;
+        return true;
     }
     
     public void RemoveAt(int index)
@@ -117,6 +135,23 @@ public struct InlineList8<T>() where T : unmanaged
     public void Clear()
     {
         count = 0;
+    }
+
+    public bool Remove(in T element)
+    {
+        var removeIdx = -1;
+        for (var i = 0; i < Count; i++)
+        {
+            if (!Equals(buffer[i], element)) continue;
+            removeIdx = i;
+            break;
+        }
+
+        if (removeIdx == -1) return false;
+        
+        buffer[count] = buffer[removeIdx];
+        count--;
+        return true;
     }
     
     public void RemoveAt(int index)
@@ -194,6 +229,23 @@ public struct InlineList16<T>() where T : unmanaged
         count = 0;
     }
     
+    public bool Remove(in T element)
+    {
+        var removeIdx = -1;
+        for (var i = 0; i < Count; i++)
+        {
+            if (!Equals(buffer[i], element)) continue;
+            removeIdx = i;
+            break;
+        }
+
+        if (removeIdx == -1) return false;
+        
+        buffer[count] = buffer[removeIdx];
+        count--;
+        return true;
+    }
+    
     public void RemoveAt(int index)
     {
         if (index > count)
@@ -267,6 +319,23 @@ public struct InlineList32<T>() where T : unmanaged
     public void Clear()
     {
         count = 0;
+    }
+    
+    public bool Remove(in T element)
+    {
+        var removeIdx = -1;
+        for (var i = 0; i < Count; i++)
+        {
+            if (!Equals(buffer[i], element)) continue;
+            removeIdx = i;
+            break;
+        }
+
+        if (removeIdx == -1) return false;
+        
+        buffer[count] = buffer[removeIdx];
+        count--;
+        return true;
     }
     
     public void RemoveAt(int index)
