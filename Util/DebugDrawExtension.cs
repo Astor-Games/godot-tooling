@@ -9,10 +9,10 @@ internal static class DebugDrawExtension
             var length = 0.75f * scale;
             DebugDraw3D.DrawArrowRay(transform.Origin, transform.Up, length, Colors.LimeGreen, 0.1f, duration: duration);
             DebugDraw3D.DrawArrowRay(transform.Origin, transform.Right, length, Colors.Red,0.1f, duration: duration);
-            DebugDraw3D.DrawArrowRay(transform.Origin, transform.Forward, length, Colors.DodgerBlue,0.1f,  duration: duration);
+            DebugDraw3D.DrawArrowRay(transform.Origin, transform.Back, length, Colors.DodgerBlue,0.1f,  duration: duration);
         }
 
-        public static void DrawShape(in Transform3D transform, Shape3D shape, Color? color = null, float duration = 0f)
+        public static void DrawShape(Shape3D shape, in Transform3D transform, Color? color = null, float duration = 0f)
         {
             Transform3D scaledTransform;
             switch (shape)
@@ -34,11 +34,15 @@ internal static class DebugDrawExtension
                 
                 case CapsuleShape3D capsuleShape:
                     var radius = capsuleShape.Radius;
-                    var cylinderTransform = transform.ScaledLocal(new Vector3(radius, capsuleShape.Height - 2 * radius, radius));
+
+                    var centerHeight = capsuleShape.Height - 2 * radius;
+                    var a = transform.Origin + (transform.Up * centerHeight / 2f);
+                    var b = transform.Origin - (transform.Up * centerHeight / 2f);
                     
-                    DebugDraw3D.DrawCylinder(cylinderTransform, color, duration);
-                    DebugDraw3D.DrawSphere(transform.TranslatedLocal(Vector3.Up * (capsuleShape.Height - radius)).Origin, radius, color, duration);
-                    DebugDraw3D.DrawSphere(transform.TranslatedLocal(Vector3.Down * (capsuleShape.Height - radius)).Origin, radius, color, duration);
+                    DebugDraw3D.DrawCylinderAb(a, b, capsuleShape.Radius, color, duration);
+                    
+                    DebugDraw3D.DrawSphere(a, radius, color, duration);
+                    DebugDraw3D.DrawSphere(b, radius, color, duration);
                     return;
                 
                 default:
