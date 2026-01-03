@@ -4,14 +4,17 @@ namespace GodotLib.Util;
 
 public static class StringExtensions
 {
-    [ContractAnnotation("value:null => true")]
-    public static bool IsNullOrEmpty([CanBeNull] this string value)
+    extension([CanBeNull] string value)
     {
-        return string.IsNullOrEmpty(value);
-    }
-    
-    public static string OrDefault([CanBeNull] this string value, string defaultValue)
-    {
-        return string.IsNullOrEmpty(value) ? defaultValue : value;
+        [ContractAnnotation("value:null => true")]
+        public bool IsNullOrEmpty()
+        {
+            return string.IsNullOrEmpty(value);
+        }
+
+        public string OrDefault(string defaultValue)
+        {
+            return string.IsNullOrEmpty(value) ? defaultValue : value;
+        }
     }
 }
