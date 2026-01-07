@@ -166,4 +166,16 @@ public static class MathUtils
         x++;
         return x;
     }
+
+    public static int Wrap(int value, int min, int max)
+    {
+        var range = max - min;
+        if (range <= 0) throw new ArgumentException("max must be > min");
+
+        var v = (value - min) % range;
+        if (v < 0)
+            v += range;
+
+        return (v + min);
+    }
 }
