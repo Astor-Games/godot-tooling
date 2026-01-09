@@ -21,6 +21,11 @@ public static class MathUtils
         {
             return Mathf.Clamp(value, min, max);
         }
+        
+        public float Wrapped(float min, float max) 
+        {
+            return Mathf.Wrap(value, min, max);
+        }
     }
     
     extension(int value)
