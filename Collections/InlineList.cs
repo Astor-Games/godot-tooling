@@ -166,7 +166,7 @@ public struct InlineList8<T>() where T : unmanaged
     }
     
     [MethodImpl(AggressiveInlining)]
-    private Span<T> ToSpan()
+    public Span<T> ToSpan()
     {
         return MemoryMarshal.CreateSpan(ref buffer[0], count);
     }
@@ -258,7 +258,7 @@ public struct InlineList16<T>() where T : unmanaged
     }
     
     [MethodImpl(AggressiveInlining)]
-    private Span<T> ToSpan()
+    public Span<T> ToSpan()
     {
         return MemoryMarshal.CreateSpan(ref buffer[0], count);
     }
@@ -350,7 +350,7 @@ public struct InlineList32<T>() where T : unmanaged
     }
     
     [MethodImpl(AggressiveInlining)]
-    private Span<T> ToSpan()
+    public Span<T> ToSpan()
     {
         return MemoryMarshal.CreateSpan(ref buffer[0], count);
     }
