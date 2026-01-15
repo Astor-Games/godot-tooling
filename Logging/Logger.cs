@@ -10,9 +10,8 @@ public class Logger
 {
     public bool Enabled { get; set; } = true;
     public string Name { get; init; }
-    public static readonly Dictionary<string, object> GlobalMetadata = new();
-    public readonly Dictionary<string, object> Metadata = new();
     private readonly StringBuilder sb = new(256);
+    private string prefix = "";
 
     public Logger(string name)
     {
@@ -63,19 +62,10 @@ public class Logger
         sb.Append(name4).Append(": ").Append(var4);
         Print();
     }
-
+    
     private void Print()
     {
-        sb.Append('[').Append(Name).Append("] ");
-        foreach (var (key, value) in GlobalMetadata)
-        {
-            sb.Append('[').Append(key).Append(": ").Append(value).Append("] ");
-        }
-        foreach (var (key, value) in Metadata)
-        {
-            sb.Append('[').Append(key).Append(": ").Append(value).Append("] ");
-        }
-        GD.Print(sb.ToString());
+        GD.Print($"[{Name}] {sb}");
         sb.Clear();
     }
 }
