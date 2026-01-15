@@ -35,7 +35,6 @@ public partial class SettingsPanel : Control
 
     private Control[] GetControlsFor(Property property)
     {
-        Log(property.DefaultValue, property.Value);
         switch (property.Value.VariantType)
         {
             case Variant.Type.Bool:

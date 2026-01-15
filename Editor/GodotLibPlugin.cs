@@ -11,26 +11,7 @@ public partial class GodotLibPlugin : EditorPlugin
 {
     public override void _EnterTree()
     {
-        RegisterLoggingCategories();
         RegisterQuickLoadScenes();
-    }
-
-    private void RegisterLoggingCategories()
-    {
-        if (!ProjectSettings.HasSetting(QuickLoadScenesKey))
-        {
-            ProjectSettings.SetSetting(QuickLoadScenesKey, 0);
-        }
-        ProjectSettings.SetInitialValue(QuickLoadScenesKey, 0);
-
-        var categories = string.Join(',', Enum.GetNames<LoggingCategories>());
-        ProjectSettings.AddPropertyInfo(new Godot.Collections.Dictionary
-        {
-            { "name", QuickLoadScenesKey },
-            { "type", (int)Variant.Type.Int },
-            { "hint", (int)PropertyHint.Flags },  // Allows selecting files in the editor
-            { "hint_string", categories }   // Restricts to scene files
-        });
     }
 
     private static void RegisterQuickLoadScenes()
