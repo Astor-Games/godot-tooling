@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using GodotLib.Util;
 using JetBrains.Annotations;
 using Turtles;
 
@@ -55,38 +56,45 @@ public static class Assertions
     {
         AssertInternal(!condition, message);
     }
-
-
+    
     [Conditional("DEBUG")]
     [DebuggerHidden, StackTraceHidden]
     private static void AssertInternal(bool condition, string message)
     {
         if (condition) return;
-        
-        // message = "Assertion failed: " + message;
-        //PushError(message);
-        Halt();
-        throw new AssertionException(message);
+
+        PushError("Assertion failed: " + message);
+        if (EngineDebugger.IsActive())
+        {
+            EngineDebugger.Debug();
+        }
+        else
+        {
+            OS.Alert(message, "Assertion failed!");
+        }
     }
 
     private static void Halt()
     {
-        if (!initialized)
-        {
-            var sceneTree = (SceneTree)Engine.GetMainLoop();
-            sceneTree.ProcessFrame += HaltDeferred;
-            sceneTree.PhysicsFrame += HaltDeferred;
-            initialized = true;
-        }
-        haltRequested = true;
+        
         return;
-
-        static void HaltDeferred()
-        {
-            if (!haltRequested) return;
-            EngineDebugger.Debug();
-            haltRequested = false;
-        }
+        
+        // if (!initialized)
+        // {
+        //     var sceneTree = (SceneTree)Engine.GetMainLoop();
+        //     sceneTree.ProcessFrame += HaltDeferred;
+        //     sceneTree.PhysicsFrame += HaltDeferred;
+        //     initialized = true;
+        // }
+        // haltRequested = true;
+        // return;
+        //
+        // static void HaltDeferred()
+        // {
+        //     if (!haltRequested) return;
+        //     EngineDebugger.Debug();
+        //     haltRequested = false;
+        // }
     }
 }
 
