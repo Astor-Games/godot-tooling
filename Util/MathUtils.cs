@@ -19,7 +19,7 @@ public static class MathUtils
 
         public float Clamped(float min, float max) 
         {
-            return Mathf.Clamp(value, min, max);
+            return Math.Clamp(value, min, max);
         }
         
         public float Wrapped(float min, float max) 
@@ -28,11 +28,19 @@ public static class MathUtils
         }
     }
     
+    extension(byte value)
+    {
+        public byte Clamped(byte min, byte max) 
+        {
+            return Math.Clamp(value, min, max);
+        }
+    }
+    
     extension(int value)
     {
         public int Clamped(int min, int max) 
         {
-            return Mathf.Clamp(value, min, max);
+            return Math.Clamp(value, min, max);
         }
     }
     
