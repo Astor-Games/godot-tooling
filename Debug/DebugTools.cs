@@ -1,24 +1,27 @@
-using Godot.Collections;
-using GodotLib.UI.Settings;
+using System.Collections.Generic;
 
 namespace GodotLib.Debug;
+
+using GodotStringArray = Godot.Collections.Array<string>;
 
 public partial class DebugTools : Node
 {
     public const string QuickLoadScenesKey = "godot_lib/quick_load/scene_paths";
-    
     private const string DebugCfgPath = "user://debug.cfg";
-    private readonly System.Collections.Generic.Dictionary<Key, Action> actions = new();
+    private const KeyModifierMask quickLoadModifiers = KeyModifierMask.MaskAlt;
+    
+    private static readonly Dictionary<Key, Action> actions = new();
     private static readonly ConfigFile config = new();
-    private KeyModifierMask quickLoadModifiers = KeyModifierMask.MaskAlt;
-    private Console console;
+    private static List<IDebugPanel> registeredPanels = new();
+    private static Console console;
+    private static DebugPanelContainer panelContainer;
 
     public override void _Ready()
     {
         ProcessMode = ProcessModeEnum.Always;
         config.Load(DebugCfgPath);
 
-        var scenePaths = ProjectSettings.GetSetting(QuickLoadScenesKey).As<Array<string>>();
+        var scenePaths = ProjectSettings.GetSetting(QuickLoadScenesKey).As<GodotStringArray>();
         if (scenePaths == null) return;
         
         for (var i = 0; i < Mathf.Min(scenePaths.Count, 9); i++)
@@ -30,18 +33,20 @@ public partial class DebugTools : Node
         console = Load<PackedScene>("uid://s8wks02elbo6").Instantiate<Console>();
         console.Visible = false;
         AddChild(console);
-        AddDebugShortcut(ToggleConsole, Key.Quoteleft);
+        AddDebugShortcut(console.Toggle, Key.Quoteleft);
+        
+        panelContainer = Load<PackedScene>("uid://bay1hwklweai3").Instantiate<DebugPanelContainer>();
+        panelContainer.Visible = false;
+        AddChild(panelContainer);
+        AddDebugShortcut(panelContainer.Toggle, Key.F12);
+        
+        GetParent().ChildEnteredTree += _ => GetParent().MoveChild(this, -1);
     }
 
     private void QuickLoad(string scenePath)
     {
         var result = GetTree().ChangeSceneToFile(scenePath);
         Print($"Loading scene {scenePath}...{result}");
-    }
-
-    private void ToggleConsole()
-    {
-        console.Toggle();
     }
 
     public override void _Notification(int notification)
@@ -81,7 +86,7 @@ public partial class DebugTools : Node
         GetViewport().SetInputAsHandled();
     }
 
-    public static T GetSavedConfig<[MustBeVariant] T>(string key, T defaultValue = default)
+    public static T LoadConfig<[MustBeVariant] T>(string key, T defaultValue = default)
     {
         return config.GetValue("Debug", key, Variant.From(defaultValue)).As<T>();
     }
@@ -90,5 +95,31 @@ public partial class DebugTools : Node
     {
         config.SetValue("Debug", key, Variant.From(value));   
         SaveConfig();
+    }
+    
+    public static void AddDebugPanel(IDebugPanel panel, string name, bool embed = true)
+    {
+        Assertions.AssertTrue(panel is Control);
+        registeredPanels.Add(panel);
+
+        if (embed)
+        {
+            panelContainer.AddTab(panel, name);
+        }
+    }
+
+    public static void EmbedPanel(IDebugPanel panel)
+    {
+        Assertions.AssertTrue(panel is Control);
+    }
+    
+    public static void PopPanel(IDebugPanel panel)
+    {
+        Assertions.AssertTrue(panel is Control);
+    }
+
+    protected void RestoreDebugPanelState()
+    {
+        panelContainer.RestoreState();
     }
 }

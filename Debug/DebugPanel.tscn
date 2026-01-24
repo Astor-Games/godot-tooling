@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://bay1hwklweai3"]
+
+[ext_resource type="Script" uid="uid://bp6ramyeuxcfg" path="res://addons/godot_lib/Debug/DebugPanelContainer.cs" id="1_gkdi6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_64uvm"]
+bg_color = Color(0, 0, 0, 0.627451)
+expand_margin_left = 3.0
+expand_margin_top = 33.0
+expand_margin_right = 3.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ja23a"]
+bg_color = Color(0, 0, 0, 0.627451)
+expand_margin_left = 3.0
+expand_margin_top = 33.0
+expand_margin_right = 3.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dfm41"]
+bg_color = Color(0, 0, 0, 0)
+
+[node name="DebugInfo" type="Window"]
+transparent_bg = true
+handle_input_locally = false
+title = "Debug tools"
+position = Vector2i(808, 36)
+size = Vector2i(300, 650)
+wrap_controls = true
+transparent = true
+mouse_passthrough = true
+maximize_disabled = true
+force_native = true
+min_size = Vector2i(100, 100)
+theme_override_constants/resize_margin = 6
+theme_override_styles/embedded_border = SubResource("StyleBoxFlat_64uvm")
+theme_override_styles/embedded_unfocused_border = SubResource("StyleBoxFlat_ja23a")
+script = ExtResource("1_gkdi6")
+metadata/_custom_type_script = "uid://bp6ramyeuxcfg"
+
+[node name="TabContainer" type="TabContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dfm41")
