@@ -33,6 +33,10 @@ public class FlagsEnumExtensionsGenerator : IIncrementalGenerator
         if (context.SemanticModel.GetDeclaredSymbol(enumDeclaration) is not INamedTypeSymbol enumSymbol)
             return null;
 
+        // Ignore private enums
+        if (enumSymbol.DeclaredAccessibility == Accessibility.Private)
+            return null;
+
         // Check if enum has [Flags] attribute
         var hasFlagsAttribute = enumSymbol.GetAttributes().Any(attr =>
             attr.AttributeClass?.Name is "FlagsAttribute" or "Flags");

@@ -29,7 +29,7 @@ public partial class DebugTools : Node
             var scene = scenePaths[i];
             AddDebugShortcut(() => QuickLoad(scene), Key.Key1 + i, quickLoadModifiers);
         }
-
+        
         console = Load<PackedScene>("uid://s8wks02elbo6").Instantiate<Console>();
         console.Visible = false;
         AddChild(console);

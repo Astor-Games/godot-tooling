@@ -1,47 +1,52 @@
-[gd_scene load_steps=5 format=3 uid="uid://bay1hwklweai3"]
+[gd_scene load_steps=3 format=3 uid="uid://bay1hwklweai3"]
 
 [ext_resource type="Script" uid="uid://bp6ramyeuxcfg" path="res://addons/godot_lib/Debug/DebugPanelContainer.cs" id="1_gkdi6"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_64uvm"]
-bg_color = Color(0, 0, 0, 0.627451)
-expand_margin_left = 3.0
-expand_margin_top = 33.0
-expand_margin_right = 3.0
-expand_margin_bottom = 3.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ja23a"]
-bg_color = Color(0, 0, 0, 0.627451)
-expand_margin_left = 3.0
-expand_margin_top = 33.0
-expand_margin_right = 3.0
-expand_margin_bottom = 3.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dfm41"]
 bg_color = Color(0, 0, 0, 0)
 
-[node name="DebugInfo" type="Window"]
-transparent_bg = true
-handle_input_locally = false
-title = "Debug tools"
-position = Vector2i(808, 36)
-size = Vector2i(300, 650)
-wrap_controls = true
-transparent = true
-mouse_passthrough = true
-maximize_disabled = true
-force_native = true
-min_size = Vector2i(100, 100)
-theme_override_constants/resize_margin = 6
-theme_override_styles/embedded_border = SubResource("StyleBoxFlat_64uvm")
-theme_override_styles/embedded_unfocused_border = SubResource("StyleBoxFlat_ja23a")
+[node name="DebugInfo" type="PanelContainer"]
+physics_interpolation_mode = 1
+offset_left = 100.0
+offset_top = 100.0
+offset_right = 700.0
+offset_bottom = 500.0
+focus_mode = 1
+focus_behavior_recursive = 2
 script = ExtResource("1_gkdi6")
 metadata/_custom_type_script = "uid://bp6ramyeuxcfg"
 
-[node name="TabContainer" type="TabContainer" parent="."]
+[node name="DragMargins" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DragMargins"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="DragMargins/VBoxContainer"]
 unique_name_in_owner = true
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+text = "Debug Tools"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TabContainer" type="TabContainer" parent="DragMargins/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 13
 theme_override_styles/panel = SubResource("StyleBoxFlat_dfm41")
+
+[node name="CloseButton" type="Button" parent="DragMargins"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(31, 31)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+text = "✕"
