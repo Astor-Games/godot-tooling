@@ -1,19 +1,19 @@
 [gd_scene load_steps=3 format=3 uid="uid://bay1hwklweai3"]
 
-[ext_resource type="Script" uid="uid://bp6ramyeuxcfg" path="res://addons/godot_lib/Debug/DebugPanelContainer.cs" id="1_gkdi6"]
+[ext_resource type="Script" uid="uid://bp6ramyeuxcfg" path="res://addons/godot_lib/Debug/DebugPanelContainer.cs" id="1_64uvm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dfm41"]
 bg_color = Color(0, 0, 0, 0)
 
-[node name="DebugInfo" type="PanelContainer"]
-physics_interpolation_mode = 1
+[node name="DebugPanelContainer" type="PanelContainer"]
 offset_left = 100.0
 offset_top = 100.0
 offset_right = 700.0
 offset_bottom = 500.0
 focus_mode = 1
 focus_behavior_recursive = 2
-script = ExtResource("1_gkdi6")
+mouse_filter = 1
+script = ExtResource("1_64uvm")
 metadata/_custom_type_script = "uid://bp6ramyeuxcfg"
 
 [node name="DragMargins" type="MarginContainer" parent="."]
@@ -40,6 +40,7 @@ vertical_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+mouse_behavior_recursive = 2
 theme_override_font_sizes/font_size = 13
 theme_override_styles/panel = SubResource("StyleBoxFlat_dfm41")
 

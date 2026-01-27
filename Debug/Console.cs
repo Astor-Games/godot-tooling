@@ -227,7 +227,7 @@ public partial class Console : Control
         historyIndex = 0;
     }
     
-    public void Toggle()
+    public void ToggleVisibility()
     {
         Visible = !Visible;
         if (Visible)
@@ -235,6 +235,7 @@ public partial class Console : Control
             Godot.Input.MouseMode = Godot.Input.MouseModeEnum.Visible; 
         }
         Clear();
+        input.GrabFocus();
     }
 
     public void Quit()

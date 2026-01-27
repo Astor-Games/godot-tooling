@@ -33,12 +33,12 @@ public partial class DebugTools : Node
         console = Load<PackedScene>("uid://s8wks02elbo6").Instantiate<Console>();
         console.Visible = false;
         AddChild(console);
-        AddDebugShortcut(console.Toggle, Key.Quoteleft);
+        AddDebugShortcut(console.ToggleVisibility, Key.Quoteleft);
         
         panelContainer = Load<PackedScene>("uid://bay1hwklweai3").Instantiate<DebugPanelContainer>();
         panelContainer.Visible = false;
         AddChild(panelContainer);
-        AddDebugShortcut(panelContainer.Toggle, Key.F12);
+        AddDebugShortcut(panelContainer.ToggleVisibility, Key.F12);
         
         GetParent().ChildEnteredTree += _ => GetParent().MoveChild(this, -1);
     }
