@@ -33,7 +33,7 @@ public partial class DebugTools : Node
         console = Load<PackedScene>("uid://s8wks02elbo6").Instantiate<Console>();
         console.Visible = false;
         AddChild(console);
-        AddDebugShortcut(console.ToggleVisibility, Key.Quoteleft);
+        AddDebugShortcut(console.ToggleVisibility, Key.M);
         
         panelContainer = Load<PackedScene>("uid://bay1hwklweai3").Instantiate<DebugPanelContainer>();
         panelContainer.Visible = false;

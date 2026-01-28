@@ -13,9 +13,10 @@ using Convert = System.Convert;
 namespace GodotLib.Debug;
 
 [GlobalClass]
-public partial class Console : Control
+public partial class Console : DockableWindow
 {
-    
+    public override string WindowName => "console";
+
     private class CommandData
     {
         public string Name;
@@ -227,15 +228,14 @@ public partial class Console : Control
         historyIndex = 0;
     }
     
-    public void ToggleVisibility()
+    public override void ToggleVisibility()
     {
-        Visible = !Visible;
+        base.ToggleVisibility();
         if (Visible)
         {
-            Godot.Input.MouseMode = Godot.Input.MouseModeEnum.Visible; 
+            Godot.Input.MouseMode = Godot.Input.MouseModeEnum.Visible;
+            input.GrabFocus();
         }
-        Clear();
-        input.GrabFocus();
     }
 
     public void Quit()

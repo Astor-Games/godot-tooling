@@ -14,7 +14,6 @@ public partial class DockableWindow : PanelContainer
     
     private const int DockSnapDistance = 50;
     private const int ResizeMargin = 8;
-    private readonly Vector2I MinSize = new(200, 100);
     private const int TitleBarHeight = 31;
     private const float DockedSizeProportion = 0.25f;
 
@@ -76,7 +75,7 @@ public partial class DockableWindow : PanelContainer
         if (undockedSize.X == 0) undockedSize = new Vector2I(400, 300);
     }
 
-    public void ToggleVisibility()
+    public virtual void ToggleVisibility()
     {
         Visible = !Visible;
         SaveState();
@@ -279,31 +278,33 @@ public partial class DockableWindow : PanelContainer
 
     private void HandleResize(Vector2 mousePos)
     {
+        var minSize = this.GetCombinedMinimumSize();
+        
         var delta = mousePos - resizeStartMouse;
         var newSize = resizeStartSize;
         var newPos = resizeStartPos;
 
         if (resizeEdge.HasFlag(ResizeEdge.Right))
         {
-            newSize.X = Mathf.Max(MinSize.X, resizeStartSize.X + delta.X);
+            newSize.X = Mathf.Max(minSize.X, resizeStartSize.X + delta.X);
         }
         if (resizeEdge.HasFlag(ResizeEdge.Left))
         {
             var deltaX = delta.X;
-            var maxDelta = resizeStartSize.X - MinSize.X;
-            deltaX = Mathf.Clamp(deltaX, -maxDelta, resizeStartSize.X - MinSize.X);
+            var maxDelta = resizeStartSize.X - minSize.X;
+            deltaX = Mathf.Clamp(deltaX, -maxDelta, resizeStartSize.X - minSize.X);
             newPos.X = resizeStartPos.X + deltaX;
             newSize.X = resizeStartSize.X - deltaX;
         }
         if (resizeEdge.HasFlag(ResizeEdge.Bottom))
         {
-            newSize.Y = Mathf.Max(MinSize.Y, resizeStartSize.Y + delta.Y);
+            newSize.Y = Mathf.Max(minSize.Y, resizeStartSize.Y + delta.Y);
         }
         if (resizeEdge.HasFlag(ResizeEdge.Top))
         {
             var deltaY = delta.Y;
-            var maxDelta = resizeStartSize.Y - MinSize.Y;
-            deltaY = Mathf.Clamp(deltaY, -maxDelta, resizeStartSize.Y - MinSize.Y);
+            var maxDelta = resizeStartSize.Y - minSize.Y;
+            deltaY = Mathf.Clamp(deltaY, -maxDelta, resizeStartSize.Y - minSize.Y);
             newPos.Y = resizeStartPos.Y + deltaY;
             newSize.Y = resizeStartSize.Y - deltaY;
         }
@@ -482,10 +483,11 @@ public partial class DockableWindow : PanelContainer
     private void ClampWindow(Vector2 lastSize, Vector2 lastPosition)
     {
         var viewportSize = GetViewportRect().Size;
+        var minSize = GetCombinedMinimumSize();
 
         lastSize = new Vector2(
-            Mathf.Clamp(lastSize.X, MinSize.X, (int)viewportSize.X - 30),
-            Mathf.Clamp(lastSize.Y, MinSize.Y, (int)viewportSize.Y - 30)
+            Mathf.Clamp(lastSize.X, minSize.X, (int)viewportSize.X - 30),
+            Mathf.Clamp(lastSize.Y, minSize.Y, (int)viewportSize.Y - 30)
         );
 
         lastPosition = new Vector2(

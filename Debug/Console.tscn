@@ -2,48 +2,54 @@
 
 [ext_resource type="Script" uid="uid://b3vaar2rr60k" path="res://addons/godot_lib/Debug/Console.cs" id="1_w2f1x"]
 
-[node name="Console" type="Control"]
-layout_mode = 3
+[node name="Console" type="PanelContainer"]
+custom_minimum_size = Vector2(300, 100)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 106.0
+offset_top = 478.0
+offset_right = -91.0
+offset_bottom = -28.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_w2f1x")
 metadata/_custom_type_script = "uid://b3vaar2rr60k"
 
-[node name="SplitContainer" type="SplitContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-split_offset = 1000
-vertical = true
-drag_area_highlight_in_editor = true
-
-[node name="Control" type="Control" parent="SplitContainer"]
+[node name="DragMargins" type="MarginContainer" parent="."]
 layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
 
-[node name="Panel" type="Panel" parent="SplitContainer"]
-custom_minimum_size = Vector2(0, 200)
+[node name="VBoxContainer" type="VBoxContainer" parent="DragMargins"]
 layout_mode = 2
+mouse_filter = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SplitContainer/Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Title" type="Label" parent="DragMargins/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+text = "Console"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Output" type="RichTextLabel" parent="SplitContainer/Panel/VBoxContainer"]
+[node name="Output" type="RichTextLabel" parent="DragMargins/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Input" type="LineEdit" parent="SplitContainer/Panel/VBoxContainer"]
+[node name="Input" type="LineEdit" parent="DragMargins/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="DragMargins"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(31, 31)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+text = "✕"
