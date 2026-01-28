@@ -3,7 +3,6 @@ using System.Linq;
 
 namespace GodotLib.UI;
 
-[GlobalClass]
 public partial class DockSurface : Control
 {
     private static DockSurface instance;

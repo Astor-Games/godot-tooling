@@ -1,5 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://s8wks02elbo6"]
+[gd_scene load_steps=3 format=3 uid="uid://s8wks02elbo6"]
 
+[ext_resource type="Theme" uid="uid://00bdxbi0d02v" path="res://addons/godot_lib/Debug/debug_ui_theme.tres" id="1_8e72x"]
 [ext_resource type="Script" uid="uid://b3vaar2rr60k" path="res://addons/godot_lib/Debug/Console.cs" id="1_w2f1x"]
 
 [node name="Console" type="PanelContainer"]
@@ -13,7 +14,10 @@ offset_right = -91.0
 offset_bottom = -28.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 1
+focus_behavior_recursive = 2
 mouse_filter = 1
+theme = ExtResource("1_8e72x")
 script = ExtResource("1_w2f1x")
 metadata/_custom_type_script = "uid://b3vaar2rr60k"
 

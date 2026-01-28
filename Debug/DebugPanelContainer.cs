@@ -6,18 +6,18 @@ namespace GodotLib.Debug;
 [GlobalClass]
 public partial class DebugPanelContainer : DockablePanel
 {
-   // public override string WindowName => "debug";
-    private string SelectedTabKey => $"window__tab";
+    public override string PanelId => "debug";
+    private string SelectedTabKey => $"window_{PanelId}_tab";
     private TabContainer tabContainer;
 
     public override void _Ready()
     {
-        base._Ready();
-      
         tabContainer = GetNode<TabContainer>("%TabContainer");
         
         // Set up focus tracking for tab visibility
         GetViewport().GuiFocusChanged += OnFocusChanged;
+        
+        base._Ready();
     }
 
 
@@ -54,7 +54,7 @@ public partial class DebugPanelContainer : DockablePanel
         tabContainer.AddChild(margins);
         margins.AddChild(control);
     }
-    
+
     public override void SaveState()
     {
         base.SaveState();

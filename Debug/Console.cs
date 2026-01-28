@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.Json;
 using GodotLib.UI;
 using GodotLib.Util;
@@ -16,7 +15,7 @@ namespace GodotLib.Debug;
 [GlobalClass]
 public partial class Console : DockablePanel
 {
-   // public override string WindowName => "console";
+    public override string PanelId => "console";
 
     private class CommandData
     {
@@ -304,12 +303,12 @@ public partial class Console : DockablePanel
         AddCommand("clear", Clear, "Clears the console history.");
         AddCommand("help", PrintHelp, "Shows information for the provided command. If no command is provided, lists all available commands.");
         AddCommand("quit", Quit, "Closes the console.");
+        
+        base._Ready();
     }
 
     private void CreateUI()
     {
-        ZIndex = 100;
-        
         // Output box
         output = GetNode<RichTextLabel>("%Output");
         output.SizeFlagsVertical = SizeFlags.ExpandFill;

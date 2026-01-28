@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bay1hwklweai3"]
+[gd_scene load_steps=4 format=3 uid="uid://bay1hwklweai3"]
 
 [ext_resource type="Script" uid="uid://bp6ramyeuxcfg" path="res://addons/godot_lib/Debug/DebugPanelContainer.cs" id="1_64uvm"]
+[ext_resource type="Theme" uid="uid://00bdxbi0d02v" path="res://addons/godot_lib/Debug/debug_ui_theme.tres" id="1_dfm41"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dfm41"]
 bg_color = Color(0, 0, 0, 0)
@@ -21,6 +22,7 @@ grow_vertical = 2
 focus_mode = 1
 focus_behavior_recursive = 2
 mouse_filter = 1
+theme = ExtResource("1_dfm41")
 script = ExtResource("1_64uvm")
 metadata/_custom_type_script = "uid://bp6ramyeuxcfg"
 

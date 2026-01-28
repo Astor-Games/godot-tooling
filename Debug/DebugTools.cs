@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GodotLib.UI;
 
 namespace GodotLib.Debug;
 
@@ -15,11 +16,16 @@ public partial class DebugTools : Node
     private static List<IDebugPanel> registeredPanels = new();
     private static Console console;
     private static DebugPanelContainer panelContainer;
+    private static DockSurface dockSurface;
 
     public override void _Ready()
     {
         ProcessMode = ProcessModeEnum.Always;
         config.Load(DebugCfgPath);
+
+        // Create DockSurface
+        dockSurface = new DockSurface();
+        AddChild(dockSurface);
 
         var scenePaths = ProjectSettings.GetSetting(QuickLoadScenesKey).As<GodotStringArray>();
         if (scenePaths == null) return;
@@ -29,16 +35,16 @@ public partial class DebugTools : Node
             var scene = scenePaths[i];
             AddDebugShortcut(() => QuickLoad(scene), Key.Key1 + i, quickLoadModifiers);
         }
-        
-        console = Load<PackedScene>("uid://s8wks02elbo6").Instantiate<Console>();
+
+        console = dockSurface.CreatePanel<Console>("uid://s8wks02elbo6");
         console.Visible = false;
-        AddChild(console);
-        AddDebugShortcut(console.ToggleVisibility, Key.M);
+        AddDebugShortcut(console.ToggleVisibility, Key.Quoteleft);
         
-        panelContainer = Load<PackedScene>("uid://bay1hwklweai3").Instantiate<DebugPanelContainer>();
+        panelContainer = dockSurface.CreatePanel<DebugPanelContainer>("uid://bay1hwklweai3");
         panelContainer.Visible = false;
-        AddChild(panelContainer);
         AddDebugShortcut(panelContainer.ToggleVisibility, Key.F12);
+
+        dockSurface.CreatePanel("uid://rs11fd5jwql7");
         
         GetParent().ChildEnteredTree += _ => GetParent().MoveChild(this, -1);
     }
@@ -116,10 +122,5 @@ public partial class DebugTools : Node
     public static void PopPanel(IDebugPanel panel)
     {
         Assertions.AssertTrue(panel is Control);
-    }
-
-    protected void RestoreDebugPanelState()
-    {
-        panelContainer.RestoreState();
     }
 }
