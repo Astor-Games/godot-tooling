@@ -1,12 +1,13 @@
+using GodotLib.UI;
 using Turtles.Core;
 
 namespace GodotLib.Debug;
 
 [GlobalClass]
-public partial class DebugPanelContainer : DockableWindow
+public partial class DebugPanelContainer : DockablePanel
 {
-    public override string WindowName => "debug";
-    private string SelectedTabKey => $"window_{WindowName}_tab";
+   // public override string WindowName => "debug";
+    private string SelectedTabKey => $"window__tab";
     private TabContainer tabContainer;
 
     public override void _Ready()
@@ -54,7 +55,7 @@ public partial class DebugPanelContainer : DockableWindow
         margins.AddChild(control);
     }
     
-    protected override void SaveState()
+    public override void SaveState()
     {
         base.SaveState();
         DebugTools.SaveConfig(SelectedTabKey, tabContainer.CurrentTab);

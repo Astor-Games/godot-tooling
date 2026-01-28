@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using GodotLib.UI;
 using GodotLib.Util;
 using static GodotLib.Debug.Assertions;
 using Convert = System.Convert;
@@ -13,9 +14,9 @@ using Convert = System.Convert;
 namespace GodotLib.Debug;
 
 [GlobalClass]
-public partial class Console : DockableWindow
+public partial class Console : DockablePanel
 {
-    public override string WindowName => "console";
+   // public override string WindowName => "console";
 
     private class CommandData
     {
