@@ -6,8 +6,7 @@ namespace GodotLib.Debug;
 [GlobalClass]
 public partial class DebugPanelContainer : DockablePanel
 {
-    public override string PanelId => "debug";
-    private string SelectedTabKey => $"window_{PanelId}_tab";
+    private string SelectedTabKey => $"window_{Name}_selected_tab";
     private TabContainer tabContainer;
 
     public override void _Ready()
@@ -66,7 +65,12 @@ public partial class DebugPanelContainer : DockablePanel
         base.RestoreState();
         
         tabContainer.TabChanged += idx => OnTabChanged((int)idx);
-        tabContainer.CurrentTab = DebugTools.LoadConfig(SelectedTabKey, -1);
+        
+        var idx = DebugTools.LoadConfig(SelectedTabKey, -1);
+        if (idx >= 0)
+        {
+            tabContainer.CurrentTab = idx;
+        }
     }
 
     private void OnTabChanged(int idx)

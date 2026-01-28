@@ -41,14 +41,9 @@ public partial class DockSurface : Control
             instance = null;
     }
     
-    public DockablePanel CreatePanel(string scenePath) => CreatePanel<DockablePanel>(scenePath);
+    public DockablePanel CreatePanel(string scenePath, StringName id) => CreatePanel<DockablePanel>(scenePath, id);
 
-    /// <summary>
-    /// Creates a panel from a scene file and adds it to the DockSurface.
-    /// </summary>
-    /// <param name="scenePath">Path to the .tscn file</param>
-    /// <returns>The created panel instance</returns>
-    public T CreatePanel<T>(string scenePath) where T : DockablePanel
+    public T CreatePanel<T>(string scenePath, StringName id) where T : DockablePanel
     {
         var scene = GD.Load<PackedScene>(scenePath);
         if (scene == null)
@@ -65,7 +60,7 @@ public partial class DockSurface : Control
         }
 
         // Use provided ID or generate from scene path
-        var id = panel.PanelId;
+        panel.Name = id;
         
         if (allPanels.TryGetValue(id, out var existing))
         {
@@ -133,7 +128,7 @@ public partial class DockSurface : Control
 
     public void UpdatePanelDocking(DockablePanel panel, DockPosition position, Vector2? cursorPos = null)
     {
-        if (position == DockPosition.None)
+        if (position == DockPosition.Undocked)
         {
             // Move to non-docked if it was docked
             UnregisterPanel(panel);
@@ -505,7 +500,7 @@ public partial class DockSurface : Control
 
 public enum DockPosition
 {
-    None,
+    Undocked,
     Left,
     Right,
     Top,

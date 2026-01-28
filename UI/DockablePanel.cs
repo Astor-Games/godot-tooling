@@ -6,14 +6,14 @@ namespace GodotLib.UI;
 [GlobalClass]
 public partial class DockablePanel : PanelContainer
 {
-    [Export] public virtual string PanelId { get; private set; }
+    private string VisibleKey => $"window_{Name}_visible";
+    private string SizeKey => $"window_{Name}_size";
+    private string PositionKey => $"window_{Name}_position";
+    private string DockedSideKey => $"window_{Name}_docked_side";
+    private string DockedWidthKey => $"window_{Name}_docked_width";
+    private string DockedHeightKey => $"window_{Name}_docked_height";
     
-    private string VisibleKey => $"window_{PanelId}_visible";
-    private string SizeKey => $"window_{PanelId}_size";
-    private string PositionKey => $"window_{PanelId}_position";
-    private string DockedSideKey => $"window_{PanelId}_docked_side";
-    private string DockedWidthKey => $"window_{PanelId}_docked_width";
-    private string DockedHeightKey => $"window_{PanelId}_docked_height";
+    [Export] public bool VisibleByDefault;
     
     private const int DockSnapDistance = 50;
     private const int ResizeMargin = 8;
@@ -23,7 +23,7 @@ public partial class DockablePanel : PanelContainer
     private Label titleLabel;
     private Button closeButton;
 
-    private DockPosition dockPosition = DockPosition.None;
+    private DockPosition dockPosition = DockPosition.Undocked;
     private Vector2 undockedSize;
     private Vector2 undockedPosition;
     public float dockedWidth;  // Width when docked left/right
@@ -91,7 +91,6 @@ public partial class DockablePanel : PanelContainer
 
     private void BringToFront()
     {
-        Print($"Moving {PanelId} to front");
         MoveToFront();
     }
 
@@ -138,7 +137,7 @@ public partial class DockablePanel : PanelContainer
                     MouseDefaultCursorShape = CursorShape.Arrow;
 
                     // Save position if not docked
-                    if (dockPosition == DockPosition.None)
+                    if (dockPosition == DockPosition.Undocked)
                     {
                         undockedPosition = (Vector2I)Position;
                         undockedSize = (Vector2I)Size;
@@ -173,7 +172,7 @@ public partial class DockablePanel : PanelContainer
                     GetViewport().SetInputAsHandled();
                 }
 
-                if (dockPosition == DockPosition.None)
+                if (dockPosition == DockPosition.Undocked)
                 {
                     ClampWindow(Size, Position);
                 }
@@ -193,7 +192,7 @@ public partial class DockablePanel : PanelContainer
                 var viewportSize = GetViewportRect().Size;
 
                 // Check if we should undock while dragging
-                if (dockPosition != DockPosition.None)
+                if (dockPosition != DockPosition.Undocked)
                 {
                     if (ShouldUndock(mousePos, viewportSize))
                     {
@@ -207,7 +206,7 @@ public partial class DockablePanel : PanelContainer
                 else
                 {
                     // Try to dock if near edge and not already docked
-                    if (dockPosition != DockPosition.None || !TryDock(mousePos, viewportSize))
+                    if (dockPosition != DockPosition.Undocked || !TryDock(mousePos, viewportSize))
                     {
                         // Apply position immediately when not docked
                         var newPos = mousePos - dragOffset;
@@ -237,7 +236,7 @@ public partial class DockablePanel : PanelContainer
         if (!Visible) return;
 
         // Let DockSurface handle layout for docked windows
-        if (dockPosition != DockPosition.None && DockSurface.Instance != null)
+        if (dockPosition != DockPosition.Undocked && DockSurface.Instance != null)
         {
             // DockSurface will update our position/size
         }
@@ -254,7 +253,7 @@ public partial class DockablePanel : PanelContainer
         var nearLeft = localPos.X <= ResizeMargin;
 
         // When docked, check for neighboring panels
-        if (dockPosition != DockPosition.None)
+        if (dockPosition != DockPosition.Undocked)
         {
             var panelInfo = DockSurface.Instance?.GetPanelInfo(this);
             if (panelInfo != null)
@@ -327,7 +326,7 @@ public partial class DockablePanel : PanelContainer
         
         var delta = mousePos - resizeStartMouse;
 
-        if (dockPosition != DockPosition.None)
+        if (dockPosition != DockPosition.Undocked)
         {
             // When docked, only update the stored sizes and let DockSurface handle layout
             var isVertical = dockPosition is DockPosition.Left or DockPosition.Right;
@@ -474,7 +473,7 @@ public partial class DockablePanel : PanelContainer
 
     private void DockToSide(DockPosition position, Vector2 viewportSize, Vector2? cursorPos = null)
     {
-        if (dockPosition == DockPosition.None)
+        if (dockPosition == DockPosition.Undocked)
         {
             undockedSize = (Vector2I)Size;
             undockedPosition = (Vector2I)Position;
@@ -512,19 +511,19 @@ public partial class DockablePanel : PanelContainer
     {
         DockSurface.Instance?.UnregisterPanel(this);
 
-        dockPosition = DockPosition.None;
+        dockPosition = DockPosition.Undocked;
         Size = undockedSize;
         Position = undockedPosition;
-        DebugTools.SaveConfig(DockedSideKey, (int)DockPosition.None);
+        DebugTools.SaveConfig(DockedSideKey, dockPosition);
     }
 
     public virtual void RestoreState()
     {
-        Visible = DebugTools.LoadConfig(VisibleKey, false);
+        Visible = DebugTools.LoadConfig(VisibleKey, VisibleByDefault);
         var lastSize = DebugTools.LoadConfig(SizeKey, undockedSize);
         var lastPos = DebugTools.LoadConfig(PositionKey, new Vector2I(100, 100));
 
-        dockPosition = (DockPosition)DebugTools.LoadConfig(DockedSideKey, (int)DockPosition.None);
+        dockPosition = (DockPosition)DebugTools.LoadConfig(DockedSideKey, (int)DockPosition.Undocked);
         undockedSize = lastSize;
         undockedPosition = lastPos;
 
@@ -533,7 +532,7 @@ public partial class DockablePanel : PanelContainer
         dockedWidth = DebugTools.LoadConfig(DockedWidthKey, (int)(viewportSize.X * DockedSizeProportion));
         dockedHeight = DebugTools.LoadConfig(DockedHeightKey, (int)(viewportSize.Y * DockedSizeProportion));
 
-        if (dockPosition != DockPosition.None)
+        if (dockPosition != DockPosition.Undocked)
         {
             DockSurface.Instance?.UpdatePanelDocking(this, dockPosition);
         }

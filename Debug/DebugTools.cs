@@ -36,15 +36,15 @@ public partial class DebugTools : Node
             AddDebugShortcut(() => QuickLoad(scene), Key.Key1 + i, quickLoadModifiers);
         }
 
-        console = dockSurface.CreatePanel<Console>("uid://s8wks02elbo6");
+        console = dockSurface.CreatePanel<Console>("uid://s8wks02elbo6", "console");
         console.Visible = false;
         AddDebugShortcut(console.ToggleVisibility, Key.Quoteleft);
         
-        panelContainer = dockSurface.CreatePanel<DebugPanelContainer>("uid://bay1hwklweai3");
+        panelContainer = dockSurface.CreatePanel<DebugPanelContainer>("uid://bay1hwklweai3", "debug");
         panelContainer.Visible = false;
         AddDebugShortcut(panelContainer.ToggleVisibility, Key.F12);
 
-        dockSurface.CreatePanel("uid://rs11fd5jwql7");
+        dockSurface.CreatePanel("uid://rs11fd5jwql7", "quick_help");
         
         GetParent().ChildEnteredTree += _ => GetParent().MoveChild(this, -1);
     }

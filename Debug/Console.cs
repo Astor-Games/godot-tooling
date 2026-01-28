@@ -15,8 +15,6 @@ namespace GodotLib.Debug;
 [GlobalClass]
 public partial class Console : DockablePanel
 {
-    public override string PanelId => "console";
-
     private class CommandData
     {
         public string Name;
