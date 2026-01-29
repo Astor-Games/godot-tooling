@@ -84,14 +84,20 @@ public partial class DockablePanel : PanelContainer
         {
             if (child is Control control)
             {
-                control.FocusEntered += BringToFront;
+                control.FocusEntered += OnFocusEntered;
             }
         }
     }
 
-    private void BringToFront()
+    public virtual void OnFocusEntered()
     {
         MoveToFront();
+        DockSurface.Instance?.InformFocused(this);
+    }
+
+    public virtual void OnFocusExited()
+    {
+        
     }
 
     public virtual void ToggleVisibility()
@@ -229,17 +235,6 @@ public partial class DockablePanel : PanelContainer
                 UpdateCursor(edge);
             }
         } 
-    }
-
-    public override void _Process(double delta)
-    {
-        if (!Visible) return;
-
-        // Let DockSurface handle layout for docked windows
-        if (dockPosition != DockPosition.Undocked && DockSurface.Instance != null)
-        {
-            // DockSurface will update our position/size
-        }
     }
 
     private ResizeEdge GetResizeEdge(Vector2 localPos)

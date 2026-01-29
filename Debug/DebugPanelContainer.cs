@@ -12,29 +12,18 @@ public partial class DebugPanelContainer : DockablePanel
     public override void _Ready()
     {
         tabContainer = GetNode<TabContainer>("%TabContainer");
-        
-        // Set up focus tracking for tab visibility
-        GetViewport().GuiFocusChanged += OnFocusChanged;
-        
         base._Ready();
     }
 
-
-    private void OnFocusChanged(Control focusedControl)
+    public override void OnFocusEntered()
     {
-        var areWeFocused = focusedControl == this || IsAncestorOf(focusedControl);
-        tabContainer.TabsVisible = areWeFocused;
+        base.OnFocusEntered();
+        tabContainer.TabsVisible = true;
     }
-    
-    public override void _Input(InputEvent evt)
+
+    public override void OnFocusExited()
     {
-        if (evt is InputEventKey key && key.IsActionPressed("exit") && Game.IsPaused)
-        {
-            ReleaseFocus();
-            tabContainer.TabsVisible = false;
-            Game.Resume();
-            GetViewport().SetInputAsHandled();
-        }
+        tabContainer.TabsVisible = false;
     }
     
     public void AddTab(IDebugPanel panel, string name)

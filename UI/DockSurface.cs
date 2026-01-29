@@ -13,6 +13,9 @@ public partial class DockSurface : Control
     private readonly Dictionary<string, DockablePanel> allPanels = new(); // Key: panel name/id
     private Logger log = new(nameof(DockSurface));
     
+    private Vector2 lastViewportSize = Vector2.Zero;
+    private DockablePanel focusedPanel;
+    
     public class DockData
     {
         public DockablePanel Panel { get; init; }
@@ -40,7 +43,34 @@ public partial class DockSurface : Control
         if (instance == this)
             instance = null;
     }
+
+    public override void _Ready()
+    {
+        // Set up focus tracking for tab visibility
+        GetViewport().GuiFocusChanged += OnFocusChanged;
+    }
+
+    private void OnFocusChanged(Control focusedControl)
+    {
+        foreach (var panel in allPanels.Values)
+        {
+            var isFocused = focusedControl == panel || panel.IsAncestorOf(focusedControl);
+
+            if (isFocused && panel != focusedPanel)
+            {
+                focusedPanel?.OnFocusExited();
+                panel.OnFocusEntered();
+                focusedPanel = panel;
+            }
+        }
+    }
     
+    public void InformFocused(DockablePanel panel)
+    {
+        focusedPanel?.OnFocusExited();
+        focusedPanel = panel;
+    }
+
     public DockablePanel CreatePanel(string scenePath, StringName id) => CreatePanel<DockablePanel>(scenePath, id);
 
     public T CreatePanel<T>(string scenePath, StringName id) where T : DockablePanel
@@ -74,6 +104,9 @@ public partial class DockSurface : Control
         // Track the panel
         allPanels[id] = panel;
         nonDockedPanels.Add(panel);
+        
+        // Connect visibility changed signal to update layout
+        panel.VisibilityChanged += UpdateLayout;
 
         return panel;
     }
@@ -102,16 +135,16 @@ public partial class DockSurface : Control
         RemoveChild(panel);
         panel.QueueFree();
     }
-
-    /// <summary>
-    /// Gets a panel by its ID.
-    /// </summary>
+    
     public DockablePanel GetPanel(string panelId)
     {
         return allPanels.GetValueOrDefault(panelId);
     }
-
-    private Vector2 lastViewportSize = Vector2.Zero;
+    
+    public DockablePanel GetFocusedPanel()
+    {
+        return focusedPanel;
+    }
 
     public override void _Process(double delta)
     {
@@ -344,42 +377,39 @@ public partial class DockSurface : Control
         var panels = dockedPanels[position];
         if (panels.Count == 0) return;
 
+        // Filter to only visible panels
+        var visiblePanels = panels.Where(p => p.Panel.IsVisibleInTree()).ToList();
+        if (visiblePanels.Count == 0) return;
+
         var isVertical = position is DockPosition.Left or DockPosition.Right;
         var totalSpace = isVertical ? (endPos.Y - startPos.Y) : (endPos.X - startPos.X);
 
-        // Get shared perpendicular axis size (first panel's size or default)
+        // Get shared perpendicular axis size (first visible panel's size or default)
         float sharedPerpendicularSize;
-        if (panels.Count > 0)
+        var firstWindow = visiblePanels[0].Panel as DockablePanel;
+        if (isVertical)
         {
-            var firstWindow = panels[0].Panel as DockablePanel;
-            if (isVertical)
+            // For vertical sides, share width
+            sharedPerpendicularSize = firstWindow?.dockedWidth ?? 0;
+            if (sharedPerpendicularSize == 0)
             {
-                // For vertical sides, share width
-                sharedPerpendicularSize = firstWindow?.dockedWidth ?? 0;
-                if (sharedPerpendicularSize == 0)
-                {
-                    sharedPerpendicularSize = GetViewport().GetVisibleRect().Size.X * 0.25f;
-                }
-            }
-            else
-            {
-                // For horizontal sides, share height
-                sharedPerpendicularSize = firstWindow?.dockedHeight ?? 0;
-                if (sharedPerpendicularSize == 0)
-                {
-                    sharedPerpendicularSize = GetViewport().GetVisibleRect().Size.Y * 0.25f;
-                }
+                sharedPerpendicularSize = GetViewport().GetVisibleRect().Size.X * 0.25f;
             }
         }
         else
         {
-            return;
+            // For horizontal sides, share height
+            sharedPerpendicularSize = firstWindow?.dockedHeight ?? 0;
+            if (sharedPerpendicularSize == 0)
+            {
+                sharedPerpendicularSize = GetViewport().GetVisibleRect().Size.Y * 0.25f;
+            }
         }
 
-        if (panels.Count == 1)
+        if (visiblePanels.Count == 1)
         {
-            // Single panel - take full space
-            var panel = panels[0];
+            // Single visible panel - take full space
+            var panel = visiblePanels[0];
             var dockableWindow = panel.Panel as DockablePanel;
 
             if (isVertical)
@@ -409,9 +439,9 @@ public partial class DockSurface : Control
         }
         else
         {
-            // Multiple panels - check if we need equal division or use stored sizes
+            // Multiple visible panels - check if we need equal division or use stored sizes
             float totalRequestedSize = 0;
-            foreach (var panel in panels)
+            foreach (var panel in visiblePanels)
             {
                 var dockableWindow = panel.Panel as DockablePanel;
                 if (isVertical)
@@ -426,12 +456,12 @@ public partial class DockSurface : Control
 
             // Use equal division if total is 0 or very close to 0
             var useEqualDivision = totalRequestedSize < 1.0f;
-            var spacePerPanel = totalSpace / panels.Count;
+            var spacePerPanel = totalSpace / visiblePanels.Count;
             var scale = useEqualDivision ? 1.0f : totalSpace / totalRequestedSize;
 
             float currentOffset = 0;
 
-            foreach (var panel in panels.OrderBy(p => p.Index))
+            foreach (var panel in visiblePanels.OrderBy(p => p.Index))
             {
                 var dockableWindow = panel.Panel as DockablePanel;
 
@@ -478,8 +508,12 @@ public partial class DockSurface : Control
         var panels = dockedPanels[position];
         if (panels.Count == 0) return 0;
 
-        // Return the maximum width of panels on this side
-        return panels.Max(p => p.Panel.Size.X);
+        // Only consider visible panels
+        var visiblePanels = panels.Where(p => p.Panel.IsVisibleInTree()).ToList();
+        if (visiblePanels.Count == 0) return 0;
+
+        // Return the maximum width of visible panels on this side
+        return visiblePanels.Max(p => p.Panel.Size.X);
     }
 
     public int GetPanelCount(DockPosition position)

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AstorGames.EcsTools;
 using GodotLib.UI;
 
 namespace GodotLib.Debug;
@@ -16,7 +17,8 @@ public partial class DebugTools : Node
     private static List<IDebugPanel> registeredPanels = new();
     private static Console console;
     private static DebugPanelContainer panelContainer;
-    private static DockSurface dockSurface;
+    private static EntityDebuggerPanel entityDebugger;
+    protected static DockSurface DockSurface;
 
     public override void _Ready()
     {
@@ -24,8 +26,8 @@ public partial class DebugTools : Node
         config.Load(DebugCfgPath);
 
         // Create DockSurface
-        dockSurface = new DockSurface();
-        AddChild(dockSurface);
+        DockSurface = new DockSurface();
+        AddChild(DockSurface);
 
         var scenePaths = ProjectSettings.GetSetting(QuickLoadScenesKey).As<GodotStringArray>();
         if (scenePaths == null) return;
@@ -36,15 +38,16 @@ public partial class DebugTools : Node
             AddDebugShortcut(() => QuickLoad(scene), Key.Key1 + i, quickLoadModifiers);
         }
 
-        console = dockSurface.CreatePanel<Console>("uid://s8wks02elbo6", "console");
-        console.Visible = false;
+        console = DockSurface.CreatePanel<Console>("uid://s8wks02elbo6", "console");
         AddDebugShortcut(console.ToggleVisibility, Key.Quoteleft);
         
-        panelContainer = dockSurface.CreatePanel<DebugPanelContainer>("uid://bay1hwklweai3", "debug");
-        panelContainer.Visible = false;
+        panelContainer = DockSurface.CreatePanel<DebugPanelContainer>("uid://bay1hwklweai3", "debug");
         AddDebugShortcut(panelContainer.ToggleVisibility, Key.F12);
 
-        dockSurface.CreatePanel("uid://rs11fd5jwql7", "quick_help");
+        entityDebugger = DockSurface.CreatePanel<EntityDebuggerPanel>("uid://b4y0l35msd21d", "entity_debugger");
+        AddDebugShortcut(entityDebugger.ToggleVisibility, Key.F10);
+        
+        DockSurface.CreatePanel("uid://rs11fd5jwql7", "quick_help");
         
         GetParent().ChildEnteredTree += _ => GetParent().MoveChild(this, -1);
     }
