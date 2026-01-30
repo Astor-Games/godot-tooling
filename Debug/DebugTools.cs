@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using AstorGames.EcsTools;
 using GodotLib.UI;
+using GodotLib.Util;
 
 namespace GodotLib.Debug;
 
@@ -12,7 +14,7 @@ public partial class DebugTools : Node
     private const string DebugCfgPath = "user://debug.cfg";
     private const KeyModifierMask quickLoadModifiers = KeyModifierMask.MaskAlt;
     
-    private static readonly Dictionary<Key, Action> actions = new();
+    private static readonly Dictionary<Key, DebugShortcut> shortcuts = new();
     private static readonly ConfigFile config = new();
     private static List<IDebugPanel> registeredPanels = new();
     private static Console console;
@@ -35,19 +37,20 @@ public partial class DebugTools : Node
         for (var i = 0; i < Mathf.Min(scenePaths.Count, 9); i++)
         {
             var scene = scenePaths[i];
-            AddDebugShortcut(() => QuickLoad(scene), Key.Key1 + i, quickLoadModifiers);
+            AddDebugShortcut(() => QuickLoad(scene), Key.Key1 + i, quickLoadModifiers, $"Load scene {i+1}");
         }
+        
+        var quickHelp = DockSurface.CreatePanel<QuickHelpPanel>("uid://rs11fd5jwql7", "quick_help");
+        AddDebugShortcut(quickHelp.ToggleVisibility, Key.F1, description: "Quick help");
 
         console = DockSurface.CreatePanel<Console>("uid://s8wks02elbo6", "console");
-        AddDebugShortcut(console.ToggleVisibility, Key.Quoteleft);
+        AddDebugShortcut(console.ToggleVisibility, Key.Quoteleft, description: "Open console");
         
         panelContainer = DockSurface.CreatePanel<DebugPanelContainer>("uid://bay1hwklweai3", "debug");
-        AddDebugShortcut(panelContainer.ToggleVisibility, Key.F12);
+        AddDebugShortcut(panelContainer.ToggleVisibility, Key.F12, description: "Open debug panel");
 
         entityDebugger = DockSurface.CreatePanel<EntityDebuggerPanel>("uid://b4y0l35msd21d", "entity_debugger");
-        AddDebugShortcut(entityDebugger.ToggleVisibility, Key.F10);
-        
-        DockSurface.CreatePanel("uid://rs11fd5jwql7", "quick_help");
+        AddDebugShortcut(entityDebugger.ToggleVisibility, Key.F10, description: "Open entity inspector");
         
         GetParent().ChildEnteredTree += _ => GetParent().MoveChild(this, -1);
     }
@@ -71,11 +74,18 @@ public partial class DebugTools : Node
         config.Save(DebugCfgPath);
     }
 
-    protected void AddDebugShortcut(Action action, Key keycode, KeyModifierMask keyModifiers = 0)
+    protected void AddDebugShortcut(Action action, Key keycode, KeyModifierMask keyModifiers = 0, string description = null)
     {
         // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
         var keycodeWithModifiers = keycode | (Key)keyModifiers;
-        actions.Add(keycodeWithModifiers, action);
+        
+        var shortcut = new DebugShortcut
+        {
+            Action = action,
+            Description = description ?? action.Method.Name.FormatSentence()
+        };
+
+       shortcuts.Add(keycodeWithModifiers, shortcut);
     }
 
     protected void AddConsoleCommand(Delegate action, string name, string description = "")
@@ -89,9 +99,9 @@ public partial class DebugTools : Node
 
         var keycodeWithModifiers = eventKey.GetKeycodeWithModifiers();
         
-        if (!actions.TryGetValue(keycodeWithModifiers, out var action)) return;
+        if (!shortcuts.TryGetValue(keycodeWithModifiers, out var shortcut)) return;
         
-        action?.Invoke();
+        shortcut.Action?.Invoke();
         GetViewport().SetInputAsHandled();
     }
 
@@ -125,5 +135,21 @@ public partial class DebugTools : Node
     public static void PopPanel(IDebugPanel panel)
     {
         Assertions.AssertTrue(panel is Control);
+    }
+
+    public static IEnumerable<(string, string)> ListShortcuts()
+    {
+        foreach (var (key, shortcut) in shortcuts.OrderBy(x => x.Value.Description))
+        {
+            var keycode = OS.GetKeycodeString(key);
+            
+            yield return (keycode, shortcut.Description);
+        }
+    }
+
+    private struct DebugShortcut
+    {
+        public Action Action;
+        public string Description;
     }
 }
