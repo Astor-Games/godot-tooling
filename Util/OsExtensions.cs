@@ -9,7 +9,7 @@ public static class OsExtensions
 
     extension(OS)
     {
-        public static T GetCmdlineArg<T>(string argName, T defaultValue)
+        public static T GetCmdlineArg<T>(string argName, T defaultValue = default)
         {
             try
             {

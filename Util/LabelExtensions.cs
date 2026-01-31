@@ -2,6 +2,8 @@ namespace GodotLib.Util;
 
 public static class LabelExtensions
 {
+    private const char FullBlock = '\u2588';
+    
     extension(RichTextLabel label)
     {
         public void AddTitle(string title)
@@ -10,6 +12,21 @@ public static class LabelExtensions
             label.AddText(title);
             label.Pop();
             label.AddHr(100);
+            label.Newline();
+        }
+
+        public void DrawProgressBar(int size, double percent)
+        {
+            var loaded = Mathf.RoundToInt(size * percent);
+        
+            label.PushColor(Colors.LimeGreen);
+            label.AddText(new string(FullBlock, loaded));
+            label.Pop();
+        
+            label.PushColor(Colors.DarkGreen);
+            label.AddText(new string(FullBlock, size - loaded));
+            label.Pop();
+
             label.Newline();
         }
     }
