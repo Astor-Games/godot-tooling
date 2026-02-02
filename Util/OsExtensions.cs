@@ -14,15 +14,24 @@ public static class OsExtensions
             try
             {
                 args ??= OS.GetCmdlineArgs();
-            
-                foreach (var arg in args)
+
+                for (var i = 0; i < args.Length; i++)
                 {
-                    if (arg.StartsWith(argName))
+                    var name = args[i];
+                    
+                    if (name.Equals(argName, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        var value = arg.Substring(argName.Length + 1);
-                        return (T)Convert.ChangeType(value, typeof(T));
+
+                        if (i == args.Length -1 || args[i+1].StartsWith("--"))
+                        {
+                            PrintErr($"Argument {argName} has no value");
+                            return defaultValue;
+                        }
+                        
+                        return (T)Convert.ChangeType(args[i+1], typeof(T));
                     }
                 }
+
                 return defaultValue;
             }
             catch (Exception e)
