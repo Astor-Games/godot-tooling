@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using GodotLib.Util;
 using JetBrains.Annotations;
-using Turtles;
 
 namespace GodotLib.Debug;
 
@@ -73,30 +71,4 @@ public static class Assertions
             OS.Alert(message, "Assertion failed!");
         }
     }
-
-    private static void Halt()
-    {
-        
-        return;
-        
-        // if (!initialized)
-        // {
-        //     var sceneTree = (SceneTree)Engine.GetMainLoop();
-        //     sceneTree.ProcessFrame += HaltDeferred;
-        //     sceneTree.PhysicsFrame += HaltDeferred;
-        //     initialized = true;
-        // }
-        // haltRequested = true;
-        // return;
-        //
-        // static void HaltDeferred()
-        // {
-        //     if (!haltRequested) return;
-        //     EngineDebugger.Debug();
-        //     haltRequested = false;
-        // }
-    }
 }
-
-[StackTraceHidden]
-public class AssertionException(string message) : Exception(message);
