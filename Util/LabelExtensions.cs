@@ -15,7 +15,17 @@ public static class LabelExtensions
             label.Newline();
         }
 
-        public void DrawProgressBar(int size, double percent)
+        public void AddTableRow(params Span<string> columns)
+        {
+            foreach (var column in columns)
+            {
+                label.PushCell();
+                label.AddText(column);
+                label.Pop();
+            }
+        }
+
+        public void PushProgressBar(int size, double percent)
         {
             var loaded = Mathf.RoundToInt(size * percent);
         

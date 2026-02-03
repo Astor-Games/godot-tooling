@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://rs11fd5jwql7"]
 
 [ext_resource type="Theme" uid="uid://00bdxbi0d02v" path="res://addons/godot_lib/Debug/debug_ui_theme.tres" id="1_80pl0"]
-[ext_resource type="Script" uid="uid://lgikymo104l6" path="res://addons/godot_lib/UI/DockablePanel.cs" id="2_80pl0"]
+[ext_resource type="Script" uid="uid://ciluiducim4ww" path="res://addons/godot_lib/Debug/QuickHelpPanel.cs" id="2_kc2x8"]
 
 [node name="QuickHelp" type="PanelContainer"]
 custom_minimum_size = Vector2(250, 150)
@@ -11,7 +11,7 @@ focus_mode = 1
 focus_behavior_recursive = 2
 mouse_filter = 1
 theme = ExtResource("1_80pl0")
-script = ExtResource("2_80pl0")
+script = ExtResource("2_kc2x8")
 VisibleByDefault = true
 metadata/_custom_type_script = "uid://lgikymo104l6"
 
@@ -43,14 +43,11 @@ theme_override_constants/margin_top = 7
 theme_override_constants/margin_right = 7
 theme_override_constants/margin_bottom = 7
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DragMargins/VBoxContainer/MarginContainer"]
+[node name="Contents" type="RichTextLabel" parent="DragMargins/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "F10 [color=darkgray]- Open entity inspector[/color]
-F12 [color=darkgray]- Open debug panel[/color]
-Backtick (`) [color=darkgray]- Open console[/color]
-"
 
 [node name="CloseButton" type="Button" parent="DragMargins"]
 unique_name_in_owner = true
