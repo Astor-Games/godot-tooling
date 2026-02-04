@@ -110,20 +110,20 @@ public class CircularBuffer<T> : IEnumerable<T>
     /// Element at the front of the buffer - this[0].
     /// </summary>
     /// <returns>The value of the element of type T at the front of the buffer.</returns>
-    public T Front()
+    public ref T Front()
     {
         ThrowIfEmpty();
-        return _buffer[_start];
+        return ref _buffer[_start];
     }
 
     /// <summary>
     /// Element at the back of the buffer - this[Size - 1].
     /// </summary>
     /// <returns>The value of the element of type T at the back of the buffer.</returns>
-    public T Back()
+    public ref T Back()
     {
         ThrowIfEmpty();
-        return _buffer[(_end != 0 ? _end : Capacity) - 1];
+        return ref _buffer[(_end != 0 ? _end : Capacity) - 1];
     }
 
     /// <summary>
@@ -133,7 +133,7 @@ public class CircularBuffer<T> : IEnumerable<T>
     /// </summary>
     /// <param name="index">Index of element to access.</param>
     /// <exception cref="IndexOutOfRangeException">Thrown when index is outside of [; Size[ interval.</exception>
-    public T this[int index]
+    public ref T this[int index]
     {
         get
         {
@@ -146,21 +146,21 @@ public class CircularBuffer<T> : IEnumerable<T>
                 throw new IndexOutOfRangeException($"Cannot access index {index}. Buffer size is {_size}");
             }
             var actualIndex = InternalIndex(index);
-            return _buffer[actualIndex];
+            return ref _buffer[actualIndex];
         }
-        set
-        {
-            if (IsEmpty)
-            {
-                throw new IndexOutOfRangeException($"Cannot access index {index}. Buffer is empty");
-            }
-            if (index >= _size)
-            {
-                throw new IndexOutOfRangeException($"Cannot access index {index}. Buffer size is {_size}");
-            }
-            var actualIndex = InternalIndex(index);
-            _buffer[actualIndex] = value;
-        }
+        // set
+        // {
+        //     if (IsEmpty)
+        //     {
+        //         throw new IndexOutOfRangeException($"Cannot access index {index}. Buffer is empty");
+        //     }
+        //     if (index >= _size)
+        //     {
+        //         throw new IndexOutOfRangeException($"Cannot access index {index}. Buffer size is {_size}");
+        //     }
+        //     var actualIndex = InternalIndex(index);
+        //     _buffer[actualIndex] = value;
+        // }
     }
 
     /// <summary>
