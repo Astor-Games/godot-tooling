@@ -1,6 +1,7 @@
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+
+using Arg =  System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
 
 namespace GodotLib.Debug;
 
@@ -9,7 +10,7 @@ public static class Assertions
     [Conditional("DEBUG")]
     [DebuggerHidden, StackTraceHidden]
     [AssertionMethod, ContractAnnotation("obj:null => halt")]
-    public static void AssertNotNull(object obj, string message = null, bool fatal = true, [CallerArgumentExpression(nameof(obj))]string objName = null)
+    public static void AssertNotNull(object obj, string message = null, bool fatal = true, [Arg(nameof(obj))]string objName = null)
     {
         AssertInternal(obj != null, message ?? $"{objName} was null.", fatal);
     }
@@ -17,7 +18,7 @@ public static class Assertions
     [Conditional("DEBUG")]
     [DebuggerHidden, StackTraceHidden]
     [AssertionMethod, ContractAnnotation("obj:notnull => halt")]
-    public static void AssertNull(object obj, string message = null, bool fatal = true, [CallerArgumentExpression(nameof(obj))]string objName = null)
+    public static void AssertNull(object obj, string message = null, bool fatal = true, [Arg(nameof(obj))]string objName = null)
     {
         AssertInternal(obj == null, message ?? $"{objName} was not null.", fatal);
     }
@@ -25,24 +26,27 @@ public static class Assertions
     [Conditional("DEBUG")]
     [DebuggerHidden, StackTraceHidden]
     [AssertionMethod]
-    public static void AssertEqual(object obj1, object obj2, string message = null, bool fatal = true, [CallerArgumentExpression(nameof(obj1))]string obj1Name = null, [CallerArgumentExpression(nameof(obj2))]string obj2Name = null)
+    public static void AssertEqual(object obj1, object obj2, string message = null, bool fatal = true, [Arg(nameof(obj1))]string obj1Name = null, [Arg(nameof(obj2))]string obj2Name = null)
     {
         AssertInternal(obj1.Equals(obj2), message ?? $"{obj1Name} was not equal to {obj2Name}.", fatal);
     }
     
     [Conditional("DEBUG")]
     [DebuggerHidden, StackTraceHidden]
-    public static void AssertNotEqual(object obj1, object obj2, string message = null, bool fatal = true, [CallerArgumentExpression(nameof(obj1))]string obj1Name = null, [CallerArgumentExpression(nameof(obj2))]string obj2Name = null)
+    public static void AssertNotEqual(object obj1, object obj2, string message = null, bool fatal = true, [Arg(nameof(obj1))]string obj1Name = null, [Arg(nameof(obj2))]string obj2Name = null)
     {
         AssertInternal(!obj1.Equals(obj2), message ?? $"{obj1Name} was equal to {obj2Name}.", fatal);
     }
-    
-    
+
+    public static void AssertInRange(int value, int min, int max, string message = null, bool fatal = true, [Arg(nameof(value))]string valueName = null)
+    {
+        AssertInternal(value >= min && value < max, message ?? $"{valueName} ({value}) was outside the range [{min}-{max}].", fatal);
+    }
     
     [Conditional("DEBUG")]
     [DebuggerHidden, StackTraceHidden]
     [AssertionMethod, ContractAnnotation("condition: false => halt")]
-    public static void AssertTrue(bool condition, string message = null, [CallerArgumentExpression(nameof(condition))] string expression = null, bool fatal = true)
+    public static void AssertTrue(bool condition, string message = null, [Arg(nameof(condition))] string expression = null, bool fatal = true)
     {
         AssertInternal(condition, message ?? $"{expression} should be true, was false.", fatal);
     }
@@ -50,7 +54,7 @@ public static class Assertions
     [Conditional("DEBUG")]
     [DebuggerHidden, StackTraceHidden]
     [AssertionMethod, ContractAnnotation("condition: true => halt")]
-    public static void AssertFalse(bool condition, string message = null, [CallerArgumentExpression(nameof(condition))] string expression = null, bool fatal = true)
+    public static void AssertFalse(bool condition, string message = null, [Arg(nameof(condition))] string expression = null, bool fatal = true)
     {
         AssertInternal(!condition, message ?? $"{expression} should be false, was true.", fatal);
     }
@@ -75,8 +79,9 @@ public static class Assertions
         }
         else
         {
-            var frame = new StackTrace().GetFrame(3);
-            OS.Alert(EscapeForGtkAlert(message + $"\n\n{frame!.GetMethod()}\n\n{frame.GetMethod().DeclaringType.FullName}"), "Assertion failed!");
+            var method = new StackTrace().GetFrame(2)!.GetMethod()!;
+            var messageAndSource = $"{message}\n\nat {method.DeclaringType!.FullName}.{method.Name}";
+            OS.Alert(EscapeForGtkAlert(messageAndSource), "Assertion failed!");
         }
     }
     

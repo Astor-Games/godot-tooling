@@ -22,6 +22,11 @@ public static class MathUtils
             return Math.Clamp(value, min, max);
         }
         
+        public float Clamped01() 
+        {
+            return Math.Clamp(value, 0, 1);
+        }
+        
         public float Wrapped(float min, float max) 
         {
             return Mathf.Wrap(value, min, max);
