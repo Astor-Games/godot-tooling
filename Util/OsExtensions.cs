@@ -13,21 +13,29 @@ public static class OsExtensions
         {
             try
             {
+                argName = argName.StartsWith("--") ? argName : $"--{argName}";
                 args ??= OS.GetCmdlineArgs();
 
                 for (var i = 0; i < args.Length; i++)
                 {
-                    var name = args[i];
-                    
-                    if (name.Equals(argName, StringComparison.InvariantCultureIgnoreCase))
-                    {
+                    var arg = args[i];
 
-                        if (i == args.Length -1 || args[i+1].StartsWith("--"))
+                    // Check for --arg=value format
+                    if (arg.StartsWith(argName + "=", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var value = arg.Substring(argName.Length + 1);
+                        return (T)Convert.ChangeType(value, typeof(T));
+                    }
+
+                    // Check for --arg value format
+                    if (arg.Equals(argName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (i == args.Length - 1 || args[i+1].StartsWith("--"))
                         {
                             PrintErr($"Argument {argName} has no value");
                             return defaultValue;
                         }
-                        
+
                         return (T)Convert.ChangeType(args[i+1], typeof(T));
                     }
                 }
@@ -41,10 +49,11 @@ public static class OsExtensions
             }
         }
 
-        public static bool HasCmdlineArg(string arg)
+        public static bool HasCmdlineArg(string argName)
         {
+            argName = argName.StartsWith("--") ? argName : $"--{argName}";
             args ??= OS.GetCmdlineArgs();
-            return args.Contains(arg);
+            return args.Contains(argName);
         }
     }
 }

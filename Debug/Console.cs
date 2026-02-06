@@ -1,6 +1,7 @@
 // Copyright (c) 2020–2025 Mansur Isaev and contributors - MIT License
 // Ported to C# by Joaquin Muñiz
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -106,7 +107,17 @@ public partial class Console : DockablePanel
             }
 
             var result = command.Action.DynamicInvoke(arguments);
-            Print(result?.ToString());
+            if (result is IEnumerable enumerable)
+            {
+                foreach (var element in enumerable)
+                {
+                    Print(element?.ToString());
+                }
+            }
+            else
+            {
+                Print(result?.ToString());
+            }
         }
         catch (Exception e)
         {
