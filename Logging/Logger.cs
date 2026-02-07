@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
@@ -9,6 +10,8 @@ namespace GodotLib.Logging;
 
 public class Logger(string name)
 {
+    private static readonly Stopwatch stopwatch;
+    
     public enum LogOutput
     {
         GodotConsole,
@@ -34,6 +37,7 @@ public class Logger(string name)
     static Logger()
     {
         Output = LogOutput.DotNetConsole;
+        stopwatch = Stopwatch.StartNew();
     }
 
     [Conditional("DEBUG")]
@@ -142,8 +146,8 @@ public class Logger(string name)
     
     private void PrintLog(SeverityLevel severityLevel)
     {
-        
-        var formattedMessage = $"[{Name}] [{severityLevel}] {sb}";
+        var timestamp = stopwatch.Elapsed.ToString(@"h\:mm\:ss\.fff");
+        var formattedMessage = $"[{timestamp}] [{Name}] [{severityLevel}] {sb}";
         
         switch (Output)
         {
