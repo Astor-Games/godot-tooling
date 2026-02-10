@@ -1,8 +1,7 @@
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
-using Utf8Json;
 using Arg = System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
 
 // ReSharper disable once CheckNamespace
@@ -181,9 +180,11 @@ public class Logger(string name)
 
 public static class StringBuilderExt
 {
+    private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
+    
     public static StringBuilder AppendVar(this StringBuilder sb, string varName, object var)
     {
-        var json = JsonSerializer.PrettyPrint(JsonSerializer.Serialize(var));
+        var json = JsonSerializer.Serialize(var, jsonOptions);
         return sb.Append(varName).Append(": ").Append(json);
     }
 }
