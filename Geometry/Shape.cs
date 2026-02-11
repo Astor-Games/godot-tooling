@@ -1,5 +1,5 @@
 using System.Diagnostics.Contracts;
-using MessagePack;
+
 
 namespace GodotLib;
 
@@ -9,19 +9,19 @@ public enum Shape2DType : byte
     Rect
 }
 
-[MessagePackObject]
+
 public struct Shape2D
 {
-    [Key(0)] public Shape2DType Type;
+     public Shape2DType Type;
 
     // Shared
-    [Key(1)] public Vector2 Center;
+     public Vector2 Center;
 
     // Circle
-    [Key(2)] public float Radius;
+     public float Radius;
 
     // Rect
-    [Key(3)] public Vector2 HalfSize;
+     public Vector2 HalfSize;
   
     public static Shape2D Circle(Vector2 center, float radius)
     {

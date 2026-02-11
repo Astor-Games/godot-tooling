@@ -1,5 +1,3 @@
-using Turtles;
-
 namespace GodotLib.UI;
 
 [GlobalClass]
