@@ -1,4 +1,5 @@
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace GodotLib.Util;
 
@@ -9,6 +10,7 @@ public static class TypeUtils
         return type.IsGenericType && type.GetGenericTypeDefinition() == openGenericType;
     }
     
+    [CanBeNull]
     public static string GetHumanReadableName(this Type type)
     {
         if (type.IsGenericType)
@@ -16,7 +18,7 @@ public static class TypeUtils
             var baseName = type.Name;
             var tickIndex = baseName.IndexOf('`');
             if (tickIndex >= 0)
-                baseName = baseName[0..tickIndex];
+                baseName = baseName[..tickIndex];
 
             var genericArgs = type.GetGenericArguments().Select(GetHumanReadableName);
 
@@ -26,29 +28,27 @@ public static class TypeUtils
         // Handle arrays
         if (type.IsArray)
         {
-            return $"{GetHumanReadableName(type.GetElementType()!)}[{new string(',', type.GetArrayRank() - 1)}]";
+            return $"{type.GetElementType()!.GetHumanReadableName()}[{new string(',', type.GetArrayRank() - 1)}]";
         }
 
         // Built-in type aliases
-        return type switch
-        {
-            { } t when t == typeof(int) => "int",
-            { } t when t == typeof(string) => "string",
-            { } t when t == typeof(bool) => "bool",
-            { } t when t == typeof(object) => "object",
-            { } t when t == typeof(void) => "void",
-            { } t when t == typeof(double) => "double",
-            { } t when t == typeof(float) => "float",
-            { } t when t == typeof(decimal) => "decimal",
-            { } t when t == typeof(byte) => "byte",
-            { } t when t == typeof(char) => "char",
-            { } t when t == typeof(long) => "long",
-            { } t when t == typeof(short) => "short",
-            { } t when t == typeof(uint) => "uint",
-            { } t when t == typeof(ulong) => "ulong",
-            { } t when t == typeof(ushort) => "ushort",
-            { } t when t == typeof(sbyte) => "sbyte",
-            _ => type.Name
-        };
+        if (type == typeof(int)) return "int";
+        if (type == typeof(string)) return "string";
+        if (type == typeof(bool)) return "bool";
+        if (type == typeof(object)) return "object";
+        if (type == typeof(void)) return "void";
+        if (type == typeof(double)) return "double";
+        if (type == typeof(float)) return "float";
+        if (type == typeof(decimal)) return "decimal";
+        if (type == typeof(byte)) return "byte";
+        if (type == typeof(char)) return "char";
+        if (type == typeof(long)) return "long";
+        if (type == typeof(short)) return "short";
+        if (type == typeof(uint)) return "uint";
+        if (type == typeof(ulong)) return "ulong";
+        if (type == typeof(ushort)) return "ushort";
+        if (type == typeof(sbyte)) return "sbyte";
+        
+        return type.Name;
     }
 }
