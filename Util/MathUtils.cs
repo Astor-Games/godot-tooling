@@ -1,6 +1,3 @@
-using Godot;
-using JetBrains.Annotations;
-
 namespace GodotLib.Util;
 
 public static class MathUtils

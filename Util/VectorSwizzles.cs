@@ -7,7 +7,6 @@
         Debug.Log(b); //outputs (2.0, 1.0, 1.0, 2.0)
 */
 
-using Godot;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.MethodImplOptions;
 

@@ -1,4 +1,3 @@
-using Godot;
 using GodotLib.UI.Settings;
 
 namespace Turtles;
