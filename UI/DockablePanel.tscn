@@ -48,6 +48,7 @@ mouse_filter = 2
 
 [node name="TitleBar" type="HBoxContainer" parent="DragMargins/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 0
 alignment = 2
 
 [node name="OptionsMenuButton" type="MenuButton" parent="DragMargins/VBoxContainer/TitleBar"]
@@ -59,7 +60,6 @@ icon = ExtResource("3_rc54i")
 
 [node name="CloseButton" type="Button" parent="DragMargins/VBoxContainer/TitleBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(31, 31)
 layout_mode = 2
 size_flags_horizontal = 9
 size_flags_vertical = 0

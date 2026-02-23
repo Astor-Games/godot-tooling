@@ -50,20 +50,20 @@ public static class PhysicsUtils3D
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Transform3D BodyGetTransform(Rid body)
+    public static Transform3D BodyGetTransform(ResourceId body)
     {
         return PhysicsServer3D.BodyGetState(body, PhysicsServer3D.BodyState.Transform).AsTransform3D();
     }
     
     [MethodImpl(AggressiveInlining)]
-    public static void BodySetTransform(Rid body, Transform3D transform)
+    public static void BodySetTransform(ResourceId body, Transform3D transform)
     {
         PhysicsServer3D.BodySetState(body, PhysicsServer3D.BodyState.Transform, transform);
     }
 
-    public static Rid RegisterPhysicsShape(Shape3D shape)
+    public static ResourceId RegisterPhysicsShape(Shape3D shape)
     {
-        Rid shapeRid;
+        ResourceId shapeRid;
         Variant data;
 
         switch (shape)
@@ -142,7 +142,7 @@ public static class PhysicsUtils3D
         return shapeRid;
     }
 
-    public static Rid CreateSpace(bool active = false, float? defaultGravity = null, Vector3? defaultGravityVector = null, float? defaultLinearDamp = null, float? defaultAngularDamp = null)
+    public static ResourceId CreateSpace(bool active = false, float? defaultGravity = null, Vector3? defaultGravityVector = null, float? defaultLinearDamp = null, float? defaultAngularDamp = null)
     {
         var space  = PhysicsServer3D.SpaceCreate();
         PhysicsServer3D.SpaceSetActive(space, active);

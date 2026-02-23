@@ -443,6 +443,34 @@ public partial class DockablePanel : PanelContainer
         DebugManager.SaveConfig(DockedHeightKey, dockedHeight);
 
         DebugManager.SaveConfig(DockedSideKey, dockPosition);
+
+        SaveMenuOptions();
+    }
+
+    private void SaveMenuOptions()
+    {
+        if (optionsMenu == null) return;
+        for (var index = 0; index < optionsMenu.ItemCount; index++)
+        {
+            if (!optionsMenu.IsItemCheckable(index)) continue;
+
+            var itemId = optionsMenu.GetItemId(index);
+            var key = $"window_{Name}_option_{itemId}_checked";
+            DebugManager.SaveConfig(key, optionsMenu.IsItemChecked(index));
+        }
+    }
+    
+    private void RestoreMenuOptions()
+    {
+        if (optionsMenu == null) return;
+        for (var index = 0; index < optionsMenu.ItemCount; index++)
+        {
+            if (!optionsMenu.IsItemCheckable(index)) continue;
+
+            var itemId = optionsMenu.GetItemId(index);
+            var key = $"window_{Name}_option_{itemId}_checked";
+            optionsMenu.SetItemChecked(index, DebugManager.LoadConfig<bool>(key));
+        }
     }
 
     private bool TryDock(Vector2 pos, Vector2 viewportSize)
@@ -560,6 +588,8 @@ public partial class DockablePanel : PanelContainer
         {
             ClampWindow(lastSize, lastPos);
         }
+        
+        RestoreMenuOptions();
     }
 
     private void ClampWindow(Vector2 lastSize, Vector2 lastPosition)
