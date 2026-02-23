@@ -307,13 +307,13 @@ public partial class Console : DockablePanel
 
     public override void _Ready()
     {
+        base._Ready();
+        
         CreateUI();
 
         AddCommand("clear", Clear, "Clears the console history.");
         AddCommand("help", PrintHelp, "Shows information for the provided command. If no command is provided, lists all available commands.");
         AddCommand("quit", Quit, "Closes the console.");
-        
-        base._Ready();
     }
 
     private void CreateUI()

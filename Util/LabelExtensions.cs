@@ -8,13 +8,12 @@ public static class LabelExtensions
     {
         public void AddTitle(string title)
         {
-            label.PushBold();
-            
-            label.PushFontSize(18);
-            label.AddText(title);
-            label.Pop();
-            label.AddHr(100);
-            label.Newline();
+            using(label.FontSize(16))
+            {
+                label.AddText(title);
+                label.AddHr(100);
+                label.Newline();
+            }
         }
 
         public void AddTableRow(params Span<string> columns)

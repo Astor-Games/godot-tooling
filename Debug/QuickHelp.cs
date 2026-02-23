@@ -2,7 +2,7 @@ using GodotLib.UI;
 
 namespace GodotLib.Debug;
 
-public partial class QuickHelpPanel : DockablePanel
+public partial class QuickHelp : DockablePanel
 {
     private RichTextLabel label;
     
@@ -19,7 +19,7 @@ public partial class QuickHelpPanel : DockablePanel
 
     private void PrintShortcuts()
     {
-        foreach (var (key, actionName) in DebugTools.ListShortcuts())
+        foreach (var (key, actionName) in DebugManager.ListShortcuts())
         {
             label.PushCell();
             label.PushColor(Colors.DarkGray);

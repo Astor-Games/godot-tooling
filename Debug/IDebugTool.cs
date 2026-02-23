@@ -1,6 +1,6 @@
 namespace GodotLib.Debug;
 
-public interface IDebugPanel
+public interface IDebugTool
 {
     
 }

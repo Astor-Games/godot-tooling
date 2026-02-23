@@ -22,6 +22,7 @@ public partial class DockablePanel : PanelContainer
 
     private Label titleLabel;
     private Button closeButton;
+    private MenuButton menuButton;
 
     private DockPosition dockPosition = DockPosition.Undocked;
     private Vector2 undockedSize;
@@ -69,6 +70,9 @@ public partial class DockablePanel : PanelContainer
         closeButton = GetNode<Button>("%CloseButton");
         closeButton.Pressed += ToggleVisibility;
         
+        menuButton = GetNode<MenuButton>("%OptionsMenuButton");
+        menuButton.Visible = false;
+        
         undockedSize = (Vector2I)CustomMinimumSize;
         if (undockedSize.X == 0) undockedSize = new Vector2I(400, 300);
         
@@ -105,93 +109,106 @@ public partial class DockablePanel : PanelContainer
         Visible = !Visible;
         SaveState();
     }
+
+    protected void SetTitle(string title)
+    {
+        titleLabel.Text = title;
+    }
+
+    protected PopupMenu GetOptionsMenu()
+    {
+        menuButton.Visible = true;
+        return menuButton.GetPopup();
+    }
     
     public override void _GuiInput(InputEvent evt)
     {
         if (!Visible) return;
 
-        if (evt is InputEventMouseButton mouseButton && mouseButton.ButtonIndex == MouseButton.Left)
+        switch (evt)
         {
-            var localPos = mouseButton.Position;
-
-            if (mouseButton.Pressed)
+            case InputEventMouseButton mouseButton when mouseButton.ButtonIndex == MouseButton.Left:
             {
-                // Check if clicking edge for resizing (priority over dragging)
-                resizeEdge = GetResizeEdge(localPos);
-                if (resizeEdge != ResizeEdge.None)
-                {
-                    isResizing = true;
-                    resizeStartSize = (Vector2I)Size;
-                    resizeStartPos = (Vector2I)Position;
-                    resizeStartMouse = GetParentViewport().GetMousePosition();
-                    GetViewport().SetInputAsHandled();
-                }
-                // Check if clicking title bar for dragging
-                else if (localPos.Y <= TitleBarHeight)
-                {
-                    isDraggingWindow = true;
-                    dragOffset = localPos;
-                    MouseDefaultCursorShape = CursorShape.Drag;
-                    GetViewport().SetInputAsHandled();
-                }
-            }
-            else
-            {
-                if (isDraggingWindow)
-                {
-                    isDraggingWindow = false;
-                    MouseDefaultCursorShape = CursorShape.Arrow;
+                var localPos = mouseButton.Position;
 
-                    // Save position if not docked
-                    if (dockPosition == DockPosition.Undocked)
+                if (mouseButton.Pressed)
+                {
+                    // Check if clicking edge for resizing (priority over dragging)
+                    resizeEdge = GetResizeEdge(localPos);
+                    if (resizeEdge != ResizeEdge.None)
                     {
-                        undockedPosition = (Vector2I)Position;
-                        undockedSize = (Vector2I)Size;
-                        SaveState();
+                        isResizing = true;
+                        resizeStartSize = (Vector2I)Size;
+                        resizeStartPos = (Vector2I)Position;
+                        resizeStartMouse = GetParentViewport().GetMousePosition();
+                        GetViewport().SetInputAsHandled();
                     }
-
-                    GetViewport().SetInputAsHandled();
-                }
-                if (isResizing)
-                {
-                    isResizing = false;
-
-                    switch (dockPosition)
+                    // Check if clicking title bar for dragging
+                    else if (localPos.Y <= TitleBarHeight)
                     {
-                        // Save the appropriate size based on docked state
-                        case DockPosition.Left or DockPosition.Right:
-                            dockedWidth = (int)Size.X;
-                            break;
-
-                        case DockPosition.Top or DockPosition.Bottom:
-                            dockedHeight = (int)Size.Y;
-                            break;
-                        
-                        default:
-                            
-                            undockedSize = (Vector2I)Size;
-                            undockedPosition = (Vector2I)Position;
-                            break;
+                        isDraggingWindow = true;
+                        dragOffset = localPos;
+                        MouseDefaultCursorShape = CursorShape.Drag;
+                        GetViewport().SetInputAsHandled();
                     }
-
-                    SaveState();
-                    GetViewport().SetInputAsHandled();
-                }
-
-                if (dockPosition == DockPosition.Undocked)
-                {
-                    ClampWindow(Size, Position);
                 }
                 else
                 {
-                    // Update dock manager layout when resizing finished
-                    DockSurface.Instance?.UpdateLayout();
+                    if (isDraggingWindow)
+                    {
+                        isDraggingWindow = false;
+                        MouseDefaultCursorShape = CursorShape.Arrow;
+
+                        // Save position if not docked
+                        if (dockPosition == DockPosition.Undocked)
+                        {
+                            undockedPosition = (Vector2I)Position;
+                            undockedSize = (Vector2I)Size;
+                            SaveState();
+                        }
+
+                        GetViewport().SetInputAsHandled();
+                    }
+                    if (isResizing)
+                    {
+                        isResizing = false;
+
+                        switch (dockPosition)
+                        {
+                            // Save the appropriate size based on docked state
+                            case DockPosition.Left or DockPosition.Right:
+                                dockedWidth = (int)Size.X;
+                                break;
+
+                            case DockPosition.Top or DockPosition.Bottom:
+                                dockedHeight = (int)Size.Y;
+                                break;
+                        
+                            default:
+                            
+                                undockedSize = (Vector2I)Size;
+                                undockedPosition = (Vector2I)Position;
+                                break;
+                        }
+
+                        SaveState();
+                        GetViewport().SetInputAsHandled();
+                    }
+
+                    if (dockPosition == DockPosition.Undocked)
+                    {
+                        ClampWindow(Size, Position);
+                    }
+                    else
+                    {
+                        // Update dock manager layout when resizing finished
+                        DockSurface.Instance?.UpdateLayout();
+                    }
                 }
+
+                break;
             }
-        }
-        else if (evt is InputEventMouseMotion mouseMotion)
-        {
-            if (isDraggingWindow)
+            case InputEventMouseMotion when isDraggingWindow:
             {
                 // Get parent-relative mouse position
                 var mousePos = GetParentViewport().GetMousePosition();
@@ -221,20 +238,23 @@ public partial class DockablePanel : PanelContainer
                 }
 
                 GetViewport().SetInputAsHandled();
+                break;
             }
-            else if (isResizing)
+            case InputEventMouseMotion when isResizing:
             {
                 var mousePos = GetParentViewport().GetMousePosition();
                 HandleResize(mousePos);
                 GetViewport().SetInputAsHandled();
+                break;
             }
-            else
+            case InputEventMouseMotion mouseMotion:
             {
                 // Update cursor based on edge
                 var edge = GetResizeEdge(mouseMotion.Position);
                 UpdateCursor(edge);
+                break;
             }
-        } 
+        }
     }
 
     private ResizeEdge GetResizeEdge(Vector2 localPos)
@@ -411,13 +431,13 @@ public partial class DockablePanel : PanelContainer
 
     public virtual void SaveState()
     {
-        DebugTools.SaveConfig(VisibleKey, Visible);
-        DebugTools.SaveConfig(SizeKey, undockedSize);
-        DebugTools.SaveConfig(PositionKey, undockedPosition);
-        DebugTools.SaveConfig(DockedWidthKey, dockedWidth);
-        DebugTools.SaveConfig(DockedHeightKey, dockedHeight);
+        DebugManager.SaveConfig(VisibleKey, Visible);
+        DebugManager.SaveConfig(SizeKey, undockedSize);
+        DebugManager.SaveConfig(PositionKey, undockedPosition);
+        DebugManager.SaveConfig(DockedWidthKey, dockedWidth);
+        DebugManager.SaveConfig(DockedHeightKey, dockedHeight);
 
-        DebugTools.SaveConfig(DockedSideKey, dockPosition);
+        DebugManager.SaveConfig(DockedSideKey, dockPosition);
     }
 
     private bool TryDock(Vector2 pos, Vector2 viewportSize)
@@ -496,7 +516,7 @@ public partial class DockablePanel : PanelContainer
             dockedHeight = (int)(viewportSize.Y * DockedSizeProportion);
         }
 
-        DebugTools.SaveConfig(DockedSideKey, (int)position);
+        DebugManager.SaveConfig(DockedSideKey, (int)position);
 
         // Register with DockSurface, passing cursor position for smart insertion
         DockSurface.Instance?.UpdatePanelDocking(this, position, cursorPos);
@@ -509,23 +529,23 @@ public partial class DockablePanel : PanelContainer
         dockPosition = DockPosition.Undocked;
         Size = undockedSize;
         Position = undockedPosition;
-        DebugTools.SaveConfig(DockedSideKey, dockPosition);
+        DebugManager.SaveConfig(DockedSideKey, dockPosition);
     }
 
     public virtual void RestoreState()
     {
-        Visible = DebugTools.LoadConfig(VisibleKey, VisibleByDefault);
-        var lastSize = DebugTools.LoadConfig(SizeKey, undockedSize);
-        var lastPos = DebugTools.LoadConfig(PositionKey, new Vector2I(100, 100));
+        Visible = DebugManager.LoadConfig(VisibleKey, VisibleByDefault);
+        var lastSize = DebugManager.LoadConfig(SizeKey, undockedSize);
+        var lastPos = DebugManager.LoadConfig(PositionKey, new Vector2I(100, 100));
 
-        dockPosition = (DockPosition)DebugTools.LoadConfig(DockedSideKey, (int)DockPosition.Undocked);
+        dockPosition = (DockPosition)DebugManager.LoadConfig(DockedSideKey, (int)DockPosition.Undocked);
         undockedSize = lastSize;
         undockedPosition = lastPos;
 
         // Load docked sizes
         var viewportSize = GetViewportRect().Size;
-        dockedWidth = DebugTools.LoadConfig(DockedWidthKey, (int)(viewportSize.X * DockedSizeProportion));
-        dockedHeight = DebugTools.LoadConfig(DockedHeightKey, (int)(viewportSize.Y * DockedSizeProportion));
+        dockedWidth = DebugManager.LoadConfig(DockedWidthKey, (int)(viewportSize.X * DockedSizeProportion));
+        dockedHeight = DebugManager.LoadConfig(DockedHeightKey, (int)(viewportSize.Y * DockedSizeProportion));
 
         if (dockPosition != DockPosition.Undocked)
         {

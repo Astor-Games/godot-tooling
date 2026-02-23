@@ -3,15 +3,15 @@ using GodotLib.UI;
 namespace GodotLib.Debug;
 
 [GlobalClass]
-public partial class DebugPanelContainer : DockablePanel
+public partial class DebugToolbox : DockablePanel
 {
     private string SelectedTabKey => $"window_{Name}_selected_tab";
     private TabContainer tabContainer;
 
     public override void _Ready()
     {
-        tabContainer = GetNode<TabContainer>("%TabContainer");
         base._Ready();
+        tabContainer = GetNode<TabContainer>("%TabContainer");
     }
 
     public override void OnFocusEntered()
@@ -25,9 +25,9 @@ public partial class DebugPanelContainer : DockablePanel
         tabContainer.TabsVisible = false;
     }
     
-    public void AddTab(IDebugPanel panel, string name)
+    public void AddTab(IDebugTool tool, string name)
     {
-        var control = (Control)panel;
+        var control = (Control)tool;
         
         var margins = new MarginContainer();
         margins.Set("theme_override_constants/margin_left", 7);
@@ -45,7 +45,7 @@ public partial class DebugPanelContainer : DockablePanel
     public override void SaveState()
     {
         base.SaveState();
-        DebugTools.SaveConfig(SelectedTabKey, tabContainer.CurrentTab);
+        DebugManager.SaveConfig(SelectedTabKey, tabContainer.CurrentTab);
     }
 
     public override void RestoreState()
@@ -54,7 +54,7 @@ public partial class DebugPanelContainer : DockablePanel
         
         tabContainer.TabChanged += idx => OnTabChanged((int)idx);
         
-        var idx = DebugTools.LoadConfig(SelectedTabKey, -1);
+        var idx = DebugManager.LoadConfig(SelectedTabKey, -1);
         if (idx >= 0)
         {
             tabContainer.CurrentTab = idx;
@@ -64,7 +64,7 @@ public partial class DebugPanelContainer : DockablePanel
     private void OnTabChanged(int idx)
     {
         var control = tabContainer.GetTabControl(idx);
-        DebugTools.SaveConfig(SelectedTabKey, idx);
+        DebugManager.SaveConfig(SelectedTabKey, idx);
         Title = control.Name;
     }
 }

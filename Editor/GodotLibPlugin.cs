@@ -15,15 +15,15 @@ public partial class GodotLibPlugin : EditorPlugin
 
     private static void RegisterQuickLoadScenes()
     {
-       if (!ProjectSettings.HasSetting(DebugTools.QuickLoadScenesKey))
+       if (!ProjectSettings.HasSetting(DebugManager.QuickLoadScenesKey))
        {
-           ProjectSettings.SetSetting(DebugTools.QuickLoadScenesKey, new string[1]);
+           ProjectSettings.SetSetting(DebugManager.QuickLoadScenesKey, new string[1]);
        }
-       ProjectSettings.SetInitialValue(DebugTools.QuickLoadScenesKey, new string[1]);
+       ProjectSettings.SetInitialValue(DebugManager.QuickLoadScenesKey, new string[1]);
 
        ProjectSettings.AddPropertyInfo(new Godot.Collections.Dictionary
        {
-           { "name", DebugTools.QuickLoadScenesKey },
+           { "name", DebugManager.QuickLoadScenesKey },
            { "type", (int)Variant.Type.PackedStringArray },
            { "hint", (int)PropertyHint.TypeString },
            { "hint_string", $"{Variant.Type.String:D}/{PropertyHint.File:D}:*.tscn,*.scn" } // Array of strings (file paths). }
@@ -33,7 +33,7 @@ public partial class GodotLibPlugin : EditorPlugin
     public override void _ExitTree()
     {
         // Optional: Remove the setting when the addon is disabled
-        ProjectSettings.Clear(DebugTools.QuickLoadScenesKey);
+        ProjectSettings.Clear(DebugManager.QuickLoadScenesKey);
     }
 }
 

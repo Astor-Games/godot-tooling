@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://3p1cuqxlxa4t"]
+
+[ext_resource type="PackedScene" uid="uid://york30kexmsf" path="res://addons/godot_lib/UI/DockablePanel.tscn" id="1_pnrcx"]
+[ext_resource type="Script" uid="uid://bp6ramyeuxcfg" path="res://addons/godot_lib/Debug/DebugToolbox.cs" id="2_qury6"]
+
+[node name="DockablePanel" instance=ExtResource("1_pnrcx")]
+offset_left = -183.0
+offset_top = -297.0
+offset_right = 183.0
+offset_bottom = 297.0
+script = ExtResource("2_qury6")
+
+[node name="Title" parent="DragMargins" index="0"]
+text = "Debug Tools"
+
+[node name="TabContainer" type="TabContainer" parent="DragMargins/VBoxContainer/Contents" index="0"]
+unique_name_in_owner = true
+layout_mode = 2

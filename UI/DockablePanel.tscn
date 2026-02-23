@@ -1,0 +1,72 @@
+[gd_scene load_steps=4 format=3 uid="uid://york30kexmsf"]
+
+[ext_resource type="Theme" uid="uid://00bdxbi0d02v" path="res://addons/godot_lib/Debug/debug_ui_theme.tres" id="1_liou6"]
+[ext_resource type="Script" uid="uid://bp6ramyeuxcfg" path="res://addons/godot_lib/Debug/DebugPanelContainer.cs" id="2_sle7l"]
+[ext_resource type="Texture2D" uid="uid://dyhjhramh6yig" path="res://addons/ecs_tools/EntityDebugger/Icons/menu.svg" id="3_rc54i"]
+
+[node name="DockablePanel" type="PanelContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -200.0
+offset_right = 300.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 1
+focus_behavior_recursive = 2
+mouse_filter = 1
+theme = ExtResource("1_liou6")
+script = ExtResource("2_sle7l")
+metadata/_custom_type_script = "uid://bp6ramyeuxcfg"
+
+[node name="DragMargins" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Title" type="Label" parent="DragMargins"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 0
+text = "Title"
+vertical_alignment = 1
+max_lines_visible = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DragMargins"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TitleBar" type="HBoxContainer" parent="DragMargins/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="OptionsMenuButton" type="MenuButton" parent="DragMargins/VBoxContainer/TitleBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 9
+size_flags_stretch_ratio = 0.0
+icon = ExtResource("3_rc54i")
+
+[node name="CloseButton" type="Button" parent="DragMargins/VBoxContainer/TitleBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(31, 31)
+layout_mode = 2
+size_flags_horizontal = 9
+size_flags_vertical = 0
+size_flags_stretch_ratio = 0.0
+text = "✕"
+
+[node name="Contents" type="MarginContainer" parent="DragMargins/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_behavior_recursive = 2

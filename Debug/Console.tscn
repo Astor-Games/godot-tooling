@@ -1,59 +1,26 @@
-[gd_scene load_steps=3 format=3 uid="uid://s8wks02elbo6"]
+[gd_scene load_steps=3 format=3 uid="uid://dycmuxkbddnip"]
 
-[ext_resource type="Theme" uid="uid://00bdxbi0d02v" path="res://addons/godot_lib/Debug/debug_ui_theme.tres" id="1_8e72x"]
+[ext_resource type="PackedScene" uid="uid://york30kexmsf" path="res://addons/godot_lib/UI/DockablePanel.tscn" id="1_8e72x"]
 [ext_resource type="Script" uid="uid://b3vaar2rr60k" path="res://addons/godot_lib/Debug/Console.cs" id="1_w2f1x"]
 
-[node name="Console" type="PanelContainer"]
-custom_minimum_size = Vector2(300, 100)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 106.0
-offset_top = 478.0
-offset_right = -91.0
-offset_bottom = -28.0
-grow_horizontal = 2
-grow_vertical = 2
-focus_mode = 1
-focus_behavior_recursive = 2
-mouse_filter = 1
-theme = ExtResource("1_8e72x")
+[node name="Console" instance=ExtResource("1_8e72x")]
+offset_left = -338.0
+offset_top = -100.0
+offset_right = 338.0
+offset_bottom = 100.0
 script = ExtResource("1_w2f1x")
-metadata/_custom_type_script = "uid://b3vaar2rr60k"
 
-[node name="DragMargins" type="MarginContainer" parent="."]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="DragMargins"]
-layout_mode = 2
-mouse_filter = 2
-
-[node name="Title" type="Label" parent="DragMargins/VBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
+[node name="Title" parent="DragMargins" index="0"]
 text = "Console"
-horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="Output" type="RichTextLabel" parent="DragMargins/VBoxContainer"]
+[node name="VSplitContainer" type="VSplitContainer" parent="DragMargins/VBoxContainer/Contents" index="0"]
+layout_mode = 2
+
+[node name="Output" type="RichTextLabel" parent="DragMargins/VBoxContainer/Contents/VSplitContainer" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Input" type="LineEdit" parent="DragMargins/VBoxContainer"]
+[node name="Input" type="LineEdit" parent="DragMargins/VBoxContainer/Contents/VSplitContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
-
-[node name="CloseButton" type="Button" parent="DragMargins"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(31, 31)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
-text = "✕"
