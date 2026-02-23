@@ -1,4 +1,5 @@
 using GodotLib.Debug;
+using Turtles.addons.godot_lib.UI;
 using ZLinq;
 
 namespace GodotLib.UI;
@@ -38,6 +39,7 @@ public partial class DockablePanel : PanelContainer
     private Vector2 resizeStartSize;
     private Vector2 resizeStartPos;
     private Vector2 resizeStartMouse;
+    private PopupMenu optionsMenu;
 
     [Flags]
     private enum ResizeEdge
@@ -115,10 +117,13 @@ public partial class DockablePanel : PanelContainer
         titleLabel.Text = title;
     }
 
-    protected PopupMenu GetOptionsMenu()
+    protected PopupMenu UseOptionsMenu()
     {
         menuButton.Visible = true;
-        return menuButton.GetPopup();
+        optionsMenu = menuButton.GetPopup();
+        optionsMenu.IdPressed += id => OnOptionsMenuItemClicked((int)id);
+        
+        return optionsMenu;
     }
     
     public override void _GuiInput(InputEvent evt)
@@ -580,4 +585,13 @@ public partial class DockablePanel : PanelContainer
     {
         return GetParent().GetViewport();
     }
+    
+    private void OnOptionsMenuItemClicked(int menuId)
+    {
+        var index = optionsMenu.GetItemIndex(menuId);
+        var isChecked = optionsMenu.HandleCheckState(index);
+        OnOptionsMenuItemClicked(menuId, isChecked);
+    }
+
+    protected virtual void OnOptionsMenuItemClicked(int menuId, bool isChecked) { }
 }
