@@ -28,7 +28,7 @@ public static class Assertions
     [AssertionMethod]
     public static void AssertEqual(object obj1, object obj2, string message = null, bool fatal = true, [Arg(nameof(obj1))]string obj1Name = null, [Arg(nameof(obj2))]string obj2Name = null)
     {
-        AssertInternal(obj1.Equals(obj2), message ?? $"{obj1Name} was not equal to {obj2Name}.", fatal);
+        AssertInternal(obj1.Equals(obj2), message ?? $"{obj1Name} was not equal to {obj2Name}.\nExpected {obj2}, but was {obj1}", fatal);
     }
     
     [Conditional("DEBUG")]
