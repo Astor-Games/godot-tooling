@@ -15,89 +15,95 @@ public partial class WorldSpaceIndicator : Control, Resettable
         Hide,
         ShowDirectionalArrow
     }
-    
-    [Export] public string Text
+
+    [Export]
+    public string Text
     {
-        get => __text;
+        get;
         set
         {
-            __text = value;
-            if (label != null) label.Text = value;
+            field = value;
+            label?.Text = value;
         }
     }
 
     [Export] public Node3D Target;
+    [Export] public Vector3 Offset;
     [Export] public OffScreenBehavior WhenOffScreen = OffScreenBehavior.Hide;
-    [Export] protected bool StartEnabled = true;
     [Export] private float arrowRadius = 65.0f;
-   
     
-    private float minimumDistance, minDistSquared;
-    private float maximumDistance, maxDistSquared;
-
     public bool IsOnScreen { get; private set; }
 
-    [Export] public float MinimumDistance
+    [Export]
+    public float MinimumDistance 
     {
-        get => minimumDistance;
+        get;
         set
         {
-            minimumDistance = value;
-            minDistSquared = MinimumDistance * MinimumDistance;
+            field = value;
+            minDistSquared = value * value;
         }
     }
+    private float minDistSquared;
 
-    [Export] public float MaximumDistance
+    [Export]
+    public float MaximumDistance 
     {
-        get => maximumDistance;
+        get;
         set
         {
-            maximumDistance = value;
-            maxDistSquared = MaximumDistance > MinimumDistance ? MaximumDistance * MaximumDistance : float.MaxValue;
+            field = value;
+            maxDistSquared = value > MinimumDistance ? value * value : float.MaxValue;
         }
     }
+    private float maxDistSquared;
 
-    public bool Enabled;
+    public bool Enabled { get; set; }
+    public Fader Content { get; private set; }
     
     private CollisionShape2D debugShape;
-    private Fader arrow, content, onlyOnScreenContent;
-    
+    private Fader arrow, onlyOnScreenContent;
     private Label label;
-    private string __text;
 
-    public Fader Content => content;
-
+    
     public override void _Ready()
     {
-        content = GetNode<Fader>("%Content");
+        Content = GetNode<Fader>("%Content");
         onlyOnScreenContent = GetNode<Fader>("%Content/OnlyOnScreen");
         label = GetNode<Label>("%Content/OnlyOnScreen/Label");
         arrow = GetNode<Fader>("%DirectionArrow");
-        Reset();
-        
-        if (StartEnabled) 
+
+        if (Enabled) 
             Show();
     }
 
     public override void _Process(double delta)
     {
-        if(!Enabled || !IsInstanceValid(Target))
+        // Se wet a target but it's become invalid
+        var targetInvalid = Target != null && !IsInstanceValid(Target);
+        
+        if(!Enabled || targetInvalid)
         {
-            content.BeVisible = false;
+            Content.BeVisible = false;
             arrow.BeVisible = false;
             return;
         }
-        
+
         var currentCamera = GetViewport().GetCamera3D();
         var cameraPos = currentCamera.GlobalPosition;
-        var targetPos = Target.GetGlobalTransformInterpolated().Origin;
+        var targetPos = Offset;
+        
+        if (Target != null)
+        {
+            targetPos += Target.GetGlobalTransformInterpolated().Origin;
+        }
+
         var distance = targetPos.DistanceSquaredTo(cameraPos);
         
         // Case 1: The object is out of the visible range, hide it
-        
         if (distance < minDistSquared || distance > maxDistSquared)
         {
-            content.BeVisible = false;
+            Content.BeVisible = false;
             arrow.BeVisible = false;
             return;
         }
@@ -113,7 +119,7 @@ public partial class WorldSpaceIndicator : Control, Resettable
         if (dot < 0 && viewportRect.DistanceTo(screenPos) < -arrowRadius) 
         {
             IsOnScreen = true;
-            content.BeVisible = true;
+            Content.BeVisible = true;
             onlyOnScreenContent.BeVisible = true;
             arrow.BeVisible = false;
             Position = screenPos - PivotOffset;
@@ -133,7 +139,7 @@ public partial class WorldSpaceIndicator : Control, Resettable
             screenPos = LocalToViewportPoint(currentCamera, localPos);
             Position = screenPos - PivotOffset;
 
-            content.BeVisible = true;
+            Content.BeVisible = true;
             onlyOnScreenContent.BeVisible = false;
             arrow.BeVisible = true;
             arrow.Rotation = viewportRect.GetCenter().AngleToPoint(screenPos) + ArrowOffset;
@@ -141,7 +147,7 @@ public partial class WorldSpaceIndicator : Control, Resettable
         }
         
         //Case 4: The indicator is set to Hide or the angle is so extreme that math breaks
-        content.BeVisible = false;
+        Content.BeVisible = false;
         arrow.BeVisible = false;
     }
 
@@ -190,8 +196,8 @@ public partial class WorldSpaceIndicator : Control, Resettable
   
     public void Reset()
     {
-        content.BeVisible = false;
-        content.Visible = false;
+        Content.BeVisible = false;
+        Content.Visible = false;
         
         arrow.BeVisible = false;
         arrow.Visible = false;
@@ -201,6 +207,6 @@ public partial class WorldSpaceIndicator : Control, Resettable
 
     public override void _EnterTree()
     {
-        Text = __text; // In case it was set before _ready
+        label?.Text = Text; // In case it was set before _ready
     }
 }

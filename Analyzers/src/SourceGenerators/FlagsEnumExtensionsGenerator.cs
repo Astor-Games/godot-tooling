@@ -77,13 +77,33 @@ public class FlagsEnumExtensionsGenerator : IIncrementalGenerator
         sb.AppendLine();
 
         // Generate Set method
-        sb.AppendLine("    [MethodImpl(MethodImplOptions.AggressiveInlining)]");
-        sb.AppendLine($"    public static void Set(this ref {enumName} mask, {enumName} flag, bool value)");
-        sb.AppendLine("    {");
-        sb.AppendLine("        mask = (value ? mask | flag : mask & ~flag);");
-        sb.AppendLine("    }");
-        sb.AppendLine("}");
 
+        sb.AppendLine($$"""
+                        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                        public static void Set(this ref {{enumName}} mask, {{enumName}} flag, bool value)
+                        {
+                            mask = (value ? mask | flag : mask & ~flag);
+                        }
+                        """);
+        sb.AppendLine();
+
+        // Generate GetFirstSetBitName method
+
+        sb.AppendLine($$"""
+                        public static {{enumName}} GetFirstSetValue(this {{enumName}} flags)
+                            {
+                                var zeroes = System.Numerics.BitOperations.TrailingZeroCount((ulong)flags);
+
+                                if (zeroes == 64) // nothing set
+                                {
+                                    return 0;
+                                }
+
+                                return ({{enumName}})(1u << zeroes);
+                            }
+                        """);
+
+        sb.AppendLine("}");
         return sb.ToString();
     }
 }
