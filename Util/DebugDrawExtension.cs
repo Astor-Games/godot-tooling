@@ -1,3 +1,5 @@
+using static Godot.PhysicsServer3D;
+
 namespace GodotLib.Util;
 
 internal static class DebugDrawExtension
@@ -41,6 +43,51 @@ internal static class DebugDrawExtension
                 
                 default:
                     PushWarning($"Shape {shape.GetType().Name} not supported.");
+                    return;
+            }
+        }
+        
+        public static void DrawShape(ResourceId shape, in Transform3D transform, Color? color = null, float duration = 0f)
+        {
+            Transform3D scaledTransform;
+            
+            var shapeType = ShapeGetType(shape);
+            var shapeParams = ShapeGetData(shape);
+
+            float radius;
+            float height;
+            GodotDictionary dict;
+            switch (shapeType)
+            {
+                case ShapeType.Box:
+                    scaledTransform = transform.ScaledLocal(shapeParams.AsVector3() * 2);
+                    DebugDrawMT.DrawBoxXf(scaledTransform, color, true, duration);
+                    return;
+                
+                case ShapeType.Sphere:
+                    scaledTransform = transform.ScaledLocal( Vector3.One * shapeParams.AsSingle());
+                    DebugDrawMT.DrawSphereXf(scaledTransform, color, duration);
+                    return;
+                
+                case ShapeType.Cylinder:
+                    dict = shapeParams.AsGodotDictionary();
+                    radius = dict["radius"].AsSingle();
+                    height = dict["height"].AsSingle();
+                    scaledTransform = transform.ScaledLocal(new Vector3(radius, height, radius));
+                    DebugDrawMT.DrawCylinder(scaledTransform, color, duration);
+                    return;
+                
+                case ShapeType.Capsule:
+                    var position = transform.Origin;
+                    var rotation = transform.Basis.GetRotationQuaternion();
+                    dict = shapeParams.AsGodotDictionary();
+                    radius = dict["radius"].AsSingle();
+                    height = dict["height"].AsSingle();
+                    DebugDrawMT.DrawCapsule(position, rotation, radius, height, color, duration);
+                    return;
+                
+                default:
+                    PushWarning($"Shape {shapeType} not supported.");
                     return;
             }
         }

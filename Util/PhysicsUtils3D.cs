@@ -61,83 +61,84 @@ public static class PhysicsUtils3D
         PhysicsServer3D.BodySetState(body, PhysicsServer3D.BodyState.Transform, transform);
     }
 
-    public static ResourceId RegisterPhysicsShape(Shape3D shape)
+    public static ResourceId CreateSphereShape(float radius)
     {
-        ResourceId shapeRid;
-        Variant data;
+        var shapeRid = PhysicsServer3D.SphereShapeCreate();
+        PhysicsServer3D.ShapeSetData(shapeRid, radius);
+        return shapeRid;
+    }
 
-        switch (shape)
+    public static ResourceId CreateBoxShape(Vector3 size)
+    {
+        var shapeRid = PhysicsServer3D.BoxShapeCreate();
+        PhysicsServer3D.ShapeSetData(shapeRid, size / 2.0f);
+        return shapeRid;
+    }
+
+    public static ResourceId CreateCapsuleShape(float height, float radius)
+    {
+        var shapeRid = PhysicsServer3D.CapsuleShapeCreate();
+        var data = new GodotDictionary
         {
-            case SphereShape3D sphere:
-                shapeRid = PhysicsServer3D.SphereShapeCreate();
-                data = sphere.Radius;
-                break;
-            
-            case BoxShape3D box:
-                shapeRid = PhysicsServer3D.BoxShapeCreate();
-                data = box.Size / 2.0f;
-                break;
-            
-            case CapsuleShape3D capsule:
-                shapeRid = PhysicsServer3D.CapsuleShapeCreate();
-                data = new GodotDictionary
-                {
-                    { "radius", capsule.Radius },
-                    { "height", capsule.Height }
-                };
-                break;
-            
-            case CylinderShape3D cylinder:
-                shapeRid = PhysicsServer3D.CylinderShapeCreate();
-                data = new GodotDictionary
-                {
-                    { "radius", cylinder.Radius },
-                    { "height", cylinder.Height }
-                };
-                break;
-            
-            case ConcavePolygonShape3D concave:
-                shapeRid = PhysicsServer3D.ConcavePolygonShapeCreate();
-                data = new GodotDictionary
-                {
-                    { "faces", concave.GetFaces() },
-                    { "backface_collision", concave.BackfaceCollision }
-                };
-                break;
-            
-            case ConvexPolygonShape3D convex:
-                shapeRid = PhysicsServer3D.ConvexPolygonShapeCreate();
-                data = convex.Points;
-                break;
-            
-            case HeightMapShape3D heightmap:
-            {
-                shapeRid = PhysicsServer3D.HeightmapShapeCreate();
+            { "radius", radius },
+            { "height", height }
+        };
+        PhysicsServer3D.ShapeSetData(shapeRid, data);
+        return shapeRid;
+    }
 
-                var minHeight = float.MaxValue;
-                var maxHeight = float.MinValue;
+    public static ResourceId CreateCylinderShape(float height, float radius)
+    {
+        var shapeRid = PhysicsServer3D.CylinderShapeCreate();
+        var data = new GodotDictionary
+        {
+            { "radius", radius },
+            { "height", height }
+        };
+        PhysicsServer3D.ShapeSetData(shapeRid, data);
+        return shapeRid;
+    }
 
-                foreach (var v in heightmap.MapData)
-                {
-                    if (v < minHeight) minHeight = v;
-                    if (v > maxHeight) maxHeight = v;
-                }
+    public static ResourceId CreateConcavePolygonShape(Vector3[] faces, bool backfaceCollision)
+    {
+        var shapeRid = PhysicsServer3D.ConcavePolygonShapeCreate();
+        var data = new GodotDictionary
+        {
+            { "faces", faces },
+            { "backface_collision", backfaceCollision }
+        };
+        PhysicsServer3D.ShapeSetData(shapeRid, data);
+        return shapeRid;
+    }
 
-                data = new GodotDictionary
-                {
-                    { "width", heightmap.MapWidth },
-                    { "depth", heightmap.MapDepth },
-                    { "heights", heightmap.MapData },
-                    { "min_height", minHeight },
-                    { "max_height", maxHeight }
-                };
-                break;
-            }
-            
-            default:
-                throw new ArgumentOutOfRangeException(nameof(shape));
+    public static ResourceId CreateConvexPolygonShape(Vector3[] points)
+    {
+        var shapeRid = PhysicsServer3D.ConvexPolygonShapeCreate();
+        PhysicsServer3D.ShapeSetData(shapeRid, points);
+        return shapeRid;
+    }
+
+    public static ResourceId CreateHeightMapShape(int mapWidth, int mapDepth, float[] mapData)
+    {
+        var shapeRid = PhysicsServer3D.HeightmapShapeCreate();
+
+        var minHeight = float.MaxValue;
+        var maxHeight = float.MinValue;
+
+        foreach (var v in mapData)
+        {
+            if (v < minHeight) minHeight = v;
+            if (v > maxHeight) maxHeight = v;
         }
 
+        var data = new GodotDictionary
+        {
+            { "width", mapWidth },
+            { "depth", mapDepth },
+            { "heights", mapData },
+            { "min_height", minHeight },
+            { "max_height", maxHeight }
+        };
         PhysicsServer3D.ShapeSetData(shapeRid, data);
         return shapeRid;
     }
