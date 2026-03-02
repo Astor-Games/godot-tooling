@@ -7,7 +7,7 @@ namespace GodotLib;
 
 // TODO template this to deduplicate code
 
-public struct InlineList4<T>() where T : unmanaged
+public struct InlineList4<T>() where T : unmanaged, IEquatable<T>
 {
     private const int Length = 4;
     private InnerBuffer buffer = new();
@@ -48,7 +48,7 @@ public struct InlineList4<T>() where T : unmanaged
         var removeIdx = -1;
         for (var i = 0; i < Count; i++)
         {
-            if (!Equals(buffer[i], element)) continue;
+            if (!buffer[i].Equals(element)) continue;
             removeIdx = i;
             break;
         }
@@ -91,7 +91,7 @@ public struct InlineList4<T>() where T : unmanaged
     }
 }
 
-public struct InlineList8<T>() where T : unmanaged
+public struct InlineList8<T>() where T : unmanaged, IEquatable<T>
 {
     private const int Length = 8;
     private InnerBuffer buffer = new();
@@ -140,7 +140,7 @@ public struct InlineList8<T>() where T : unmanaged
         var removeIdx = -1;
         for (var i = 0; i < Count; i++)
         {
-            if (!Equals(buffer[i], element)) continue;
+            if (!buffer[i].Equals(element)) continue;
             removeIdx = i;
             break;
         }
@@ -183,7 +183,7 @@ public struct InlineList8<T>() where T : unmanaged
     }
 }
 
-public struct InlineList16<T>() where T : unmanaged
+public struct InlineList16<T>() where T : unmanaged, IEquatable<T>
 {
     private const int Length = 16;
     private InnerBuffer buffer = new();
@@ -232,7 +232,7 @@ public struct InlineList16<T>() where T : unmanaged
         var removeIdx = -1;
         for (var i = 0; i < Count; i++)
         {
-            if (!Equals(buffer[i], element)) continue;
+            if (!buffer[i].Equals(element)) continue;
             removeIdx = i;
             break;
         }
@@ -275,7 +275,7 @@ public struct InlineList16<T>() where T : unmanaged
     }
 }
 
-public struct InlineList32<T>() where T : unmanaged
+public struct InlineList32<T>() where T : unmanaged, IEquatable<T>
 {
     private const int Length = 32;
     private InnerBuffer buffer = new();
@@ -324,7 +324,7 @@ public struct InlineList32<T>() where T : unmanaged
         var removeIdx = -1;
         for (var i = 0; i < Count; i++)
         {
-            if (!Equals(buffer[i], element)) continue;
+            if (!buffer[i].Equals(element)) continue;
             removeIdx = i;
             break;
         }
