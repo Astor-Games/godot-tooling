@@ -102,6 +102,22 @@ public class FlagsEnumExtensionsGenerator : IIncrementalGenerator
                                 return ({{enumName}})(1u << zeroes);
                             }
                         """);
+        sb.AppendLine();
+
+        // Generate HasAll method
+        sb.AppendLine("    [MethodImpl(MethodImplOptions.AggressiveInlining)]");
+        sb.AppendLine($"    public static bool HasAll(this {enumName} mask, {enumName} flags)");
+        sb.AppendLine("    {");
+        sb.AppendLine("        return (mask & flags) == flags;");
+        sb.AppendLine("    }");
+        sb.AppendLine();
+
+        // Generate HasAny method
+        sb.AppendLine("    [MethodImpl(MethodImplOptions.AggressiveInlining)]");
+        sb.AppendLine($"    public static bool HasAny(this {enumName} mask, {enumName} flags)");
+        sb.AppendLine("    {");
+        sb.AppendLine("        return (mask & flags) != 0;");
+        sb.AppendLine("    }");
 
         sb.AppendLine("}");
         return sb.ToString();

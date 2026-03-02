@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
@@ -52,7 +53,7 @@ public class Logger(string name)
     {
         if (Level > SeverityLevel.Debug) return;
         sb.Append(message);
-        sb.Append(" | ");
+        sb.Append("\n\t");
         sb.AppendVar(variableName, variable);
         PrintLog(SeverityLevel.Debug);
     }
@@ -68,7 +69,7 @@ public class Logger(string name)
     {
         if (Level > SeverityLevel.Info) return;
         sb.Append(message);
-        sb.Append(" | ");
+        sb.Append("\n\t");
         sb.AppendVar(variableName, variable);
         PrintLog(SeverityLevel.Info);
     }
@@ -84,7 +85,7 @@ public class Logger(string name)
     {
         if (Level > SeverityLevel.Warning) return;
         sb.Append(message);
-        sb.Append(" | ");
+        sb.Append("\n\t");
         sb.AppendVar(variableName, variable);
         PrintLog(SeverityLevel.Warning);
     }
@@ -100,7 +101,7 @@ public class Logger(string name)
     {
         if (Level > SeverityLevel.Error) return;
         sb.Append(message);
-        sb.Append(" | ");
+        sb.Append("\n\t");
         sb.AppendVar(variableName, variable);
         PrintLog(SeverityLevel.Error);
     }
@@ -117,7 +118,7 @@ public class Logger(string name)
     {
         if (Level > severityLevel) return;
         
-        sb.AppendVar(name1, var1).Append(", ");
+        sb.AppendVar(name1, var1).AppendLine();
         sb.AppendVar(name2, var2);
         PrintLog(severityLevel);
     }
@@ -126,8 +127,8 @@ public class Logger(string name)
     {
         if (Level > severityLevel) return;
         
-        sb.AppendVar(name1, var1).Append(", ");
-        sb.AppendVar(name2, var2).Append(", ");
+        sb.AppendVar(name1, var1).AppendLine();
+        sb.AppendVar(name2, var2).AppendLine();
         sb.AppendVar(name3, var3);
         PrintLog(severityLevel);
     }
@@ -136,9 +137,9 @@ public class Logger(string name)
     {
         if (Level > severityLevel) return;
         
-        sb.AppendVar(name1, var1).Append(", ");
-        sb.AppendVar(name2, var2).Append(", ");
-        sb.AppendVar(name3, var3).Append(", ");
+        sb.AppendVar(name1, var1).AppendLine();
+        sb.AppendVar(name2, var2).AppendLine();
+        sb.AppendVar(name3, var3).AppendLine();
         sb.AppendVar(name4, var4);
         PrintLog(severityLevel);
     }
@@ -180,11 +181,28 @@ public class Logger(string name)
 
 public static class StringBuilderExt
 {
+    private static readonly Dictionary<Type, bool> customToStringCache = new();
     private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
     
     public static StringBuilder AppendVar(this StringBuilder sb, string varName, object var)
     {
+        if (HasCustomToString(var))
+        {
+            return sb.Append(varName).Append(": ").Append(var);
+        }
+
         var json = JsonSerializer.Serialize(var, jsonOptions);
         return sb.Append(varName).Append(": ").Append(json);
+    }
+    
+    private static bool HasCustomToString(object var)
+    {
+        var type = var.GetType();
+
+        if (customToStringCache.TryGetValue(type, out var result)) return result;
+        var toStringMethod = type.GetMethod("ToString", Type.EmptyTypes);
+        var hasCustomToString = toStringMethod?.DeclaringType != typeof(object);
+        customToStringCache.Add(type, hasCustomToString);
+        return hasCustomToString;
     }
 }
