@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://dycmuxkbddnip"]
+[gd_scene load_steps=7 format=3 uid="uid://dycmuxkbddnip"]
 
 [ext_resource type="PackedScene" uid="uid://york30kexmsf" path="res://addons/godot_lib/UI/DockablePanel.tscn" id="1_8e72x"]
 [ext_resource type="Script" uid="uid://b3vaar2rr60k" path="res://addons/godot_lib/Debug/Console.cs" id="1_w2f1x"]
+[ext_resource type="FontFile" uid="uid://4k1gkptgq7gu" path="res://addons/godot_lib/UI/fonts/JetBrainsMono-Regular.ttf" id="3_bqcp7"]
+[ext_resource type="FontFile" uid="uid://d1tlpccck0a2a" path="res://addons/godot_lib/UI/fonts/JetBrainsMono-Bold.ttf" id="4_xusk3"]
+[ext_resource type="FontFile" uid="uid://d2wnblr6dvscf" path="res://addons/godot_lib/UI/fonts/JetBrainsMono-BoldItalic.ttf" id="5_3lt0g"]
+[ext_resource type="FontFile" uid="uid://4rrx1uv2oa84" path="res://addons/godot_lib/UI/fonts/JetBrainsMono-Italic.ttf" id="6_dvorj"]
 
 [node name="Console" instance=ExtResource("1_8e72x")]
 offset_left = -338.0
@@ -20,7 +24,17 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+focus_mode = 2
+theme_override_fonts/normal_font = ExtResource("3_bqcp7")
+theme_override_fonts/bold_font = ExtResource("4_xusk3")
+theme_override_fonts/bold_italics_font = ExtResource("5_3lt0g")
+theme_override_fonts/italics_font = ExtResource("6_dvorj")
+theme_override_fonts/mono_font = ExtResource("3_bqcp7")
+scroll_following = true
+selection_enabled = true
 
 [node name="Input" type="LineEdit" parent="DragMargins/VBoxContainer/Contents/VSplitContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_bqcp7")
+caret_blink = true

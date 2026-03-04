@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Range = System.Range;
 
 namespace GodotLib;
 
@@ -146,20 +147,97 @@ public class CircularBuffer<T> : IEnumerable<T>
             var actualIndex = InternalIndex(index);
             return ref _buffer[actualIndex];
         }
-        // set
-        // {
-        //     if (IsEmpty)
-        //     {
-        //         throw new IndexOutOfRangeException($"Cannot access index {index}. Buffer is empty");
-        //     }
-        //     if (index >= _size)
-        //     {
-        //         throw new IndexOutOfRangeException($"Cannot access index {index}. Buffer size is {_size}");
-        //     }
-        //     var actualIndex = InternalIndex(index);
-        //     _buffer[actualIndex] = value;
-        // }
     }
+
+    /// <summary>
+    /// Range access to elements in buffer.
+    /// Returns a view over the specified range without copying elements.
+    /// </summary>
+    /// <param name="range">Range of elements to access.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when range is outside valid bounds.</exception>
+    public RangeView this[Range range]
+    {
+        get
+        {
+            var (offset, length) = range.GetOffsetAndLength(Size);
+            if (offset < 0 || offset > Size)
+            {
+                throw new ArgumentOutOfRangeException(nameof(range), $"Range offset {offset} is outside valid bounds [0, {Size}]");
+            }
+            if (length < 0 || offset + length > Size)
+            {
+                throw new ArgumentOutOfRangeException(nameof(range), $"Range length {length} extends beyond buffer size {Size}");
+            }
+            return new RangeView(this, offset, length);
+        }
+    }
+
+    /// <summary>
+    /// A view over a range of elements in the circular buffer.
+    /// Provides access to elements in logical order without copying.
+    /// </summary>
+    public readonly struct RangeView : IEnumerable<T>
+    {
+        private readonly CircularBuffer<T> _buffer;
+        private readonly int _offset;
+        private readonly int _length;
+
+        internal RangeView(CircularBuffer<T> buffer, int offset, int length)
+        {
+            _buffer = buffer;
+            _offset = offset;
+            _length = length;
+        }
+
+        /// <summary>
+        /// Number of elements in this view.
+        /// </summary>
+        public int Length => _length;
+
+        /// <summary>
+        /// Access element at the specified index within this view.
+        /// </summary>
+        /// <param name="index">Index within the view (0-based).</param>
+        public ref T this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= _length)
+                {
+                    throw new IndexOutOfRangeException($"Index {index} is outside view bounds [0, {_length})");
+                }
+                return ref _buffer[_offset + index];
+            }
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the view.
+        /// </summary>
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (int i = 0; i < _length; i++)
+            {
+                yield return _buffer[_offset + i];
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        /// <summary>
+        /// Copies the view contents to an array.
+        /// </summary>
+        public T[] ToArray()
+        {
+            var result = new T[_length];
+            for (int i = 0; i < _length; i++)
+            {
+                result[i] = _buffer[_offset + i];
+            }
+            return result;
+        }
+    }
+    
+    
 
     /// <summary>
     /// Pushes a new element to the back of the buffer. Back()/this[Size-1]
@@ -422,7 +500,7 @@ public class CircularBuffer<T> : IEnumerable<T>
     {
         if (IsEmpty)
         {
-            return new ArraySegment<T>(new T[0]);
+            return new ArraySegment<T>(Array.Empty<T>());
         }
         else if (_start < _end)
         {

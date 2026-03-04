@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
+using GodotLib.Logging;
 using GodotLib.UI;
 using GodotLib.Util;
 using static GodotLib.Debug.Assertions;
@@ -166,7 +167,7 @@ public partial class Console : DockablePanel
 
     public void PrintWarning(string text)
     {
-        output.PushColor(Colors.Yellow);
+        output.PushColor(LogManager.WarningColor);
         output.AppendText(text);
         output.Newline();
         output.Pop();
@@ -174,7 +175,7 @@ public partial class Console : DockablePanel
 
     public void PrintError(string text)
     {
-        output.PushColor(Colors.Red);
+        output.PushColor(LogManager.ErrorColor);
         output.AppendText(text);
         output.Newline();
         output.Pop();

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://york30kexmsf"]
 
 [ext_resource type="Theme" uid="uid://00bdxbi0d02v" path="res://addons/godot_lib/Debug/debug_ui_theme.tres" id="1_liou6"]
-[ext_resource type="Script" uid="uid://bp6ramyeuxcfg" path="res://addons/godot_lib/Debug/DebugToolbox.cs" id="2_sle7l"]
+[ext_resource type="Script" uid="uid://lgikymo104l6" path="res://addons/godot_lib/UI/DockablePanel.cs" id="2_6u5bh"]
 [ext_resource type="Texture2D" uid="uid://dyhjhramh6yig" path="res://addons/ecs_tools/EntityDebugger/Icons/menu.svg" id="3_rc54i"]
 [ext_resource type="Texture2D" uid="uid://cr3jdx4gj5grp" path="res://addons/ecs_tools/EntityDebugger/Icons/close.svg" id="4_6u5bh"]
 
@@ -21,8 +21,8 @@ focus_mode = 1
 focus_behavior_recursive = 2
 mouse_filter = 1
 theme = ExtResource("1_liou6")
-script = ExtResource("2_sle7l")
-metadata/_custom_type_script = "uid://bp6ramyeuxcfg"
+script = ExtResource("2_6u5bh")
+metadata/_custom_type_script = "uid://lgikymo104l6"
 
 [node name="DragMargins" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -73,3 +73,6 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 mouse_behavior_recursive = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5

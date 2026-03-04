@@ -1,0 +1,76 @@
+[gd_scene load_steps=5 format=3 uid="uid://7hrsaus5fm8p"]
+
+[ext_resource type="PackedScene" uid="uid://york30kexmsf" path="res://addons/godot_lib/UI/DockablePanel.tscn" id="1_ulwsw"]
+[ext_resource type="Script" uid="uid://wvpkcckx6id8" path="res://addons/godot_lib/Logging/LogViewerPanel.cs" id="1_v5kpq"]
+[ext_resource type="FontFile" uid="uid://4k1gkptgq7gu" path="res://addons/godot_lib/UI/fonts/JetBrainsMono-Regular.ttf" id="3_rvm2b"]
+[ext_resource type="Texture2D" uid="uid://vyk0r3ynddw3" path="res://addons/godot_lib/UI/icons/dropdown.svg" id="3_uj8aj"]
+
+[node name="DockablePanel" instance=ExtResource("1_ulwsw")]
+script = ExtResource("1_v5kpq")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DragMargins/VBoxContainer/Contents" index="0"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Controls" type="HBoxContainer" parent="DragMargins/VBoxContainer/Contents/VBoxContainer" index="0"]
+layout_mode = 2
+
+[node name="SeverityLabel" type="Label" parent="DragMargins/VBoxContainer/Contents/VBoxContainer/Controls" index="0"]
+layout_mode = 2
+text = "Severity:"
+
+[node name="SeveritySelector" type="MenuButton" parent="DragMargins/VBoxContainer/Contents/VBoxContainer/Controls" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Warning, Error"
+icon = ExtResource("3_uj8aj")
+icon_alignment = 2
+
+[node name="Spacer2" type="Control" parent="DragMargins/VBoxContainer/Contents/VBoxContainer/Controls" index="2"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="LoggerLabel" type="Label" parent="DragMargins/VBoxContainer/Contents/VBoxContainer/Controls" index="3"]
+layout_mode = 2
+text = "Loggers:"
+
+[node name="LoggerSelector" type="MenuButton" parent="DragMargins/VBoxContainer/Contents/VBoxContainer/Controls" index="4"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "All"
+icon = ExtResource("3_uj8aj")
+icon_alignment = 2
+
+[node name="Spacer" type="Control" parent="DragMargins/VBoxContainer/Contents/VBoxContainer/Controls" index="5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SearchBar" type="LineEdit" parent="DragMargins/VBoxContainer/Contents/VBoxContainer/Controls" index="6"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+placeholder_text = "Search"
+context_menu_enabled = false
+emoji_menu_enabled = false
+virtual_keyboard_enabled = false
+virtual_keyboard_show_on_focus = false
+select_all_on_focus = true
+
+[node name="ClearButton" type="Button" parent="DragMargins/VBoxContainer/Contents/VBoxContainer/Controls" index="7"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Clear"
+
+[node name="HSeparator2" type="HSeparator" parent="DragMargins/VBoxContainer/Contents/VBoxContainer" index="1"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="LogList" type="ItemList" parent="DragMargins/VBoxContainer/Contents/VBoxContainer" index="2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("3_rvm2b")
+theme_override_font_sizes/font_size = 14
+select_mode = 1
+allow_search = false
+fixed_icon_size = Vector2i(20, 20)

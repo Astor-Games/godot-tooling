@@ -11,7 +11,7 @@ public partial class DockSurface : Control
     private readonly Dictionary<DockPosition, List<DockData>> dockedPanels = new();
     private readonly List<DockablePanel> nonDockedPanels = new();
     private readonly Dictionary<string, DockablePanel> allPanels = new(); // Key: panel name/id
-    private Logger log = new(nameof(DockSurface));
+    private Logger log = Logger.For<DockSurface>();
     
     private Vector2 lastViewportSize = Vector2.Zero;
     private DockablePanel focusedPanel;

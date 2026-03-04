@@ -2,60 +2,66 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
 using Arg = System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
 
 // ReSharper disable once CheckNamespace
 namespace GodotLib.Logging;
 
-public class Logger(string name)
+[Flags]
+public enum SeverityLevel
 {
-    private static readonly Stopwatch stopwatch;
+    None = 0,
     
-    public enum LogOutput
-    {
-        GodotConsole,
-        DotNetConsole
-    }
+    Trace = 1 << 0,
+    Info = 1 << 1,
+    Warning = 1 << 2,
+    Error = 1 << 3,
     
-    public enum SeverityLevel
-    {
-        Debug = 1,
-        Info = 2,
-        Warning = 3,
-        Error = 4
-    }
+    All = Trace | Info | Warning | Error
+}
 
-    public static LogOutput Output;
+public class Logger
+{
     public SeverityLevel Level = SeverityLevel.Info;
     
+    public string Name { get; }
     
-    public string Name { get; init; } = name;
     private readonly StringBuilder sb = new(256);
-    private static readonly Lock printLock = new();
 
-    static Logger()
+    public static Logger For<T>() => For(typeof(T).Name);
+    
+    public static Logger For(string name)
     {
-        Output = LogOutput.DotNetConsole;
-        stopwatch = Stopwatch.StartNew();
+        if (LogManager.Instance.TryGetLogger(name, out var logger))
+        {
+            return logger;
+        }
+
+        return new Logger(name);
+    }
+    
+    private Logger(string name)
+    {
+        Name = name;
+        LogManager.Instance.RegisterLogger(this);
     }
 
     [Conditional("DEBUG")]
-    public void Debug(string message)
+    public void Trace(string message)
     {
-        if (Level > SeverityLevel.Debug) return;
+        if (Level > SeverityLevel.Trace) return;
         sb.Append(message);
-        PrintLog(SeverityLevel.Debug);
+        PrintLog(SeverityLevel.Trace);
     }
 
     [Conditional("DEBUG")]
-    public void Debug(string message, object variable, [Arg("variable")] string variableName = null)
+    public void Trace(string message, object variable, [Arg("variable")] string variableName = null)
     {
-        if (Level > SeverityLevel.Debug) return;
+        if (Level > SeverityLevel.Trace) return;
         sb.Append(message);
         sb.Append("\n\t");
         sb.AppendVar(variableName, variable);
-        PrintLog(SeverityLevel.Debug);
+        PrintLog(SeverityLevel.Trace);
     }
     
     public void Info(string message)
@@ -106,7 +112,6 @@ public class Logger(string name)
         PrintLog(SeverityLevel.Error);
     }
     
-
     public void PrintVar(object variable, SeverityLevel severityLevel = SeverityLevel.Info, [Arg("variable")] string variableName = null)
     {
         if (Level > severityLevel) return;
@@ -146,35 +151,8 @@ public class Logger(string name)
     
     private void PrintLog(SeverityLevel severityLevel)
     {
-        var timestamp = stopwatch.Elapsed.ToString(@"h\:mm\:ss\.fff");
-        var formattedMessage = $"[{timestamp}] [{Name}] [{severityLevel}] {sb}";
-        
-        switch (Output)
-        {
-            case LogOutput.GodotConsole:
-                Print(formattedMessage);
-                break;
-            
-            case LogOutput.DotNetConsole:
-                
-                var ansiColor = severityLevel switch
-                {
-                    SeverityLevel.Debug => ConsoleColor.Gray,
-                    SeverityLevel.Info => ConsoleColor.Black,
-                    SeverityLevel.Warning => ConsoleColor.Yellow,
-                    SeverityLevel.Error => ConsoleColor.Red,
-                    _ => ConsoleColor.White
-                };
-                
-                lock (printLock)
-                {
-                    Console.ForegroundColor = ansiColor;
-                    Console.WriteLine(formattedMessage);
-                    Console.ResetColor();
-                }
-                break;
-        }
-        
+        var message = sb.ToString();
+        LogManager.Instance.AddLog(this, severityLevel, message);
         sb.Clear();
     }
 }

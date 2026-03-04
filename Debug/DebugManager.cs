@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AstorGames.EcsTools;
+using GodotLib.Logging;
 using GodotLib.UI;
 using GodotLib.Util;
 
@@ -41,9 +42,15 @@ public partial class DebugManager : Node
         
         var quickHelp = DockSurface.CreatePanel<QuickHelp>("uid://4xhtd33lo64t", "quick_help");
         AddDebugShortcut(quickHelp.ToggleVisibility, Key.F1, description: "Quick help");
+        
+        toolbox = DockSurface.CreatePanel<DebugToolbox>("uid://3p1cuqxlxa4t", "debug");
+        AddDebugShortcut(toolbox.ToggleVisibility, Key.F2, description: "Open debug tools");
 
         console = DockSurface.CreatePanel<Console>("uid://dycmuxkbddnip", "console");
-        AddDebugShortcut(console.ToggleVisibility, Key.F2, description: "Open console");
+        AddDebugShortcut(console.ToggleVisibility, Key.F3, description: "Open console");
+        
+        var logView = DockSurface.CreatePanel<LogViewerPanel>("uid://7hrsaus5fm8p", "logger");
+        AddDebugShortcut(logView.ToggleVisibility, Key.F4, description: "Open logs");
         
         var entityExplorer = DockSurface.CreatePanel<EntityExplorer>("uid://ce43m4m1dijmv", "entity_explorer");
         AddDebugShortcut(entityExplorer.ToggleVisibility, Key.F9, description: "Open entity explorer");
@@ -51,9 +58,6 @@ public partial class DebugManager : Node
         var entityInspector = DockSurface.CreatePanel<EntityInspector>("uid://dlp8t5gkbh231", "entity_inspector");
         AddDebugShortcut(entityInspector.ToggleVisibility, Key.F10, description: "Open entity inspector");
         
-        toolbox = DockSurface.CreatePanel<DebugToolbox>("uid://3p1cuqxlxa4t", "debug");
-        AddDebugShortcut(toolbox.ToggleVisibility, Key.F12, description: "Open debug tools");
-
         GetParent().ChildEnteredTree += _ => GetParent().MoveChild(this, -1);
     }
 
