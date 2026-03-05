@@ -21,7 +21,8 @@ public partial class Console : DockablePanel
     {
         public string Name;
         public string Description;
-        public Delegate Action;
+        public MethodInfo Method;
+        public object Target;
         public ParameterInfo[] Parameters;
         public object[] DefaultArgs;
     }
@@ -42,12 +43,16 @@ public partial class Console : DockablePanel
 
     public void AddCommand(string commandName, Delegate action, string description = "")
     {
+        AddCommand(commandName, action.Method, action.Target, description);
+    }
+    
+    public void AddCommand(string commandName, MethodInfo method, object target, string description = "")
+    {
         commandName = commandName.ToLowerInvariant();
         
         AssertFalse(HasCommand(commandName), $"Command '{commandName}' already exists.");
         AssertTrue(commandName.IsValidIdentifier(), $"Invalid command name: '{commandName}'.");
         
-        var method = action.Method;
         var parameters = method.GetParameters();
         var defaultArgs = parameters.Where(p => p.HasDefaultValue).Select(p => p.DefaultValue).ToArray();
         
@@ -57,7 +62,8 @@ public partial class Console : DockablePanel
         var command = new CommandData
         {
             Name = commandName,
-            Action = action,
+            Method = method,
+            Target = target,
             Description = description,
             Parameters = parameters,
             DefaultArgs = defaultArgs
@@ -107,17 +113,26 @@ public partial class Console : DockablePanel
                 }
             }
 
-            var result = command.Action.DynamicInvoke(arguments);
-            if (result is IEnumerable enumerable)
+            var result = command.Method.Invoke(command.Target, arguments);
+
+            switch (result)
             {
-                foreach (var element in enumerable)
+                case string str:
+                    Print(str);
+                    break;
+                
+                case IEnumerable enumerable:
                 {
-                    Print(element?.ToString());
+                    foreach (var element in enumerable)
+                    {
+                        Print(element?.ToString());
+                    }
+
+                    break;
                 }
-            }
-            else
-            {
-                Print(result?.ToString());
+                default:
+                    Print(result?.ToString());
+                    break;
             }
         }
         catch (Exception e)
@@ -145,6 +160,11 @@ public partial class Console : DockablePanel
 
     private static object ParseArgument(string value, Type type)
     {
+        if (type.IsEnum)
+        {
+            return Enum.Parse(type, value, true);
+        }
+        
         if (value.StartsWith('{') || value.StartsWith('['))
             return JsonSerializer.Deserialize(value, type);
         

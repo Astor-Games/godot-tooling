@@ -38,7 +38,7 @@ public partial class LogManager : Node
     private readonly Lock printLock = new();
     private readonly Stopwatch stopwatch;
     private int logIdx = 0;
-    private readonly Dictionary<string, Logger> loggers = new();
+    private readonly Dictionary<string, Logger> loggers = new(StringComparer.InvariantCultureIgnoreCase);
     
     // Make it lazy to avoid an initialization interlock
     private Logger log => field ??= Logger.For<LogManager>();
@@ -89,6 +89,27 @@ public partial class LogManager : Node
         {
             return loggers.TryGetValue(name, out logger);
         }
+    }
+
+    [ConsoleCommand(description: "Sets the minimum log level for the specified logger\nLog levels are trace, info, warning, error.")]
+    public static string SetLoggerLevel(string loggerName, SeverityLevel level)
+    {
+        if (Instance.TryGetLogger(loggerName, out var logger))
+        {
+            logger.SetLevel(level);
+            return $"Logger {logger.Name} set to {level}";
+        }
+        throw new Exception($"Logger '{loggerName}' not found");
+    }
+    
+    [ConsoleCommand(description: "Gets the minimum log level for the specified logger.")]
+    public static SeverityLevel GetLoggerLevel(string loggerName)
+    {
+        if (Instance.TryGetLogger(loggerName, out var logger))
+        {
+            return logger.Level;
+        }
+        throw new Exception($"Logger '{loggerName}' not found");
     }
     
     public void AddLog(Logger logger, SeverityLevel severity, string message)

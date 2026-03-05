@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using AstorGames.EcsTools;
 using GodotLib.Logging;
 using GodotLib.UI;
@@ -57,8 +58,10 @@ public partial class DebugManager : Node
         
         var entityInspector = DockSurface.CreatePanel<EntityInspector>("uid://dlp8t5gkbh231", "entity_inspector");
         AddDebugShortcut(entityInspector.ToggleVisibility, Key.F10, description: "Open entity inspector");
-        
+
         GetParent().ChildEnteredTree += _ => GetParent().MoveChild(this, -1);
+
+        AutoRegisterCommands();
     }
 
     private void QuickLoad(string scenePath)
@@ -94,11 +97,6 @@ public partial class DebugManager : Node
        shortcuts.Add(keycodeWithModifiers, shortcut);
     }
 
-    protected void AddConsoleCommand(Delegate action, string name, string description = "")
-    {
-        console.AddCommand(name, action, description);
-    }
-
     public override void _ShortcutInput(InputEvent evt)
     {
         if (evt is not InputEventKey eventKey || eventKey.Pressed) return;
@@ -113,12 +111,14 @@ public partial class DebugManager : Node
 
     public static T LoadConfig<[MustBeVariant] T>(string key, T defaultValue = default)
     {
-        return config.GetValue("Debug", key, Variant.From(defaultValue)).As<T>();
+        var parts = key.Split("_", 2);
+        return config.GetValue(parts[0], parts[1], Variant.From(defaultValue)).As<T>();
     }
 
     public static void SaveConfig<[MustBeVariant]T>(string key, T value)
     {
-        config.SetValue("Debug", key, Variant.From(value));   
+        var parts = key.Split("_", 2);
+        config.SetValue(parts[0], parts[1], Variant.From(value));   
         SaveConfig();
     }
     
@@ -157,5 +157,39 @@ public partial class DebugManager : Node
     {
         public Action Action;
         public string Description;
+    }
+    
+    
+    private void AutoRegisterCommands()
+    {
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+        foreach (var assembly in assemblies)
+        {
+            try
+            {
+                var types = assembly.GetTypes();
+
+                foreach (var type in types)
+                {
+                    var methods = type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+
+                    foreach (var method in methods)
+                    {
+                        var attribute = method.GetCustomAttribute<ConsoleCommandAttribute>();
+                        if (attribute == null) continue;
+
+                        var commandName = attribute.Name ?? method.Name.ToSnakeCase();
+                        var commandDescription = attribute.Description;
+                        console.AddCommand(commandName, method, commandDescription);
+                    }
+                }
+            }
+            catch (ReflectionTypeLoadException)
+            {
+                // Skip assemblies that can't be loaded
+                continue;
+            }
+        }
     }
 }

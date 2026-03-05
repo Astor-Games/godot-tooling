@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
+using GodotLib.Debug;
 using Arg = System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
 
 // ReSharper disable once CheckNamespace
@@ -22,8 +23,10 @@ public enum SeverityLevel
 
 public class Logger
 {
-    public SeverityLevel Level = SeverityLevel.Info;
-    
+    private string LevelConfigKey => $"logger_{Name}_level";
+
+    public SeverityLevel Level { get; private set; }
+
     public string Name { get; }
     
     private readonly StringBuilder sb = new(256);
@@ -44,6 +47,7 @@ public class Logger
     {
         Name = name;
         LogManager.Instance.RegisterLogger(this);
+        Level = DebugManager.LoadConfig(LevelConfigKey, SeverityLevel.Info);
     }
 
     [Conditional("DEBUG")]
@@ -154,6 +158,12 @@ public class Logger
         var message = sb.ToString();
         LogManager.Instance.AddLog(this, severityLevel, message);
         sb.Clear();
+    }
+
+    public void SetLevel(SeverityLevel level)
+    {
+        Level = level;
+        DebugManager.SaveConfig(LevelConfigKey, level);
     }
 }
 
