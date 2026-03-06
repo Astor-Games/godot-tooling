@@ -43,15 +43,12 @@ public struct Shape2D
         };
     }
 
-    
-    [Pure]
-    public Shape2D Shrink(float delta)
+    public readonly Shape2D Shrink(float delta)
     {
         return Grow(-delta);
     }
 
-    [Pure]
-    public Shape2D Grow(float delta)
+    public readonly Shape2D Grow(float delta)
     {
         var copy = this;
         switch (Type)
@@ -68,8 +65,7 @@ public struct Shape2D
         return copy;
     }
     
-    [Pure]
-    public Vector2 Sample(RandomNumberGenerator rng)
+    public readonly Vector2 Sample(RandomNumberGenerator rng)
     {
         switch (Type)
         {
