@@ -8,19 +8,18 @@ public partial class Fader : Control
     
     private Tween fadeInTween, fadeOutTween;
     
-    
     [Export] public float FadeDuration = 0.1f;
 
-    [Export] public bool BeVisible
+    [Export]
+    public bool BeVisible
     {
-        get => __beVisible;
+        get;
         set
         {
-            __beVisible = value;
+            field = value;
             UpdateVis();
         }
     }
-    private bool __beVisible;
 
     public override void _EnterTree()
     {
