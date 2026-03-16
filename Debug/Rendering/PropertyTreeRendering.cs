@@ -55,8 +55,11 @@ public static partial class PropertyTreeRendering
 
     public static TreeItem Render(TreeItem parentItem, int childIndex, object component, string fieldName, RenderingParameters parameters)
     {
-        if (parameters.Depth > 3)
+        var componentType = component?.GetType();
+        if (componentType?.GetCustomAttribute<InspectorHiddenAttribute>() != null || parameters.Depth > 3)
+        {
             return parentItem;
+        }
 
         parameters.Depth++;
         parameters.IsNew = parentItem.CreateOrGetChild(childIndex, out var componentItem);
@@ -89,8 +92,7 @@ public static partial class PropertyTreeRendering
             componentItem.SetCustomColor(1, RendererConsts.ErrorColor);
             return componentItem;
         }
-
-        var componentType = component.GetType();
+        
         componentItem.SetTooltipText(0, $"Type: {componentType.GetHumanReadableName()}");
 
         if (componentType.IsPrimitive || componentType.IsEnum || componentType == typeof(string))
@@ -167,6 +169,11 @@ public static partial class PropertyTreeRendering
         var fieldIndex = 0;
         foreach (var field in fields)
         {
+            if (field.GetCustomAttribute<InspectorHiddenAttribute>() != null)
+            {
+                return;
+            }
+            
             try
             {
                 var fieldValue = field.GetValue(component);
