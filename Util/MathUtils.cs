@@ -181,16 +181,22 @@ public static class MathUtils
         x++;
         return x;
     }
-
-    public static int Wrap(int value, int min, int max)
+    
+    public static float HermiteInterpolate(float p0, float p1, float m0, float m1, float t)
     {
-        var range = max - min;
-        if (range <= 0) throw new ArgumentException("max must be > min");
+        if (float.IsInfinity(m0) || float.IsInfinity(m1))
+        {
+            return p0;
+        }
 
-        var v = (value - min) % range;
-        if (v < 0)
-            v += range;
+        var t2 = t * t;
+        var t3 = t2 * t;
 
-        return (v + min);
+        var a = 2 * t3 - 3 * t2 + 1;
+        var b = t3 - 2 * t2 + t;
+        var c = t3 - t2;
+        var d = -2 * t3 + 3 * t2;
+
+        return a * p0 + b * m0 + c * m1 + d * p1;
     }
 }

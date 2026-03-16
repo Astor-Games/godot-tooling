@@ -17,6 +17,17 @@ public static class Transform3DExtensions
         public Vector3 Up => transform.Basis.Y;
 
         public Vector3 Down => -transform.Basis.Y;
+        
+
+        public Transform3D Rotated(Quaternion quaternion)
+        {
+            return new Transform3D(new Basis(quaternion), new Vector3()) * transform;
+        }
+
+        public Transform3D RotatedLocal(Quaternion quaternion)
+        {
+            return new Transform3D(transform.Basis * new Basis(quaternion), transform.Origin);
+        }
     }
 }
 
