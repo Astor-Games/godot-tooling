@@ -1,4 +1,5 @@
 using System.Collections;
+using Collections.Pooled;
 
 namespace GodotLib.Debug;
 
@@ -7,35 +8,31 @@ public class ListRenderer : IPropertyTreeRenderer
     public void Render(TreeItem rootItem, object property, RenderingParameters parameters)
     {
         var list = (IList)property;
-
-
-        if (list.Count == 0)
+        
+        switch (list.Count)
         {
-            rootItem.SetText(1, "No elements");
-            rootItem.SetCustomColor(1, RendererConsts.DefaultValueColor);
-        } 
-        else if (list.Count == 1)
-        {
-            rootItem.SetText(1, "1 element");
-        }
-        else
-        {
-            rootItem.SetText(1, $"{list.Count} elements");
+            case 0:
+                rootItem.SetText(1, "No elements");
+                rootItem.SetCustomColor(1, RendererConsts.DefaultValueColor);
+                break;
+            case 1:
+                rootItem.SetText(1, "1 element");
+                break;
+            default:
+                rootItem.SetText(1, $"{list.Count} elements");
+                break;
         }
         
-        var existingChildren = rootItem.GetChildren();
-
-        //clean up old list items
-        for (var i = list.Count; i < existingChildren.Count; i++)
-        {
-            existingChildren[i].Free();
-        }
+        using var names = new PooledList<string>(list.Count);
+        using var values = new PooledList<object>(list.Count);
         
-        //update / add list items
         for (var i = 0; i < list.Count; i++)
         {
-            var item = list[i];
-            PropertyTreeRendering.Render(rootItem, i, item,i.ToString(), parameters);
+
+            names.Add(i.ToString());
+            values.Add(list[i]);
         }
+
+        PropertyTreeRendering.Render(rootItem, names.Span, values.Span, parameters);
     }
 }

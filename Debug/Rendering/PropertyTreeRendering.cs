@@ -3,14 +3,13 @@ using System.Text.RegularExpressions;
 using GodotLib.Util;
 using System.Collections.Generic;
 using System.Reflection;
-using AstorGames.EcsTools;
+using Collections.Pooled;
 using Convert = System.Convert;
 
 namespace GodotLib.Debug;
 
 public static partial class PropertyTreeRendering
 {
-
     [GeneratedRegex(@"<(?<name>\w+)>k__BackingField")]
     private static partial Regex BakingFieldRegex();
 
@@ -18,7 +17,7 @@ public static partial class PropertyTreeRendering
     private static readonly Dictionary<Type, IPropertyTreeRenderer> customRenderers = new();
     private static readonly HashSet<Type> stringRenderedTypes = new();
     private static readonly ListRenderer listRenderer = new();
-    
+
     private static readonly Color selectedColor = new Color(1, 1, 1, 0.1f);
 
     static PropertyTreeRendering()
@@ -29,7 +28,7 @@ public static partial class PropertyTreeRendering
             {
                 var attr = (PropertyRendererAttribute)Attribute.GetCustomAttribute(type, typeof(PropertyRendererAttribute));
                 if (attr == null) continue;
-                
+
                 foreach (var renderedType in attr.RenderedTypes)
                 {
                     if (renderedType.IsArray || renderedType.IsGenericTypeDefinition)
@@ -53,140 +52,190 @@ public static partial class PropertyTreeRendering
         stringRenderedTypes.Add(typeof(T));
     }
 
-    public static TreeItem Render(TreeItem parentItem, int childIndex, object component, string fieldName, RenderingParameters parameters)
+    public static void Render(TreeItem parentItem, ReadOnlySpan<string> names, ReadOnlySpan<object> values, RenderingParameters parameters)
     {
-        var componentType = component?.GetType();
-        if (componentType?.GetCustomAttribute<InspectorHiddenAttribute>() != null || parameters.Depth > 3)
-        {
-            return parentItem;
-        }
+        if (parameters.Depth > 3) return;
+        
+        var count = names.Length;
 
-        parameters.Depth++;
-        parameters.IsNew = parentItem.CreateOrGetChild(childIndex, out var componentItem);
+        using var indices = new PooledSet<int>();
 
-        fieldName = BakingFieldRegex().Replace(fieldName, "${name}");
-        if (parameters.HumanizeName)
+        for (var i = 0; i < count; i++)
         {
-            fieldName = StringUtils.HumanizeName(fieldName);
+            try
+            {
+                var value = values[i];
+                var name = names[i];
+                var propertyType = value?.GetType();
+                if (propertyType?.GetCustomAttribute<InspectorHiddenAttribute>() != null) continue;
+               
+                var index = RenderSingleProperty(parentItem, i, name, value, parameters);
+                indices.Add(index); 
+            }
+            catch (Exception e)
+            {
+                var child = parentItem.GetChild(parentItem.GetChildCount() -1);
+                child.SetText(0, $"{names[i]}: ERROR");
+                child.SetTooltipText(0, e.Message);
+                child.SetCustomColor(0, RendererConsts.ErrorColor);
+                
+                return;
+            }
         }
         
-        if (!string.IsNullOrEmpty(fieldName))
-            componentItem.SetText(0, fieldName);
+        var allChildren = parentItem.GetChildCount();
+        for (var i = 0; i < allChildren; i++)
+        {
+            if (!indices.Contains(i))
+            {
+                var child = parentItem.GetChild(i);
+                parentItem.RemoveChild(child);
+            }
+        }
+    }
+
+    private static int RenderSingleProperty(TreeItem parentItem, int index, string name, object value, RenderingParameters parameters)
+    {
+        parameters.Depth++;
+        parameters.IsNew = GetOrCreateItem(parentItem, name.GetHashCode(), out var item, ref index);
+        
+        var displayName = BakingFieldRegex().Replace(name, "${name}");
+        if (parameters.HumanizeName)
+        {
+            displayName = StringUtils.HumanizeName(name);
+        }
+        
+        item.SetText(0, displayName);
 
         if (parameters.Highlighted)
         {
-            componentItem.SetCustomBgColor(0, selectedColor);
-            componentItem.SetExpandRight(0, true);
+            item.SetCustomBgColor(0, selectedColor);
+            item.SetExpandRight(0, true);
         }
 
         parameters.Highlighted = false;
 
         if (parameters.IsNew)
         {
-            componentItem.Collapsed |= parameters.StartCollapsed;
+            GD.Print("new!");
+            item.Collapsed |= parameters.StartCollapsed;
         }
 
-        if (component == null)
+        if (value == null)
         {
-            componentItem.SetText(1, "null");
-            componentItem.SetCustomColor(1, RendererConsts.ErrorColor);
-            return componentItem;
+            item.SetText(1, "null");
+            item.SetCustomColor(1, RendererConsts.ErrorColor);
+            return index;
         }
-        
-        componentItem.SetTooltipText(0, $"Type: {componentType.GetHumanReadableName()}");
 
-        if (componentType.IsPrimitive || componentType.IsEnum || componentType == typeof(string))
+        var type = value.GetType();
+        item.SetTooltipText(0, $"Type: {type.GetHumanReadableName()}");
+
+        if (type.IsPrimitive || type.IsEnum || type == typeof(string))
         {
             // Special handling for flag enums showing 0
-            if (componentType.IsEnum)
+            if (type.IsEnum)
             {
-                if (componentType.GetCustomAttribute<FlagsAttribute>() != null && Convert.ToInt64(component) == 0)
+                if (type.GetCustomAttribute<FlagsAttribute>() != null && Convert.ToInt64(value) == 0)
                 {
-                    componentItem.SetText(1, "None");
-                    componentItem.SetCustomColor(1, RendererConsts.DefaultValueColor);
-                    return componentItem;
+                    item.SetText(1, "None");
+                    item.SetCustomColor(1, RendererConsts.DefaultValueColor);
+                    return index;
                 }
 
                 if (parameters.HumanizeName)
                 {
-                    componentItem.SetText(1, StringUtils.HumanizeName(component.ToString()));
-                    return componentItem;
+                    item.SetText(1, StringUtils.HumanizeName(value.ToString()));
+                    return index;
                 }
             }
 
-            componentItem.SetText(1, component.ToString());
-            return componentItem;
+            item.SetText(1, value.ToString());
+            return index;
         }
 
-        if (customRenderers.TryGetValue(componentType, out var customRenderer))
+        if (customRenderers.TryGetValue(type, out var customRenderer))
         {
-            customRenderer.Render(componentItem, component, parameters);
-            return componentItem;
+            customRenderer.Render(item, value, parameters);
+            return index;
         }
-        
-        if (componentType.IsGenericType)
+
+        if (type.IsGenericType)
         {
-            var genericTypeDefinition = componentType.GetGenericTypeDefinition();
+            var genericTypeDefinition = type.GetGenericTypeDefinition();
             if (genericTypedRenderers.TryGetValue(genericTypeDefinition, out var rendererType))
             {
                 if (rendererType.IsGenericTypeDefinition)
                 {
-                    customRenderer = (IPropertyTreeRenderer)Activator.CreateInstance(rendererType.MakeGenericType(componentType.GetGenericArguments()));
+                    customRenderer = (IPropertyTreeRenderer)Activator.CreateInstance(rendererType.MakeGenericType(type.GetGenericArguments()));
                 }
                 else
                 {
                     customRenderer = (IPropertyTreeRenderer)Activator.CreateInstance(rendererType);
                 }
-              
-                customRenderer!.Render(componentItem, component, parameters);
+
+                customRenderer!.Render(item, value, parameters);
 
                 // Cache the instance in customRenderers for reuse
-                customRenderers[componentType] = customRenderer;
-                return componentItem;
+                customRenderers[type] = customRenderer;
+                return index;
             }
         }
-        
-        if (componentType.IsAssignableTo(typeof(IList)))
+
+        if (type.IsAssignableTo(typeof(IList)))
         {
-            listRenderer.Render(componentItem, component, parameters);
-            return componentItem;
+            listRenderer.Render(item, value, parameters);
+            return index;
         }
 
-        if (stringRenderedTypes.Contains(componentType))
+        if (stringRenderedTypes.Contains(type))
         {
-            componentItem.SetText(1, component.ToString());
-            return componentItem;
+            item.SetText(1, value.ToString());
+            return index;
         }
 
-        RenderFields(componentItem, component, parameters);
-        return componentItem;
+        RenderFields(item, value, parameters);
+        return index;
     }
 
-    public static void RenderFields(TreeItem parentItem, object component, RenderingParameters parameters)
+    private static bool GetOrCreateItem(TreeItem parentItem, int id, out TreeItem item, ref int index)
+    {
+        var items = parentItem.GetChildren();
+        for (int i = 0; i < items.Count; i++)
+        {
+            var child = items[i];
+            if (child.GetMeta("element_id", 0).AsInt32() == id)
+            {
+                item = child;
+                index = i;
+                return false;
+            }
+        }
+
+        item = parentItem.CreateChild(index);
+        item.SetMeta("element_id", id);
+        return true;
+    }
+
+    private static void RenderFields(TreeItem parentItem, object component, RenderingParameters parameters)
     {
         var componentType = component.GetType();
         var fields = componentType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-        var fieldIndex = 0;
+
+        using var names = new PooledList<string>(fields.Length);
+        using var values = new PooledList<object>(fields.Length);
+
         foreach (var field in fields)
         {
             if (field.GetCustomAttribute<InspectorHiddenAttribute>() != null)
             {
-                return;
+                continue;
             }
-            
-            try
-            {
-                var fieldValue = field.GetValue(component);
-                Render(parentItem, fieldIndex++, fieldValue, field.Name, parameters);
-            }
-            catch (Exception e)
-            {
-                parentItem.CreateOrGetChild(fieldIndex, out var child);
-                child.SetText(0, $"{field.Name} | {field.FieldType}: ERROR");
-                child.SetTooltipText(0, e.Message);
-                child.SetCustomColor(0, RendererConsts.ErrorColor);
-                return;
-            }
+
+            names.Add(field.Name);
+            values.Add(field.GetValue(component));
         }
+
+        Render(parentItem, names.Span, values.Span, parameters);
     }
 }
