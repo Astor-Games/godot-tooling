@@ -117,7 +117,6 @@ public static partial class PropertyTreeRendering
 
         if (parameters.IsNew)
         {
-            GD.Print("new!");
             item.Collapsed |= parameters.StartCollapsed;
         }
 
