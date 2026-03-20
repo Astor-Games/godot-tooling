@@ -11,5 +11,6 @@ public static class RendererConsts
 {
     public static readonly Color ErrorColor = Color.Color8(219, 51, 51);
     public static readonly Color WarningColor = Color.Color8(243, 204, 89);
-    public static readonly Color DefaultValueColor = Color.Color8(95, 100, 103);
+    public static readonly Color DisabledColor = Color.Color8(120, 125, 128);
+    public static readonly Color DefaultValueColor = Color.Color8(98, 132, 154);
 }

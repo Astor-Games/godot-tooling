@@ -75,9 +75,11 @@ public static partial class PropertyTreeRendering
             catch (Exception e)
             {
                 var child = parentItem.GetChild(parentItem.GetChildCount() -1);
-                child.SetText(0, $"{names[i]}: ERROR");
+                child.SetText(0, names[i]);
+                child.SetText(0, "ERROR");
                 child.SetTooltipText(0, e.Message);
                 child.SetCustomColor(0, RendererConsts.ErrorColor);
+                child.SetCustomColor(1, RendererConsts.ErrorColor);
                 
                 return;
             }
@@ -100,10 +102,7 @@ public static partial class PropertyTreeRendering
         parameters.IsNew = GetOrCreateItem(parentItem, name.GetHashCode(), out var item, ref index);
         
         var displayName = BakingFieldRegex().Replace(name, "${name}");
-        if (parameters.HumanizeName)
-        {
-            displayName = StringUtils.HumanizeName(name);
-        }
+        if (parameters.HumanizeName) displayName = StringUtils.HumanizeName(displayName);
         
         item.SetText(0, displayName);
 
@@ -216,7 +215,7 @@ public static partial class PropertyTreeRendering
         return true;
     }
 
-    private static void RenderFields(TreeItem parentItem, object component, RenderingParameters parameters)
+    public static void RenderFields(TreeItem parentItem, object component, RenderingParameters parameters)
     {
         var componentType = component.GetType();
         var fields = componentType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
