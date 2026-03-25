@@ -5,27 +5,12 @@ namespace GodotLib.Debug;
 
 using Godot;
 
-[PropertyRenderer(typeof(NativeArray<>), typeof(NativeList<>), typeof(Multi<>))]
-public class UnsafeCollectionRenderer<T> : IPropertyTreeRenderer where T : unmanaged, IEquatable<T>
+public abstract class SpanRenderer<T> : IPropertyTreeRenderer
 {
-    public void Render(TreeItem rootItem, object property, RenderingParameters parameters)
-    {
-        Span<T> span;
-        switch (property)
-        {
-            case NativeArray<T> array:
-                span = array.AsSpan();
-                break;
-            case NativeList<T> list:
-                span = list.AsSpan();
-                break;
-            case Multi<T> multi:
-                span = multi.AsSpan();
-                break;
-            default:
-                return;
-        }
+    public abstract void Render(TreeItem rootItem, object property, RenderingParameters parameters);
 
+    protected static void RenderSpan(ReadOnlySpan<T> span, TreeItem rootItem, RenderingParameters parameters)
+    {
         var length = span.Length;
         switch (length)
         {

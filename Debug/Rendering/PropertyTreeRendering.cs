@@ -86,7 +86,7 @@ public static partial class PropertyTreeRendering
         }
         
         var allChildren = parentItem.GetChildCount();
-        for (var i = 0; i < allChildren; i++)
+        for (var i = allChildren - 1; i >= 0; i--)
         {
             if (!indices.Contains(i))
             {
@@ -134,7 +134,7 @@ public static partial class PropertyTreeRendering
             // Special handling for flag enums showing 0
             if (type.IsEnum)
             {
-                if (type.GetCustomAttribute<FlagsAttribute>() != null && Convert.ToInt64(value) == 0)
+                if (Convert.ToInt64(value) == 0 && !Enum.IsDefined(type, 0))
                 {
                     item.SetText(1, "None");
                     item.SetCustomColor(1, RendererConsts.DefaultValueColor);
