@@ -134,7 +134,7 @@ public static partial class PropertyTreeRendering
             // Special handling for flag enums showing 0
             if (type.IsEnum)
             {
-                if (Convert.ToInt64(value) == 0 && !Enum.IsDefined(type, 0))
+                if (Convert.ToInt64(value) == 0 && !Enum.IsDefined(type, "0"))
                 {
                     item.SetText(1, "None");
                     item.SetCustomColor(1, RendererConsts.DefaultValueColor);
