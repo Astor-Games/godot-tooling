@@ -1,3 +1,5 @@
+#if DEBUG_DRAW_3D
+
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using real_t = float;
@@ -555,3 +557,5 @@ public partial class DebugDrawMT : Node
         physicsProcessCalls.Clear();
     }
 }
+
+#endif

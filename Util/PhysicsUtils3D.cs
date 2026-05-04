@@ -45,37 +45,40 @@ public static class PhysicsUtils3D
         query.HitFromInside = hitFromInside;
         query.CollideWithAreas = collideWithAreas;
         var result = new RaycastResult(space.IntersectRay(query));
+        
+#if DEBUG_DRAW_3D
         DebugDraw3D.DrawArrow(from, to, result.IsHit ? Colors.LimeGreen : Colors.Red, 0.2f, true);
+#endif
         return result;
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Transform3D BodyGetTransform(ResourceId body)
+    public static Transform3D BodyGetTransform(Rid body)
     {
         return PhysicsServer3D.BodyGetState(body, PhysicsServer3D.BodyState.Transform).AsTransform3D();
     }
     
     [MethodImpl(AggressiveInlining)]
-    public static void BodySetTransform(ResourceId body, Transform3D transform)
+    public static void BodySetTransform(Rid body, Transform3D transform)
     {
         PhysicsServer3D.BodySetState(body, PhysicsServer3D.BodyState.Transform, transform);
     }
 
-    public static ResourceId CreateSphereShape(float radius)
+    public static Rid CreateSphereShape(float radius)
     {
         var shapeRid = PhysicsServer3D.SphereShapeCreate();
         PhysicsServer3D.ShapeSetData(shapeRid, radius);
         return shapeRid;
     }
 
-    public static ResourceId CreateBoxShape(Vector3 size)
+    public static Rid CreateBoxShape(Vector3 size)
     {
         var shapeRid = PhysicsServer3D.BoxShapeCreate();
         PhysicsServer3D.ShapeSetData(shapeRid, size / 2.0f);
         return shapeRid;
     }
 
-    public static ResourceId CreateCapsuleShape(float height, float radius)
+    public static Rid CreateCapsuleShape(float height, float radius)
     {
         var shapeRid = PhysicsServer3D.CapsuleShapeCreate();
         var data = new GodotDictionary
@@ -87,7 +90,7 @@ public static class PhysicsUtils3D
         return shapeRid;
     }
 
-    public static ResourceId CreateCylinderShape(float height, float radius)
+    public static Rid CreateCylinderShape(float height, float radius)
     {
         var shapeRid = PhysicsServer3D.CylinderShapeCreate();
         var data = new GodotDictionary
@@ -99,7 +102,7 @@ public static class PhysicsUtils3D
         return shapeRid;
     }
 
-    public static ResourceId CreateConcavePolygonShape(Vector3[] faces, bool backfaceCollision)
+    public static Rid CreateConcavePolygonShape(Vector3[] faces, bool backfaceCollision)
     {
         var shapeRid = PhysicsServer3D.ConcavePolygonShapeCreate();
         var data = new GodotDictionary
@@ -111,14 +114,14 @@ public static class PhysicsUtils3D
         return shapeRid;
     }
 
-    public static ResourceId CreateConvexPolygonShape(Vector3[] points)
+    public static Rid CreateConvexPolygonShape(Vector3[] points)
     {
         var shapeRid = PhysicsServer3D.ConvexPolygonShapeCreate();
         PhysicsServer3D.ShapeSetData(shapeRid, points);
         return shapeRid;
     }
 
-    public static ResourceId CreateHeightMapShape(int mapWidth, int mapDepth, float[] mapData)
+    public static Rid CreateHeightMapShape(int mapWidth, int mapDepth, float[] mapData)
     {
         var shapeRid = PhysicsServer3D.HeightmapShapeCreate();
 
@@ -143,7 +146,7 @@ public static class PhysicsUtils3D
         return shapeRid;
     }
 
-    public static ResourceId CreateSpace(bool active = false, float? defaultGravity = null, Vector3? defaultGravityVector = null, float? defaultLinearDamp = null, float? defaultAngularDamp = null)
+    public static Rid CreateSpace(bool active = false, float? defaultGravity = null, Vector3? defaultGravityVector = null, float? defaultLinearDamp = null, float? defaultAngularDamp = null)
     {
         var space  = PhysicsServer3D.SpaceCreate();
         PhysicsServer3D.SpaceSetActive(space, active);

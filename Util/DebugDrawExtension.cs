@@ -1,3 +1,5 @@
+#if DEBUG_DRAW_3D
+
 using static Godot.PhysicsServer3D;
 
 namespace GodotLib.Util;
@@ -47,7 +49,7 @@ internal static class DebugDrawExtension
             }
         }
         
-        public static void DrawShape(ResourceId shape, in Transform3D transform, Color? color = null, float duration = 0f)
+        public static void DrawShape(Rid shape, in Transform3D transform, Color? color = null, float duration = 0f)
         {
             Transform3D scaledTransform;
             
@@ -93,3 +95,5 @@ internal static class DebugDrawExtension
         }
     }
 }
+
+#endif

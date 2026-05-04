@@ -1,6 +1,5 @@
 using GodotLib.Debug;
 using Turtles.addons.godot_lib.UI;
-using ZLinq;
 
 namespace GodotLib.UI;
 
@@ -77,28 +76,13 @@ public partial class DockablePanel : PanelContainer
         
         undockedSize = (Vector2I)CustomMinimumSize;
         if (undockedSize.X == 0) undockedSize = new Vector2I(400, 300);
-        
-        // Connect focus signals for all child controls
-        ConnectChildFocusSignals(this);
 
         CallDeferred(MethodName.RestoreState);
-    }
-
-    private void ConnectChildFocusSignals(Node node)
-    {
-        foreach (var child in node.DescendantsAndSelf())
-        {
-            if (child is Control control)
-            {
-                control.FocusEntered += OnFocusEntered;
-            }
-        }
     }
 
     public virtual void OnFocusEntered()
     {
         MoveToFront();
-        DockSurface.Instance?.InformFocused(this);
     }
 
     public virtual void OnFocusExited()

@@ -64,12 +64,6 @@ public partial class DockSurface : Control
             }
         }
     }
-    
-    public void InformFocused(DockablePanel panel)
-    {
-        focusedPanel?.OnFocusExited();
-        focusedPanel = panel;
-    }
 
     public DockablePanel CreatePanel(string scenePath, StringName id) => CreatePanel<DockablePanel>(scenePath, id);
 

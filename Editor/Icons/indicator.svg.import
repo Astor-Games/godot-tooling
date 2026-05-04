@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bky5hnnikoyql"
-path="res://.godot/imported/indicator.svg-66d82498cb3c11a2f3e3e19aab9a1a43.ctex"
+path="res://.godot/imported/indicator.svg-43ff9ba0a418cba9031512bfa65afbac.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/godot_lib/Editor/Icons/indicator.svg"
-dest_files=["res://.godot/imported/indicator.svg-66d82498cb3c11a2f3e3e19aab9a1a43.ctex"]
+source_file="res://addons/godot_tools/Editor/Icons/indicator.svg"
+dest_files=["res://.godot/imported/indicator.svg-43ff9ba0a418cba9031512bfa65afbac.ctex"]
 
 [params]
 

@@ -233,7 +233,7 @@ public partial class LogManager : Node
 
         try
         {
-            var filepath = ProjectSettings.GlobalizePath($"user://logs/turtles_{DateTime.Now:yyyy.MM.dd_HH.mm.ss}.log");
+            var filepath = ProjectSettings.GlobalizePath($"user://logs/turtles_{System.DateTime.Now:yyyy.MM.dd_HH.mm.ss}.log");
             fileWriter = new StreamWriter(filepath, append: false) { AutoFlush = false };
             fileChannel = Channel.CreateUnbounded<string>(new UnboundedChannelOptions
             {

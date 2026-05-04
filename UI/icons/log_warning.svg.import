@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b1v7xi4in8d8k"
-path="res://.godot/imported/log_warning.svg-edece30e718a82e0bc44fb9f6154f610.ctex"
+path="res://.godot/imported/log_warning.svg-371a3a694c0bfc8931e71cc3e4517aaf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/godot_lib/UI/icons/log_warning.svg"
-dest_files=["res://.godot/imported/log_warning.svg-edece30e718a82e0bc44fb9f6154f610.ctex"]
+source_file="res://addons/godot_tools/UI/icons/log_warning.svg"
+dest_files=["res://.godot/imported/log_warning.svg-371a3a694c0bfc8931e71cc3e4517aaf.ctex"]
 
 [params]
 

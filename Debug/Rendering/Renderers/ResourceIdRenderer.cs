@@ -4,12 +4,12 @@ namespace GodotLib.Debug;
 
 using Godot;
 
-[PropertyRenderer(typeof(ResourceId))]
+[PropertyRenderer(typeof(Rid))]
 public class ResourceIdRenderer : IPropertyTreeRenderer
 {
     public void Render(TreeItem rootItem, object property, RenderingParameters parameters)
     {
-        var rid = (ResourceId)property;
+        var rid = (Rid)property;
         
         if (rid.IsValid)
         {

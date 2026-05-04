@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using AstorGames.EcsTools;
 using GodotLib.Logging;
 using GodotLib.UI;
 using GodotLib.Util;
@@ -52,15 +51,6 @@ public partial class DebugManager : Node
         
         var logView = DockSurface.CreatePanel<LogViewerPanel>("uid://7hrsaus5fm8p", "logger");
         AddDebugShortcut(logView.ToggleVisibility, Key.F4, description: "Open logs");
-        
-        var resourceInspector = DockSurface.CreatePanel<ResourceInspector>("uid://b63vwi76ffh4e", "resource_inspector");
-        AddDebugShortcut(resourceInspector.ToggleVisibility, Key.F7, description: "Open resource inspector");
-        
-        var entityExplorer = DockSurface.CreatePanel<EntityExplorer>("uid://ce43m4m1dijmv", "entity_explorer");
-        AddDebugShortcut(entityExplorer.ToggleVisibility, Key.F9, description: "Open entity explorer");
-        
-        var entityInspector = DockSurface.CreatePanel<EntityInspector>("uid://dlp8t5gkbh231", "entity_inspector");
-        AddDebugShortcut(entityInspector.ToggleVisibility, Key.F10, description: "Open entity inspector");
         
         GetParent().ChildEnteredTree += _ => GetParent().MoveChild(this, -1);
 

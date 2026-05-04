@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://byo56ufpuum36"
-path="res://.godot/imported/circle_dashed.svg-c2d4315c497115f7357c6c747a68003d.ctex"
+path="res://.godot/imported/circle_dashed.svg-a1af5d75eca8430d40ae5f6e3854f691.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/godot_lib/Editor/Icons/circle_dashed.svg"
-dest_files=["res://.godot/imported/circle_dashed.svg-c2d4315c497115f7357c6c747a68003d.ctex"]
+source_file="res://addons/godot_tools/Editor/Icons/circle_dashed.svg"
+dest_files=["res://.godot/imported/circle_dashed.svg-a1af5d75eca8430d40ae5f6e3854f691.ctex"]
 
 [params]
 
