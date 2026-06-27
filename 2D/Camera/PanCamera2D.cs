@@ -1,3 +1,4 @@
+using GodotLib;
 using GodotLib.Util;
 using static GodotLib.ProjectConstants.InputActions;
 
