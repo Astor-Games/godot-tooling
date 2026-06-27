@@ -74,7 +74,7 @@ public partial class PanCamera2D : Camera2D
         
         if (keyMovementEnabled && !isDragging)
         {
-            var movementDirection = Input.GetVector(Left, Right, Forward, Back).LimitLength();
+            var movementDirection = Godot.Input.GetVector(Left, Right, Forward, Back).LimitLength();
             currentKeySpeed = currentKeySpeed.DampTowards(movementDirection * keyMovementSpeed, keyMovementSmoothing/1000, delta);
             finalSpeed += currentKeySpeed;
         }
