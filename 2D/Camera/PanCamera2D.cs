@@ -62,7 +62,7 @@ public partial class PanCamera2D : Camera2D
     
         else if (@event is InputEventMouseMotion mouseMotion && isDragging)
         {
-            Position -= mouseMotion.ScreenRelative;
+            Position -= mouseMotion.ScreenRelative / Zoom; // world units follow the cursor at any zoom
         }
     }
 
