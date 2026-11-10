@@ -45,6 +45,8 @@ public static partial class PropertyTreeRendering
                 }
             }
         }
+
+        StringRenderedTypes.RegisterTypes();
     }
 
     public static void RenderTypeAsString<T>()
